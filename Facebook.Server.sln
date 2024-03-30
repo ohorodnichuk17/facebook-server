@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facebook.Domain", "Facebook
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facebook.Infrastructure", "Facebook.Infrastructure\Facebook.Infrastructure.csproj", "{A9908D9D-A225-4E67-A607-5724F3F872CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facebook.Contracts", "Facebook.Contracts\Facebook.Contracts.csproj", "{7F5DE1D2-02C9-464F-9D65-1B09D312E8EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{A9908D9D-A225-4E67-A607-5724F3F872CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9908D9D-A225-4E67-A607-5724F3F872CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9908D9D-A225-4E67-A607-5724F3F872CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5DE1D2-02C9-464F-9D65-1B09D312E8EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5DE1D2-02C9-464F-9D65-1B09D312E8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5DE1D2-02C9-464F-9D65-1B09D312E8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5DE1D2-02C9-464F-9D65-1B09D312E8EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

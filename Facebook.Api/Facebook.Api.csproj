@@ -8,8 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Facebook.Contracts\Facebook.Contracts.csproj" />
+      <ProjectReference Include="..\Facebook.Application\Facebook.Application.csproj" />
+      <ProjectReference Include="..\Facebook.Infrastructure\Facebook.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

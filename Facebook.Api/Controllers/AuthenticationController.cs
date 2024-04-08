@@ -1,10 +1,11 @@
 using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.Queries;
-using Facebook.Contracts.Authentication;
+using Facebook.Contracts.Authentication.Common;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Contracts.Authentication.Login;
 using Facebook.Contracts.Authentication.Register;
+using Facebook.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,14 +30,12 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUserAsync(RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-        
         var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl)));
-        
         return authResult.Match(
-            authResult => Ok(),
+            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));
     }
 
@@ -53,10 +52,25 @@ public class AuthenticationController : ApiController
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
-        var loginResult = await _mediatr.Send(_mapper.Map<LoginQuery>(request));
+        // var loginResult = await _mediatr.Send(_mapper.Map<LoginQuery>(request));
+        //
+        // return loginResult.Match(
+        //     loginResult => Ok(loginResult),
+        //     errors => Problem(errors));
 
-        return loginResult.Match(
-            loginResult => Ok(loginResult),
+        var query = _mapper.Map<LoginQuery>(request);
+        var authenticationResult = await _mediatr.Send(query);
+
+        if (authenticationResult.IsError && authenticationResult
+                .FirstError == Errors.Authentication.InvalidCredentials)
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized,
+                title: authenticationResult.FirstError.Description);
+        }
+
+        return authenticationResult.Match(
+            authenticationResult => Ok(_mapper
+                .Map<AuthenticationResponse>(authenticationResult)),
             errors => Problem(errors));
     }
 }

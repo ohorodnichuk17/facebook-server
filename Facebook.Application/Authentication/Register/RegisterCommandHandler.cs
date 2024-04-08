@@ -1,5 +1,6 @@
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
@@ -12,20 +13,23 @@ using Microsoft.Extensions.Logging;
 namespace Facebook.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler : 
-    IRequestHandler<RegisterCommand, ErrorOr<User>>
+    IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
     private readonly IUserRepository _userRepository;
     private readonly ISender _mediatr;
     private readonly ILogger<RegisterCommandHandler> _logger;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public RegisterCommandHandler(IUserRepository userRepository, ISender mediatr, ILogger<RegisterCommandHandler> logger)
+    public RegisterCommandHandler(IUserRepository userRepository, ISender mediatr, ILogger<RegisterCommandHandler> logger, IJwtTokenGenerator jwtTokenGenerator)
     {
         _userRepository = userRepository;
         _mediatr = mediatr;
         _logger = logger;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<ErrorOr<User>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, 
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -58,8 +62,6 @@ public class RegisterCommandHandler :
                 return userResult.Errors;
             }
 
-            var userId = userResult.Value.Id; // Assuming Id is accessible from userResult
-
             var sendConfirmationResult = await _mediatr.Send(
                 new SendConfirmationEmailCommand(user.Email, command.BaseUrl));
 
@@ -67,11 +69,12 @@ public class RegisterCommandHandler :
             {
                 return sendConfirmationResult.Errors;
             }
-            
+
+            var token = _jwtTokenGenerator.GenerateJwtTokenAsync(user, role);
 
             _logger.LogInformation("User registration process completed successfully");
 
-            return userResult;
+            return new AuthenticationResult(user.Id, user, token);
         }
         catch (Exception ex)
         {

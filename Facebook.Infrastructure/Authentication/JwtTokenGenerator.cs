@@ -22,7 +22,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtOptions.Value;
     }
     
-    public async Task<ErrorOr<string>> GenerateJwtTokenAsync(User user, string role)
+    public string GenerateJwtTokenAsync(User user, string role)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(

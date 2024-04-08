@@ -1,6 +1,8 @@
 using Facebook.Application.Authentication.Commands.Register;
+using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.Queries;
+using Facebook.Contracts.Authentication.Common;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Contracts.Authentication.Login;
 using Facebook.Contracts.Authentication.Register;
@@ -20,7 +22,13 @@ public class AuthenticationMappingConfig : IRegister
         config.NewConfig<ConfirmEmailRequest, ConfirmEmailCommand>();
 
         config.NewConfig<LoginRequest, LoginQuery>();
-
+        
+        config.NewConfig<AuthenticationResult, AuthenticationResponse>()
+            .Map(dest => dest.Token, src => src.Token)
+            // .Map(dest => dest.Birthday, src => src.User.Birthday.ToString("yyyy-MM-dd"))
+            .Map(dest => dest.Birthday, src => src.User.Birthday.ToString("yyyy-MM-dd")) 
+            .Map(dest => dest, src => src.User);
+        
         // config.NewConfig<(ForgotPasswordRequest registerRequest, string BaseUrl), ForgotPasswordQuery>()
         //     .Map(dest => dest.BaseUrl, src => src.BaseUrl)
         //     .Map(dest => dest, src => src.registerRequest);

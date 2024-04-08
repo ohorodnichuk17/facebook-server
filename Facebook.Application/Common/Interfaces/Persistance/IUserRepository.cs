@@ -8,12 +8,13 @@ public interface IUserRepository
 {
    // For admin
    Task<ErrorOr<List<User>>> GetAllUsersAsync();
-   Task<ErrorOr<User>> GetUserByIdAsync(Guid userId);
+   Task<ErrorOr<User>> GetUserByIdAsync(string userId);
    Task<ErrorOr<User>> CreateUserAsync(User user, string password, string role);
    Task<ErrorOr<Unit>> DeleteUserAsync(Guid userId);
    
    // For admin & user
    Task<ErrorOr<Unit>> UpdateUserAsync(User user, string? newPassword);
+   Task<ErrorOr<User>> SaveUserAsync(User user);
 
 
    // For user

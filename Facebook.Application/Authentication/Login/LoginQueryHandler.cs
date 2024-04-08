@@ -1,11 +1,14 @@
 using Facebook.Application.Common.Interfaces.Authentication;
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Authentication.Common;
 using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Domain.Common.Errors;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.Queries;
 
-public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<string>>
+public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
     private readonly IUserAuthenticationService _authenticationService;
     private readonly IUserRepository _userRepository;
@@ -18,32 +21,29 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<string>>
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<ErrorOr<string>> Handle(LoginQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        // var loginResult = await _authenticationService.LoginUserAsync(request.Email, request.Password);
-        //
-        // return loginResult;
         
         var errorOrUser = await _userRepository.GetByEmailAsync(request.Email);
-
+        
         if (errorOrUser.IsError)
             return Error.Validation("User with this email doesn't exist");
-
+        
         var user = errorOrUser.Value;
-
-        //Login
+        
         var errorOrLoginResult = await _authenticationService.LoginUserAsync(user, request.Password);
-
-        if(errorOrLoginResult.IsError)
-            return errorOrLoginResult;
+        
+        if (user.PasswordHash != request.Password)
+        {
+            return Errors.Authentication.InvalidCredentials;
+        }
 
         var role = errorOrLoginResult.Value;
 
-        //Generate token
-        var token = await _jwtTokenGenerator.GenerateJwtTokenAsync(user, role);
 
-        return token;
+        var token = _jwtTokenGenerator.GenerateJwtTokenAsync(user, role);
+
+        return new AuthenticationResult(user.Id, user, token);
     }
 }

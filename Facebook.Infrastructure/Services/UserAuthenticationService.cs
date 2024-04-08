@@ -78,4 +78,52 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         return token;
     }
+
+    public async Task<ErrorOr<User>> ResetPasswordAsync(User user, string token, string password)
+    {
+        var decodedToken = WebEncoders.Base64UrlDecode(token);
+        var normalToken = Encoding.UTF8.GetString(decodedToken);
+        var result = await _userManager.ResetPasswordAsync(user, normalToken, password);
+
+        if (result.Succeeded)
+        {
+            return user;
+        }
+        else
+        {
+            return Error.Validation(result.Errors.FirstOrDefault()!.Description.ToString());
+        }
+    }
+
+    public async Task<string> GenerateEmailChangeTokenAsync(User user, string email)
+    {
+        var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
+        return token;
+    }
+
+    public async Task<ErrorOr<User>> ChangeEmailAsync(User user, string email, string token)
+    {
+        var decodedToken = WebEncoders.Base64UrlDecode(token);
+        var normalToken = Encoding.UTF8.GetString(decodedToken);
+        var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, normalToken);
+
+        if (!changeEmailResult.Succeeded)
+        {
+            return Error.Validation(changeEmailResult.Errors.FirstOrDefault()!.Description.ToString());
+        }
+
+        return user;
+    }
+
+    public async Task<ErrorOr<User>> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+    {
+        var changePassword = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (!changePassword.Succeeded)
+        {
+            return Error.Validation(changePassword.Errors.FirstOrDefault()!.Description.ToString());
+        }
+
+        return user;
+    }
 }

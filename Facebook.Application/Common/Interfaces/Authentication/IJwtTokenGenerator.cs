@@ -5,5 +5,5 @@ namespace Facebook.Application.Common.Interfaces.Authentication;
 
 public interface IJwtTokenGenerator
 {
-    Task<ErrorOr<string>> GenerateJwtTokenAsync(User user, string role);
+    string GenerateJwtTokenAsync(User user, string role);
 }

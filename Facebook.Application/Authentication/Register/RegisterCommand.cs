@@ -1,6 +1,6 @@
 using MediatR;
 using ErrorOr;
-using Facebook.Domain.User;
+using Facebook.Application.Authentication.Common;
 
 namespace Facebook.Application.Authentication.Commands.Register;
 
@@ -13,4 +13,4 @@ public record RegisterCommand(
     DateTime Birthday,
     string Gender,
     string BaseUrl
-    ) : IRequest<ErrorOr<User>>;
+    ) : IRequest<ErrorOr<AuthenticationResult>>;

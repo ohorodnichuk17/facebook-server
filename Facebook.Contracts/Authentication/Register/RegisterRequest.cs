@@ -22,10 +22,11 @@ public record RegisterRequest
 	[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 	[StringLength(24, MinimumLength = 8, ErrorMessage = "{PropertyName} length must be between {2} and {1}.")]
 	public string ConfirmPassword { get; init; }
-
+	
 	[Required(ErrorMessage = "{PropertyName} must not be empty")]
+	[DataType(DataType.Date, ErrorMessage = "Invalid date format")]
 	public DateTime Birthday { get; init; }
-
+	
 	[Required(ErrorMessage = "{PropertyName} must not be empty")]
 	public string Gender { get; init; }
 	

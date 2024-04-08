@@ -30,11 +30,11 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<ErrorOr<User>> GetUserByIdAsync(Guid userId)
+    public async Task<ErrorOr<User>> GetUserByIdAsync(string userId)
     {
-        if (userId == Guid.Empty)
+        if (userId == null)
         {
-            return Error.Failure("Invalid userId");
+            throw new ArgumentNullException(nameof(userId), "userId cannot be null");
         }
 
         var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -61,7 +61,8 @@ public class UserRepository : IUserRepository
 
     public async Task<ErrorOr<User>> CreateUserAsync(User user, string password, string role)
     {
-        user.UserName = $"{user.FirstName}{user.LastName}".ToLower();
+        // user.UserName = $"{user.FirstName}{user.LastName}".ToLower();
+        user.UserName = $"{user.Email}".ToLower();
 
         var createUserResult = await _userManager.CreateAsync(user, password);
 
@@ -244,6 +245,16 @@ public class UserRepository : IUserRepository
         {
             return Error.Failure(ex.Message);
         }
+    }
+    
+    public async Task<ErrorOr<User>> SaveUserAsync(User user)
+    {
+        var saveResult = await _userManager.UpdateAsync(user);
+
+        if (!saveResult.Succeeded)
+            return Error.Unexpected("Error saving user");
+
+        return user;
     }
     
     public async Task<List<User>> GetFriendsAsync(Guid userId)

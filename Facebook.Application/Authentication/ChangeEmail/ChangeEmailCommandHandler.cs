@@ -1,16 +1,16 @@
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using MediatR;
 using ErrorOr;
 
 namespace Facebook.Application.Authentication.ChangeEmail;
 
-public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, ErrorOr<User>>
+public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, ErrorOr<UserEntity>>
 {
     private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly IUserRepository _userRepository;
-    public async Task<ErrorOr<User>> Handle(ChangeEmailCommand request,
+    public async Task<ErrorOr<UserEntity>> Handle(ChangeEmailCommand request,
         CancellationToken cancellationToken)
     {
         var userResult = await _userRepository.GetUserByIdAsync(request.UserId);

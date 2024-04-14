@@ -1,7 +1,7 @@
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Authentication.Common;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 
 namespace Facebook.Application.Authentication.Queries;
 

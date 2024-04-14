@@ -1,31 +1,32 @@
+using System.Net;
 using System.Text;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Facebook.Infrastructure.Services;
+namespace Facebook.Infrastructure.Services.User;
 
 public class UserAuthenticationService : IUserAuthenticationService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly SignInManager<UserEntity> _signInManager; 
 
-    public UserAuthenticationService(UserManager<User> userManager, SignInManager<User> signInManager)
+    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
     }
 
-    public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+    public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         return token;
     }
 
-    public async Task<ErrorOr<string>> LoginUserAsync(User user, string password)
+    public async Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password)
     {
         var signinResult = await _signInManager.PasswordSignInAsync(user, password,
             isPersistent: true, lockoutOnFailure: true);
@@ -60,26 +61,31 @@ public class UserAuthenticationService : IUserAuthenticationService
         if (user == null)
             return Error.NotFound();
 
-        var decoderToken = WebEncoders.Base64UrlDecode(token);
+        Console.WriteLine($"Token before decoding: {token}");
+        var decodedToken = WebEncoders.Base64UrlDecode(token);
+        Console.WriteLine($"Token after decoding: {decodedToken}");
 
-        var normalToken = Encoding.UTF8.GetString(decoderToken);
-
+        var normalToken = Encoding.UTF8.GetString(decodedToken);
+        
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, normalToken);
 
         if (!confirmEmailResult.Succeeded)
-            return Error.Failure("User email is not confirmed!");
+        {
+            var errorDescriptions = confirmEmailResult.Errors.Select(e => e.Description).ToList();
+            return Error.Failure($"User email is not confirmed! Reasons: {string.Join(", ", errorDescriptions)}");
+        }
 
         return Result.Success;
     }
     
-    public async Task<string> GeneratePasswordResetTokenAsync(User user)
+    public async Task<string> GeneratePasswordResetTokenAsync(UserEntity user)
     {
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
         return token;
     }
 
-    public async Task<ErrorOr<User>> ResetPasswordAsync(User user, string token, string password)
+    public async Task<ErrorOr<UserEntity>> ResetPasswordAsync(UserEntity user, string token, string password)
     {
         var decodedToken = WebEncoders.Base64UrlDecode(token);
         var normalToken = Encoding.UTF8.GetString(decodedToken);
@@ -95,13 +101,13 @@ public class UserAuthenticationService : IUserAuthenticationService
         }
     }
 
-    public async Task<string> GenerateEmailChangeTokenAsync(User user, string email)
+    public async Task<string> GenerateEmailChangeTokenAsync(UserEntity user, string email)
     {
         var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
         return token;
     }
 
-    public async Task<ErrorOr<User>> ChangeEmailAsync(User user, string email, string token)
+    public async Task<ErrorOr<UserEntity>> ChangeEmailAsync(UserEntity user, string email, string token)
     {
         var decodedToken = WebEncoders.Base64UrlDecode(token);
         var normalToken = Encoding.UTF8.GetString(decodedToken);
@@ -115,7 +121,7 @@ public class UserAuthenticationService : IUserAuthenticationService
         return user;
     }
 
-    public async Task<ErrorOr<User>> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+    public async Task<ErrorOr<UserEntity>> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword)
     {
         var changePassword = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 

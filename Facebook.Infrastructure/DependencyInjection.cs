@@ -1,12 +1,15 @@
 using System.Text;
+using Facebook.Application.Common.Admin;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
 using Facebook.Infrastructure.Persistance;
 using Facebook.Infrastructure.Services;
+using Facebook.Infrastructure.Services.Common;
+using Facebook.Infrastructure.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +55,7 @@ public static class DependencyInjection
 
 	private static IServiceCollection AddAppIdentity(this IServiceCollection services)
 	{
-		services.AddIdentity<User, IdentityRole<Guid>>(option =>
+		services.AddIdentity<UserEntity, IdentityRole<Guid>>(option =>
 		{
 			option.SignIn.RequireConfirmedEmail = true;
 			option.Lockout.MaxFailedAccessAttempts = 5;
@@ -66,7 +69,6 @@ public static class DependencyInjection
 		})
 		.AddEntityFrameworkStores<FacebookDbContext>() 
 		.AddDefaultTokenProviders();
-		
 
 		return services;
 	}
@@ -74,13 +76,14 @@ public static class DependencyInjection
 	private static IServiceCollection AddRepositories(this IServiceCollection services)
 	{
 		services.AddScoped<IUserRepository, UserRepository>();
+		// services.AddScoped<IAdminRepository, AdminRepository>();
 
 		return services;
 	}
 
 	private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
 	{
-		services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+		services.AddSingleton<IJwtGenerator, JwtGenerator>();
 		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 		services.AddScoped<ISmtpService, SmtpService>();
@@ -102,7 +105,7 @@ public static class DependencyInjection
 		configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
 		services.AddSingleton(Options.Create(jwtSettings));
-		services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+		services.AddSingleton<IJwtGenerator, JwtGenerator>();
 
 		services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
 			.AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters

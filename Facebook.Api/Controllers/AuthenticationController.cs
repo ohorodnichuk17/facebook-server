@@ -1,15 +1,23 @@
+using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.ConfirmEmail;
+using Facebook.Application.Authentication.ForgotPassword;
 using Facebook.Application.Authentication.Queries;
+using Facebook.Application.Authentication.ResetPassword;
+using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common;
 using Facebook.Contracts.Authentication.ConfirmEmail;
+using Facebook.Contracts.Authentication.ForgotPassword;
 using Facebook.Contracts.Authentication.Login;
 using Facebook.Contracts.Authentication.Register;
+using Facebook.Contracts.Authentication.ResetPassword;
 using Facebook.Domain.Common.Errors;
+using Facebook.Server.Infrastructure.NLog;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace Facebook.Server.Controllers;
 
@@ -39,25 +47,20 @@ public class AuthenticationController : ApiController
             errors => Problem(errors));
     }
 
-    [HttpGet("confirm-email")]
-    public async Task<IActionResult> ConfirmEmailAsync([FromQuery] ConfirmEmailRequest request)
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailRequest request)
     {
         var confirmEmailResult = await _mediatr.Send(_mapper.Map<ConfirmEmailCommand>(request));
 
         return confirmEmailResult.Match(
-            authResult => Ok(confirmEmailResult),
-            errors => Problem(errors[0].ToString()));
+            authResult => Ok(confirmEmailResult.Value),
+            errors => Problem(errors));
+      
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
-        // var loginResult = await _mediatr.Send(_mapper.Map<LoginQuery>(request));
-        //
-        // return loginResult.Match(
-        //     loginResult => Ok(loginResult),
-        //     errors => Problem(errors));
-
         var query = _mapper.Map<LoginQuery>(request);
         var authenticationResult = await _mediatr.Send(query);
 
@@ -72,5 +75,46 @@ public class AuthenticationController : ApiController
             authenticationResult => Ok(_mapper
                 .Map<AuthenticationResponse>(authenticationResult)),
             errors => Problem(errors));
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordRequest request)
+    {
+        var baseUrl = _configuration.GetRequiredSection(
+            "HostSettings:ClientURL").Value;
+        var forgotPasswordResult = await _mediatr.Send(
+            _mapper.Map<ForgotPasswordQuery>((request, baseUrl)));
+
+        return forgotPasswordResult.Match(
+            forgotPasswordResult => Ok(forgotPasswordResult),
+            errors => Problem(errors));
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequest request)
+    {
+        var resetPasswordResult = await _mediatr.Send(
+            _mapper.Map<ResetPasswordCommand>(request));
+
+        return resetPasswordResult.Match(
+            resetPasswordResult => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpPost("change-email")]
+    public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailRequest request)
+    {
+        var changeEmailResult = await _mediatr.Send(
+            _mapper.Map<ChangeEmailCommand>(request));
+
+        return changeEmailResult.Match(
+            changeEmailResult => Ok(), 
+            errors => Problem(errors));
+    }
+
+    [HttpGet("ping")]
+    public IActionResult Ping()
+    {
+        return Ok(DateTime.Now);
     }
 }

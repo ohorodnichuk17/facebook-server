@@ -11,6 +11,11 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+//NLog
+//builder.Logging.ClearProviders();
+//builder.Logging.SetMinimumLevel(LogLevel.Trace);
+//builder.Host.UseNLog();
+
 
 var app = builder.Build();
 

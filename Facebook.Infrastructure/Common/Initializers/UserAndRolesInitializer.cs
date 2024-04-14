@@ -1,5 +1,5 @@
 ﻿using Facebook.Domain.Constants.Roles;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +21,7 @@ public static class UserAndRolesInitializer
 			context.Database.Migrate();
 
 			var userManager = scope.ServiceProvider
-				.GetRequiredService<UserManager<User>>();
+				.GetRequiredService<UserManager<UserEntity>>();
 
 			var roleManager = scope.ServiceProvider
 				.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
@@ -34,12 +34,12 @@ public static class UserAndRolesInitializer
 
 			if (!context.Users.Any())
 			{
-				var user = new User
+				var user = new UserEntity
 				{
 					FirstName = "Admin",
 					LastName = "Admin",
 					Email = "admin@gmail.com",
-					PasswordHash = "Admin123*",
+					// PasswordHash = "Admin123*",
 					EmailConfirmed = true,
 					Birthday = DateTime.Today,
 					Gender = "Male",
@@ -48,7 +48,7 @@ public static class UserAndRolesInitializer
 				var result = userManager.CreateAsync(user, "Admin123*").Result;
 				if (result.Succeeded)
 				{
-					result = userManager.AddToRoleAsync(user, Roles.Admin).Result;
+					await userManager.AddToRoleAsync(user, Roles.Admin);
 				}
 			}
 

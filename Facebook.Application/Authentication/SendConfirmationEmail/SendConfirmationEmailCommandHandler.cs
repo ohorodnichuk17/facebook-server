@@ -54,7 +54,7 @@ public class SendConfirmationEmailCommandHandler : IRequestHandler<SendConfirmat
 			userName = user.FirstName + " " + user.LastName;
 		}
 
-		var sendEmailResult = await _emailService.SendEmailConfirmationAsync(
+		var sendEmailResult = await _emailService.SendEmailConfirmationEmailAsync(
 			user.Id, user.Email!, token, request.BaseUrl, userName!);
 
 		return sendEmailResult;

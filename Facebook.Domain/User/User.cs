@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace Facebook.Domain.User;
+namespace Facebook.Domain.UserEntity;
 
-public class User : IdentityUser<Guid>
+public class UserEntity : IdentityUser<Guid>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

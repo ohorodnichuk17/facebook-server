@@ -1,6 +1,6 @@
 using Facebook.Application.Common.Interfaces.Services;
 
-namespace Facebook.Infrastructure.Services;
+namespace Facebook.Infrastructure.Services.Common;
 
 public class DateTimeProvider : IDateTimeProvider
 {

@@ -2,9 +2,9 @@
 
 namespace Facebook.Application.Authentication.ConfirmEmail;
 
-public class ConfirmEmailCommandValidation : AbstractValidator<ConfirmEmailCommand>
+public class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
 {
-	public ConfirmEmailCommandValidation()
+	public ConfirmEmailCommandValidator()
 	{
 		RuleFor(r => r.UserId).NotEmpty().WithMessage("Field must not be empty");
 

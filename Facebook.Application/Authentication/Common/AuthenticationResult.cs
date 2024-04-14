@@ -1,8 +1,8 @@
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 
 namespace Facebook.Application.Authentication.Common;
 
 public record AuthenticationResult(
     Guid id,
-    User User,
+    UserEntity User,
     string Token);

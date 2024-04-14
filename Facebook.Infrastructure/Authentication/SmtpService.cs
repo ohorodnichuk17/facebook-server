@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
-namespace Facebook.Infrastructure.Services;
+namespace Facebook.Infrastructure.Authentication;
 
 public class SmtpService : ISmtpService
 {

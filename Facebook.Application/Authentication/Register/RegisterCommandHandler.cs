@@ -4,7 +4,7 @@ using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
 using Microsoft.Extensions.Logging;
@@ -18,14 +18,14 @@ public class RegisterCommandHandler :
     private readonly IUserRepository _userRepository;
     private readonly ISender _mediatr;
     private readonly ILogger<RegisterCommandHandler> _logger;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public RegisterCommandHandler(IUserRepository userRepository, ISender mediatr, ILogger<RegisterCommandHandler> logger, IJwtTokenGenerator jwtTokenGenerator)
+    public RegisterCommandHandler(IUserRepository userRepository, ISender mediatr, ILogger<RegisterCommandHandler> logger, IJwtGenerator jwtGenerator)
     {
         _userRepository = userRepository;
         _mediatr = mediatr;
         _logger = logger;
-        _jwtTokenGenerator = jwtTokenGenerator;
+        _jwtGenerator = jwtGenerator;
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, 
@@ -43,7 +43,7 @@ public class RegisterCommandHandler :
                 return Error.Validation("User with this email already exists");   
             }
 
-            var user = new User
+            var user = new UserEntity
             {
                 FirstName = command.FirstName, 
                 LastName = command.LastName,
@@ -70,7 +70,7 @@ public class RegisterCommandHandler :
                 return sendConfirmationResult.Errors;
             }
 
-            var token = _jwtTokenGenerator.GenerateJwtTokenAsync(user, role);
+            var token = await _jwtGenerator.GenerateJwtTokenAsync(user, role);
 
             _logger.LogInformation("User registration process completed successfully");
 

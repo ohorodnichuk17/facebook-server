@@ -1,5 +1,7 @@
 using System.Reflection;
 using Facebook.Server.Common.Errors;
+using Facebook.Server.Infrastructure;
+using Facebook.Server.Infrastructure.NLog;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -15,9 +17,11 @@ public static class DependencyInjection
 
         services.AddSingleton<ProblemDetailsFactory, FacebookProblemDetailsFactory>();
         
-        // services.AddExceptionHandler<GlobalExceptionHandler>()
-        //     .AddProblemDetails();
+        services.AddExceptionHandler<GlobalExceptionHandler>()
+            .AddProblemDetails();
 
+        services.AddSingleton<ILoggerService, LoggerService>();
+        
 
         services.AddSwagger();
 

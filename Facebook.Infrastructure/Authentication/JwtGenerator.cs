@@ -3,26 +3,26 @@ using System.Security.Claims;
 using System.Text;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Domain.User;
+using Facebook.Domain.UserEntity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ErrorOr;
 
 namespace Facebook.Infrastructure.Authentication;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+public class JwtGenerator : IJwtGenerator
 {
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly JwtSettings _jwtSettings;
 
-    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, 
+    public JwtGenerator(IDateTimeProvider dateTimeProvider, 
         IOptions<JwtSettings> jwtOptions)
     {
         _dateTimeProvider = dateTimeProvider;
         _jwtSettings = jwtOptions.Value;
     }
     
-    public string GenerateJwtTokenAsync(User user, string role)
+    public async Task<string> GenerateJwtTokenAsync(UserEntity userEntity, string role)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
@@ -32,13 +32,13 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName ?? ""),
-            new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName ?? ""),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? ""),
+            new Claim(JwtRegisteredClaimNames.Sub, userEntity.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.GivenName, userEntity.FirstName ?? ""),
+            new Claim(JwtRegisteredClaimNames.FamilyName, userEntity.LastName ?? ""),
+            new Claim(JwtRegisteredClaimNames.Email, userEntity.Email!),
+            new Claim("EmailConfirm", userEntity.EmailConfirmed.ToString()),
+            new Claim(ClaimTypes.MobilePhone, userEntity.PhoneNumber ?? ""),
             new Claim(ClaimTypes.Role, role),
-            new Claim("EmailConfirm", user.EmailConfirmed.ToString()),
         };
         
         var securityToken = new JwtSecurityToken(

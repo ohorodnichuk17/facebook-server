@@ -23,7 +23,7 @@ public class ConfirmEmailCommandHandler :
 		ConfirmEmailCommand request, CancellationToken cancellationToken)
 	{
 		var errorOrSuccess = await _userAuthenticationService
-			.ConfirmEmailAsync(request.UserId, request.Token);
+			.ConfirmEmailAsync(request.UserId, request.ValidEmailToken);
 		if (errorOrSuccess.IsError)
 		{
 			return errorOrSuccess.Errors;

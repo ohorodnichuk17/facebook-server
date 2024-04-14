@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
@@ -10,11 +11,12 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendEmailConfirmationEmailAsync(
         Guid userId, string email, string token, string baseUrl, string userName)
     {
-        var encodedEmailToken = Encoding.UTF8.GetBytes(token);
+        //var encodedEmailToken = Encoding.UTF8.GetBytes(token);
 
-        var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+        //var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-        string url = $"{baseUrl}/authentication/confirm-email/{userId}/{validEmailToken}";
+        string url = $"{baseUrl}api/authentication/confirm-email?userId={userId}&" +
+            $"validEmailToken={WebUtility.UrlEncode(token)}";
 
         string confirmationUrl = $" <a href='{url}'>Confirm now</a>";
 

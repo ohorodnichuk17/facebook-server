@@ -61,13 +61,13 @@ public class UserAuthenticationService : IUserAuthenticationService
         if (user == null)
             return Error.NotFound();
 
-        Console.WriteLine($"Token before decoding: {token}");
-        var decodedToken = WebEncoders.Base64UrlDecode(token);
-        Console.WriteLine($"Token after decoding: {decodedToken}");
+        //Console.WriteLine($"Token before decoding: {token}");
+        //var decodedToken = WebEncoders.Base64UrlDecode(token);
+        //Console.WriteLine($"Token after decoding: {decodedToken}");
 
-        var normalToken = Encoding.UTF8.GetString(decodedToken);
+        //var normalToken = Encoding.UTF8.GetString(decodedToken);
         
-        var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, normalToken);
+        var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
 
         if (!confirmEmailResult.Succeeded)
         {

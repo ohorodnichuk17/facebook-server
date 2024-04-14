@@ -47,8 +47,8 @@ public class AuthenticationController : ApiController
             errors => Problem(errors));
     }
 
-    [HttpPost("confirm-email")]
-    public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailRequest request)
+    [HttpGet("confirm-email")]
+    public async Task<IActionResult> ConfirmEmailAsync([FromQuery]ConfirmEmailRequest request)
     {
         var confirmEmailResult = await _mediatr.Send(_mapper.Map<ConfirmEmailCommand>(request));
 

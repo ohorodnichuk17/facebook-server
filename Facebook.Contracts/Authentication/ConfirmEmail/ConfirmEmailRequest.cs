@@ -9,6 +9,6 @@ public record ConfirmEmailRequest {
 
 	[Required(ErrorMessage = "{PropertyName} must not be empty")]
 	[Length(256, 4096)]
-	public required string Token { get; init; }
+	public required string ValidEmailToken { get; init; }
 }
  

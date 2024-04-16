@@ -141,61 +141,61 @@ public class UserRepository : IUserRepository
         return roles.ToList();
     }
 
-    public async Task<ErrorOr<Unit>> BlockUserAsync(string userId)
-    {
-        try
-        {
-            var userToBlock = await _userManager.FindByIdAsync(userId.ToString());
+    // public async Task<ErrorOr<Unit>> BlockUserAsync(string userId)
+    // {
+    //     try
+    //     {
+    //         var userToBlock = await _userManager.FindByIdAsync(userId.ToString());
+    //
+    //         if (userToBlock == null)
+    //         {
+    //             return Error.Failure("User not found");
+    //         }
+    //
+    //         userToBlock.IsBlocked = true;
+    //
+    //         var result = await _userManager.UpdateAsync(userToBlock);
+    //
+    //         if (!result.Succeeded)
+    //         {
+    //             return Error.Failure("Failed to block user");
+    //         }
+    //         
+    //         return Unit.Value;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return Error.Failure(ex.Message);
+    //     }
+    // }
 
-            if (userToBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToBlock.IsBlocked = true;
-
-            var result = await _userManager.UpdateAsync(userToBlock);
-
-            if (!result.Succeeded)
-            {
-                return Error.Failure("Failed to block user");
-            }
-            
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
-    {
-        try
-        {
-            var userToUnBlock = await _userManager.FindByIdAsync(userId.ToString());
-
-            if (userToUnBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToUnBlock.IsBlocked = false;
-
-            var result = await _userManager.UpdateAsync(userToUnBlock);
-
-            if (!result.Succeeded)
-            {
-                return Error.Failure("Failed to block user");
-            }
-            
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }   
-    }
+    // public async Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
+    // {
+    //     try
+    //     {
+    //         var userToUnBlock = await _userManager.FindByIdAsync(userId.ToString());
+    //
+    //         if (userToUnBlock == null)
+    //         {
+    //             return Error.Failure("User not found");
+    //         }
+    //
+    //         userToUnBlock.IsBlocked = false;
+    //
+    //         var result = await _userManager.UpdateAsync(userToUnBlock);
+    //
+    //         if (!result.Succeeded)
+    //         {
+    //             return Error.Failure("Failed to block user");
+    //         }
+    //         
+    //         return Unit.Value;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return Error.Failure(ex.Message);
+    //     }   
+    // }
 
     public async Task<ErrorOr<Unit>> UpdateUserAsync(UserEntity userEntity)
     {
@@ -212,7 +212,6 @@ public class UserRepository : IUserRepository
             existingUser.Email = userEntity.Email;
             existingUser.Birthday = userEntity.Birthday;
             existingUser.Gender = userEntity.Gender;
-            existingUser.IsBlocked = userEntity.IsBlocked;
 
             var result = await _userManager.UpdateAsync(existingUser);
             if (!result.Succeeded)

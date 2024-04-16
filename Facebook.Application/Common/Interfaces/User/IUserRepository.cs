@@ -22,7 +22,7 @@ public interface IUserRepository
    Task<ErrorOr<Unit>> SetProfilePrivacyAsync(string userId, bool isProfilePublic);
    Task<ErrorOr<bool>> GetProfilePrivacyAsync(string userId);
    Task<ErrorOr<List<string>>> FindRolesByUserIdAsync(UserEntity user);
-   Task<ErrorOr<Unit>> BlockUserAsync(string userId);
-   Task<ErrorOr<Unit>> UnblockUserAsync(string userId);
+   // Task<ErrorOr<Unit>> BlockUserAsync(string userId);
+   // Task<ErrorOr<Unit>> UnblockUserAsync(string userId);
    Task<ErrorOr<Unit>> UpdateUserAsync(UserEntity user);
 }

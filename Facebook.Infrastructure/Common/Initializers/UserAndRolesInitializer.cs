@@ -43,7 +43,6 @@ public static class UserAndRolesInitializer
 					EmailConfirmed = true,
 					Birthday = DateTime.Today,
 					Gender = "Male",
-					IsBlocked = false
 				};
 				var result = userManager.CreateAsync(user, "Admin123*").Result;
 				if (result.Succeeded)

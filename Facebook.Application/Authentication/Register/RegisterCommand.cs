@@ -4,7 +4,7 @@ using Facebook.Application.Authentication.Common;
 
 namespace Facebook.Application.Authentication.Commands.Register;
 
-public record RegisterCommand(
+public record  RegisterCommand(
     string FirstName,
     string LastName,
     string Email,

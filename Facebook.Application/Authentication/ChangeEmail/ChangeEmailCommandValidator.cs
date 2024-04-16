@@ -12,7 +12,7 @@ public class ChangeEmailCommandValidator : AbstractValidator<ChangeEmailCommand>
 
         RuleFor(r => r.Email).NotEmpty()
             .WithMessage("Field must not be empty").EmailAddress()
-            .WithMessage("Wrong email format").MaximumLength(24)
+            .WithMessage("Wrong email format").MaximumLength(25)
             .MinimumLength(8);
 
         RuleFor(r => r.Token).NotEmpty()

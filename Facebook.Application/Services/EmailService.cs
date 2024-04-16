@@ -39,11 +39,11 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendResetPasswordEmailAsync(
         string email, string token, string baseUrl, string userName)
     {
-        var encodedToken = Encoding.UTF8.GetBytes(token);
+        // var encodedToken = Encoding.UTF8.GetBytes(token);
+        //
+        // var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-        var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-
-        string url = $"{baseUrl}/authentication/reset-password/{email}/{validToken}";
+        string url = $"{baseUrl}authentication/reset-password/{email}/{WebUtility.UrlEncode(token)}";
 
         string emailBody = string.Empty;
 

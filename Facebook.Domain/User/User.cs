@@ -18,10 +18,4 @@ public class UserEntity : IdentityUser<Guid>
     }
 
     public string Gender { get; set; }
-    public bool IsBlocked { get; set; }
-
-    public string? CoverPhoto { get; set; }
-    public string? ProfilePicture { get; set; }
-    public string? Biography { get; set; }
-    public bool IsProfilePublic { get; set; }
 }

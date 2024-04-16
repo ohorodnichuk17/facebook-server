@@ -19,13 +19,6 @@ public class UserAuthenticationService : IUserAuthenticationService
         _signInManager = signInManager;
     }
 
-    public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
-    {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-        return token;
-    }
-
     public async Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password)
     {
         var signinResult = await _signInManager.PasswordSignInAsync(user, password,
@@ -52,6 +45,13 @@ public class UserAuthenticationService : IUserAuthenticationService
     {
         await _signInManager.SignOutAsync();
         return Result.Success;
+    }
+    
+    public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
+    {
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        return token;
     }
 
     public async Task<ErrorOr<Success>> ConfirmEmailAsync(Guid userId, string token)
@@ -87,17 +87,15 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<UserEntity>> ResetPasswordAsync(UserEntity user, string token, string password)
     {
-        var decodedToken = WebEncoders.Base64UrlDecode(token);
-        var normalToken = Encoding.UTF8.GetString(decodedToken);
-        var result = await _userManager.ResetPasswordAsync(user, normalToken, password);
+        var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
 
-        if (result.Succeeded)
+        if (resetPasswordResult.Succeeded)
         {
             return user;
         }
         else
         {
-            return Error.Validation(result.Errors.FirstOrDefault()!.Description.ToString());
+            return Error.Validation(resetPasswordResult.Errors.FirstOrDefault()!.Description.ToString());
         }
     }
 

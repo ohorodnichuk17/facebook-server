@@ -12,5 +12,6 @@ public record  RegisterCommand(
     string ConfirmPassword,
     DateTime Birthday,
     string Gender,
+    byte[] Avatar,
     string BaseUrl
     ) : IRequest<ErrorOr<AuthenticationResult>>;

@@ -2,6 +2,8 @@ using System.Reflection;
 using Facebook.Server.Common.Errors;
 using Facebook.Server.Infrastructure;
 using Facebook.Server.Infrastructure.NLog;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -71,13 +73,13 @@ public static class DependencyInjection
         return services;
     }
 
-    //public static IServiceCollection AddRequestValidation(this IServiceCollection services)
-    //{
-    //	services.AddFluentValidationAutoValidation();
-    //	services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
-
-    //	return services;
-    //}
+    // public static IServiceCollection AddRequestValidation(this IServiceCollection services)
+    // {
+    // 	services.AddFluentValidationAutoValidation();
+    // 	services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+    //
+    // 	return services;
+    // }
 
     public static IServiceCollection AddMappings(this IServiceCollection services)
     {

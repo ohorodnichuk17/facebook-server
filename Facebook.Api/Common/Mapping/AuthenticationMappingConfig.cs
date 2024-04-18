@@ -7,6 +7,7 @@ using Facebook.Application.Authentication.Queries;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common;
+using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Mapster;
 using Microsoft.AspNetCore.Identity.Data;
@@ -19,8 +20,9 @@ public class AuthenticationMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<(RegisterRequest registerRequest, string BaseUrl), RegisterCommand>()
+        config.NewConfig<(RegisterRequest registerRequest, string BaseUrl, byte[] Image), RegisterCommand>()
             .Map(dest => dest.BaseUrl, src => src.BaseUrl)
+            .Map(dest => dest.Avatar, src => src.Image)
             .Map(dest => dest, src => src.registerRequest);
         
 		

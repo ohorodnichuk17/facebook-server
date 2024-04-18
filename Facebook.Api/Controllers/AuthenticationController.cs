@@ -6,6 +6,7 @@ using Facebook.Application.Authentication.Queries;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common;
+using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Contracts.Authentication.ForgotPassword;
 using Facebook.Contracts.Authentication.Login;
@@ -41,7 +42,20 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-        var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl)));
+       
+        var image = new byte[request.Avatar == null ? 0 : request.Avatar.Length];
+
+        if (request.Avatar != null && request.Avatar.Length != 0)
+        {
+            using MemoryStream memoryStream = new MemoryStream();
+            await request.Avatar.CopyToAsync(memoryStream);
+
+            image = memoryStream.ToArray();
+        }
+        
+        var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl, image)));
+
+        
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));

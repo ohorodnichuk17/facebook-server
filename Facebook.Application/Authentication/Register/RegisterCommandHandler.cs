@@ -4,6 +4,7 @@ using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.Services;
 using Facebook.Domain.UserEntity;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
@@ -19,13 +20,20 @@ public class RegisterCommandHandler :
     private readonly ISender _mediatr;
     private readonly ILogger<RegisterCommandHandler> _logger;
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly IImageStorageService _imageStorageService;
 
-    public RegisterCommandHandler(IUserRepository userRepository, ISender mediatr, ILogger<RegisterCommandHandler> logger, IJwtGenerator jwtGenerator)
+    public RegisterCommandHandler(
+        IUserRepository userRepository, 
+        ISender mediatr,
+        ILogger<RegisterCommandHandler> logger, 
+        IJwtGenerator jwtGenerator,
+        IImageStorageService imageStorageService)
     {
         _userRepository = userRepository;
         _mediatr = mediatr;
         _logger = logger;
         _jwtGenerator = jwtGenerator;
+        _imageStorageService = imageStorageService;
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, 
@@ -50,7 +58,7 @@ public class RegisterCommandHandler :
                 Email = command.Email, 
                 PasswordHash = command.Password,
                 Birthday = command.Birthday, 
-                Gender = command.Gender
+                Gender = command.Gender,
             };
 
             var role = Roles.User;
@@ -60,6 +68,20 @@ public class RegisterCommandHandler :
             if (userResult.IsError)
             {
                 return userResult.Errors;
+            }
+
+            var imageName = await _imageStorageService.AddAvatarAsync(user, command.Avatar);
+            if (imageName == null)
+            {
+                return Error.Unexpected("Avatar saving error");
+            }
+
+            user.Avatar = imageName;
+
+            var avatarResult = await _userRepository.SaveUserAsync(user);
+            if (avatarResult.IsError)
+            {
+                return avatarResult.Errors;
             }
 
             var sendConfirmationResult = await _mediatr.Send(

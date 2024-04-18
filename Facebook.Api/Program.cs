@@ -2,6 +2,7 @@ using Facebook.Application;
 using Facebook.Infrastructure;
 using Facebook.Infrastructure.Common.Initializers;
 using Facebook.Server;
+using Facebook.Server.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +34,7 @@ else
     app.UseHsts();
 }
 
-// app.UseCustomStaticFiles();
+app.UseCustomStaticFiles();
 
 app.UseCors(options =>
     options.SetIsOriginAllowed(origin => true)

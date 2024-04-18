@@ -39,6 +39,7 @@ public class JwtGenerator : IJwtGenerator
             new Claim("EmailConfirm", userEntity.EmailConfirmed.ToString()),
             new Claim(ClaimTypes.MobilePhone, userEntity.PhoneNumber ?? ""),
             new Claim(ClaimTypes.Role, role),
+            new Claim("Avatar", userEntity.Avatar ?? ""),
         };
         
         var securityToken = new JwtSecurityToken(

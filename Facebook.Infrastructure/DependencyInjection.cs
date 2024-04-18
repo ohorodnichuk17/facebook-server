@@ -92,8 +92,8 @@ public static class DependencyInjection
 		services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
 		services.AddTransient<UserAuthenticationService>();
 
-		// services.AddScoped<IImageStorageService, ImageStorageService>();
-		// services.AddTransient<ImageStorageService>();
+		services.AddScoped<IImageStorageService, ImageStorageService>();
+		services.AddTransient<ImageStorageService>();
 
 		return services;
 	}

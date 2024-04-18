@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace Facebook.Contracts.Authentication.Common;
+namespace Facebook.Contracts.Authentication.Common.Response;
 
 public record AuthenticationResponse(
     Guid Id,

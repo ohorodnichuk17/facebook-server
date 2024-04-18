@@ -27,7 +27,6 @@ public class RegisterCommandValidator :  AbstractValidator<RegisterCommand>
             .Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]").WithMessage("Password must contain one or more special characters.")
             .Matches("^[^£# “”]*$").WithMessage("Password must not contain the following characters £ # “” or spaces."); ;
 
-        //ToDo ??? Is equal enough for ConfirmPassword
         RuleFor(r => r.ConfirmPassword).NotEmpty().WithMessage("Required field must not be empty.")
             .Equal(r => r.Password).WithMessage("Passwords are not matched");
 
@@ -38,10 +37,20 @@ public class RegisterCommandValidator :  AbstractValidator<RegisterCommand>
         RuleFor(r => r.Gender)
             .NotEmpty().WithMessage("Gender is required.")
             .Must(gender => gender == "Male" || gender == "Female" || gender == "Other").WithMessage("Invalid gender value.");
+        
+        RuleFor(file => file.Avatar).NotNull().WithMessage("{PropertyName} must not be empty")
+            .Must(file => file.Length <= (2 * 1024 * 1024)).WithMessage("File size must not exceed 2MB");
     }
     
     private bool BeAValidDate(DateTime date)
     {
         return !date.Equals(default(DateTime));
+    }
+
+    private static bool IsFileExtensionValid(string filename)
+    {
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg" };
+        var fileExtension = Path.GetExtension(filename).ToLower();
+        return allowedExtensions.Contains(fileExtension);
     }
 }

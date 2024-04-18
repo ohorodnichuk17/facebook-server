@@ -16,6 +16,8 @@ public class UserEntity : IdentityUser<Guid>
             _birthday = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
+    
+    public string? Avatar { get; set; }
 
     public string Gender { get; set; }
 }

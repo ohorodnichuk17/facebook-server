@@ -5,7 +5,6 @@ namespace Facebook.Server.Controllers;
 
 public class ErrorsController : ControllerBase
 {
-    // ToDo Add Email sends with error data
     [ApiExplorerSettings(IgnoreApi = true)]
     [Route("/error-development")]
     public IActionResult HandleErrorDevelopment(

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Facebook.Contracts.Authentication.Common.Validation;
+using Microsoft.AspNetCore.Http;
 
 namespace Facebook.Contracts.Authentication.Register;
 
@@ -30,7 +32,9 @@ public record RegisterRequest
 	[Required(ErrorMessage = "{PropertyName} must not be empty")]
 	public string Gender { get; init; }
 	
-	
+	[Required(ErrorMessage = "{PropertyName} must not be empty")]
+	[FileSize(2 * 1024 * 1024)]
+	public required IFormFile Avatar { get; init; }
 }
 
 

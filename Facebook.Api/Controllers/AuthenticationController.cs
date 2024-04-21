@@ -39,7 +39,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync([FromBody]RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
        

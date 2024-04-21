@@ -30,7 +30,7 @@ public class ForgotPasswordQueryHandler
         }
 
         var user = errorOrUser.Value;
-        var token = _userAuthenticationService.GeneratePasswordResetTokenAsync(user);
+        string token = await _userAuthenticationService.GeneratePasswordResetTokenAsync(user);
         string? userName;
 
         if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
@@ -54,7 +54,7 @@ public class ForgotPasswordQueryHandler
         }
 
         var sendEmailResult = await _emailService
-            .SendResetPasswordEmailAsync(user.Email!, token.ToString(), request.BaseUrl, userName);
+            .SendResetPasswordEmailAsync(user.Email!, token, request.BaseUrl, userName);
 
         return sendEmailResult;
     }

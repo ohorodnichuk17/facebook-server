@@ -12,8 +12,12 @@ namespace Facebook.Infrastructure.Services.Common;
 
 public class ImageStorageService : IImageStorageService
 {
-    public async Task<string> AddAvatarAsync(UserEntity user, byte[] file)
+    public async Task<string?> AddAvatarAsync(UserEntity user, byte[]? file)
     {
+        if (file == null)
+        {
+            return null;
+        }
         string imageName = Path.GetRandomFileName() + ".webp";
         var uploadFolderPath = Path.Combine(
             Directory.GetCurrentDirectory(), "images", "avatars");

@@ -30,7 +30,6 @@ public class AuthenticationController : ApiController
     private readonly ISender _mediatr;
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
-
     public AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)
     {
         _mediatr = mediatr;
@@ -42,24 +41,24 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> RegisterAsync([FromForm]RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-       
-        var image = new byte[request.Avatar == null ? 0 : request.Avatar.Length];
 
-        if (request.Avatar != null && request.Avatar.Length != 0)
+        byte[] image = null;
+        if (request.Avatar != null && request.Avatar.Length > 0)
         {
-            using MemoryStream memoryStream = new MemoryStream();
-            await request.Avatar.CopyToAsync(memoryStream);
-
-            image = memoryStream.ToArray();
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                await request.Avatar.CopyToAsync(memoryStream);
+                image = memoryStream.ToArray();
+            }
         }
-        
+
         var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl, image)));
 
-        
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));
     }
+
 
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmailAsync([FromQuery]ConfirmEmailRequest request)
@@ -118,13 +117,16 @@ public class AuthenticationController : ApiController
     [HttpPost("change-email")]
     public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailRequest request)
     {
-        var changeEmailResult = await _mediatr.Send(
-            _mapper.Map<ChangeEmailCommand>(request));
-
+        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var changeEmailCommand = _mapper.Map<ChangeEmailCommand>(request); 
+        changeEmailCommand = changeEmailCommand with { BaseUrl = baseUrl }; 
+        var changeEmailResult = await _mediatr.Send(changeEmailCommand);
+  
         return changeEmailResult.Match(
-            changeEmailResult => Ok(), 
+            changeEmailResult => Ok(),
             errors => Problem(errors));
     }
+
 
     [HttpGet("ping")]
     public IActionResult Ping()

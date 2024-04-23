@@ -32,9 +32,9 @@ public record RegisterRequest
 	[Required(ErrorMessage = "{PropertyName} must not be empty")]
 	public string Gender { get; init; }
 	
-	[Required(ErrorMessage = "{PropertyName} must not be empty")]
 	[FileSize(2 * 1024 * 1024)]
-	public required IFormFile Avatar { get; init; }
+	public IFormFile? Avatar { get; init; }
+
 }
 
 

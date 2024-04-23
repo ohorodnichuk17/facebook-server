@@ -65,12 +65,17 @@ public class EmailService(ISmtpService _smtpService)
         string email, string token, string baseUrl, 
         string userName, string userId)
     {
-        var encodedToken = Encoding.UTF8.GetBytes(token);
+        // var encodedToken = Encoding.UTF8.GetBytes(token);
+        //
+        // var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+        
+        // string url = $"{baseUrl}api/authentication/confirm-email?userId={userId}&" +
+        //              $"validEmailToken={WebUtility.UrlEncode(token)}";
+        //
+        // string confirmationUrl = $" <a href='{url}'>Confirm now</a>";
 
-        var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-
-        string url = $"{baseUrl}/authentication/change-email/{userId}/{email}/{validToken}";
-
+        // string url = $"{baseUrl}api/authentication/change-email?userId={userId}/{email}/{WebUtility.UrlEncode(token)}";
+        string url = $"{baseUrl}api/authentication/change-email?userId={userId}&email={email}&token={WebUtility.UrlEncode(token)}";
         string emailBody = string.Empty;
 
         using (StreamReader reader = new("./EmailTemplates/email-change.html"))

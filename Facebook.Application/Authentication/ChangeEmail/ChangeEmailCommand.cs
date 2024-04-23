@@ -7,4 +7,5 @@ namespace Facebook.Application.Authentication.ChangeEmail;
 public record ChangeEmailCommand(
     string UserId,
     string Email,
-    string Token) : IRequest<ErrorOr<UserEntity>>;
+    string Token,
+    string BaseUrl) : IRequest<ErrorOr<UserEntity>>;

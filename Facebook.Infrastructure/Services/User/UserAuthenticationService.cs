@@ -1,10 +1,12 @@
 using System.Net;
 using System.Text;
 using ErrorOr;
+using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Domain.UserEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 
 namespace Facebook.Infrastructure.Services.User;
 
@@ -12,11 +14,13 @@ public class UserAuthenticationService : IUserAuthenticationService
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly SignInManager<UserEntity> _signInManager; 
+    private readonly ILogger<ChangeEmailCommandHandler> _logger; // Додаємо логер
 
-    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
+    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, ILogger<ChangeEmailCommandHandler> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _logger = logger;
     }
 
     public async Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password)
@@ -107,15 +111,15 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<UserEntity>> ChangeEmailAsync(UserEntity user, string email, string token)
     {
-        var decodedToken = WebEncoders.Base64UrlDecode(token);
-        var normalToken = Encoding.UTF8.GetString(decodedToken);
-        var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, normalToken);
-
+        // var decodedToken = WebEncoders.Base64UrlDecode(token);
+        // var normalToken = Encoding.UTF8.GetString(decodedToken);
+        var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, token);
+    
         if (!changeEmailResult.Succeeded)
         {
             return Error.Validation(changeEmailResult.Errors.FirstOrDefault()!.Description.ToString());
         }
-
+    
         return user;
     }
 

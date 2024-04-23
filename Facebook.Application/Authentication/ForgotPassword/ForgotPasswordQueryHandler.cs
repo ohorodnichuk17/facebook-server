@@ -11,6 +11,7 @@ public class ForgotPasswordQueryHandler
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserAuthenticationService _userAuthenticationService;
+    private readonly EmailService _emailService;
 
     public ForgotPasswordQueryHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService)
     {
@@ -19,7 +20,6 @@ public class ForgotPasswordQueryHandler
         _emailService = emailService;
     }
 
-    private readonly EmailService _emailService;
     
     public async Task<ErrorOr<Success>> Handle(ForgotPasswordQuery request, CancellationToken cancellationToken)
     {

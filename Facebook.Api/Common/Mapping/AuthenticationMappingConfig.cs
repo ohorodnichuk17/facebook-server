@@ -45,6 +45,9 @@ public class AuthenticationMappingConfig : IRegister
         config.NewConfig<ResetPasswordRequest, ResetPasswordCommand>();
 
         config.NewConfig<ChangeEmailRequest, ChangeEmailCommand>();
-
+        
+        config.NewConfig<(ChangeEmailRequest changeEmailRequest, string BaseUrl), ChangeEmailCommand>()
+            .Map(dest => dest.Email, src => src.changeEmailRequest.Email)
+            .Map(dest => dest.BaseUrl, src => src.BaseUrl);
     }
 }

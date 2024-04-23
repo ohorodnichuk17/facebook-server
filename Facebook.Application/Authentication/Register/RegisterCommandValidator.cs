@@ -38,8 +38,18 @@ public class RegisterCommandValidator :  AbstractValidator<RegisterCommand>
             .NotEmpty().WithMessage("Gender is required.")
             .Must(gender => gender == "Male" || gender == "Female" || gender == "Other").WithMessage("Invalid gender value.");
         
-        RuleFor(file => file.Avatar).NotNull().WithMessage("{PropertyName} must not be empty")
-            .Must(file => file.Length <= (2 * 1024 * 1024)).WithMessage("File size must not exceed 2MB");
+        RuleFor(command => command.Avatar)
+            .Custom((avatar, context) =>
+            {
+                if (avatar != null) 
+                {
+                    if (avatar.Length > (2 * 1024 * 1024))
+                    {
+                        context.AddFailure("Avatar", "File size must not exceed 2MB");
+                    }
+                }
+            });
+
     }
     
     private bool BeAValidDate(DateTime date)

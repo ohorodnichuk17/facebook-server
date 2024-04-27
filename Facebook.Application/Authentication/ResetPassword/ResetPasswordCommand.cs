@@ -8,4 +8,5 @@ public record ResetPasswordCommand(
     string Email,
     string Token,
     string Password,
-    string ConfirmPassword) : IRequest<ErrorOr<UserEntity>>;
+    string ConfirmPassword,
+    string BaseUrl) : IRequest<ErrorOr<UserEntity>>;

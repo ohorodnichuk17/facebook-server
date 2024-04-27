@@ -14,7 +14,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly SignInManager<UserEntity> _signInManager; 
-    private readonly ILogger<ChangeEmailCommandHandler> _logger; // Додаємо логер
+    private readonly ILogger<ChangeEmailCommandHandler> _logger; 
 
     public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, ILogger<ChangeEmailCommandHandler> logger)
     {
@@ -89,13 +89,19 @@ public class UserAuthenticationService : IUserAuthenticationService
         return token;
     }
 
-    public async Task<ErrorOr<UserEntity>> ResetPasswordAsync(UserEntity user, string token, string password)
+    public async Task<ErrorOr<Success>> ResetPasswordAsync(UserEntity user, string token, string password)
     {
+        // var decodedToken = WebEncoders.Base64UrlDecode(token);
+        // var normalToken = Encoding.UTF8.GetString(decodedToken);
+        
+        // var normalToken = WebUtility.UrlEncode(token);
+
         var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
+        // var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
 
         if (resetPasswordResult.Succeeded)
         {
-            return user;
+            return Result.Success;
         }
         else
         {

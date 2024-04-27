@@ -39,6 +39,7 @@ public class AuthenticationMappingConfig : IRegister
         config.NewConfig<LoginRequest, LoginQuery>();
         
         config.NewConfig<(ForgotPasswordRequest registerRequest, string BaseUrl), ForgotPasswordQuery>()
+            // .Map(dest => dest.Email, src => src.registerRequest.Email)
             .Map(dest => dest.BaseUrl, src => src.BaseUrl)
             .Map(dest => dest, src => src.registerRequest);
 

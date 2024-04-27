@@ -20,12 +20,6 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Err
         _emailService = emailService;
     }
 
-    // public ChangeEmailCommandHandler(IUserAuthenticationService userAuthenticationService, IUserRepository userRepository)
-    // {
-    //     _userAuthenticationService = userAuthenticationService;
-    //     _userRepository = userRepository;
-    // }
-
     public async Task<ErrorOr<UserEntity>> Handle(ChangeEmailCommand request,
         CancellationToken cancellationToken)
     {
@@ -37,25 +31,19 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Err
         }
 
         var user = userResult.Value;
-        // var changeEmailResult = await _userAuthenticationService.ChangeEmailAsync(user,
-        //     request.Email, request.Token);
-        
-        user.UserName = request.Email;
-        var userName = user.NormalizedUserName = request.Email.ToLower();
+        user.Email = request.Email; 
 
         var changeEmailResult = await _emailService
-            .SendChangeEmailEmailAsync(request.Email, request.Token, request.BaseUrl, userName, request.UserId);
+            .SendChangeEmailEmailAsync(request.Email, request.Token, request.BaseUrl, user.UserName, request.UserId);
 
         if (changeEmailResult.IsError)
         {
             return changeEmailResult.Errors;
         }
 
-        // user.UserName = request.Email;
-        // user.NormalizedUserName = request.Email.ToLower();
-
         var resultOfUserToUpdate = await _userRepository.SaveUserAsync(user);
 
         return resultOfUserToUpdate;
     }
+
 }

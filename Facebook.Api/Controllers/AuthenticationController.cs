@@ -30,6 +30,7 @@ public class AuthenticationController : ApiController
     private readonly ISender _mediatr;
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
+    
     public AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)
     {
         _mediatr = mediatr;
@@ -89,28 +90,40 @@ public class AuthenticationController : ApiController
                 .Map<AuthenticationResponse>(authenticationResult)),
             errors => Problem(errors));
     }
-
-    [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordRequest request)
+    
+    [HttpGet("forgot-password")]
+    public async Task<IActionResult> ForgotPasswordAsync(String email)
     {
+        await Console.Out.WriteLineAsync(email);
+
         var baseUrl = _configuration.GetRequiredSection(
             "HostSettings:ClientURL").Value;
-        var forgotPasswordResult = await _mediatr.Send(
-            _mapper.Map<ForgotPasswordQuery>((request, baseUrl)));
+
+        await Console.Out.WriteLineAsync(baseUrl);
+
+        var query = new ForgotPasswordQuery(email, baseUrl);
+
+        await Console.Out.WriteLineAsync(query.Email);
+
+        var forgotPasswordResult = await _mediatr.Send(query);
+
+        await Console.Out.WriteLineAsync(forgotPasswordResult.ToString());
 
         return forgotPasswordResult.Match(
-            forgotPasswordResult => Ok(forgotPasswordResult),
+            forgotPasswordRes => Ok(forgotPasswordResult.Value),
             errors => Problem(errors));
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequest request)
+    public async Task<IActionResult> ResetPasswordAsync([FromQuery] ResetPasswordRequest request)
     {
-        var resetPasswordResult = await _mediatr.Send(
-            _mapper.Map<ResetPasswordCommand>(request));
+        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
 
+        var resetPasswordCommand = _mapper.Map<ResetPasswordCommand>(request); 
+        resetPasswordCommand = resetPasswordCommand with { BaseUrl = baseUrl };
+        var resetPasswordResult = await _mediatr.Send(resetPasswordCommand);
         return resetPasswordResult.Match(
-            resetPasswordResult => Ok(),
+            resetPasswordRes => Ok(resetPasswordResult.Value),
             errors => Problem(errors));
     }
 
@@ -123,7 +136,7 @@ public class AuthenticationController : ApiController
         var changeEmailResult = await _mediatr.Send(changeEmailCommand);
   
         return changeEmailResult.Match(
-            changeEmailResult => Ok(),
+            changeEmailRes => Ok(changeEmailResult.Value),
             errors => Problem(errors));
     }
 

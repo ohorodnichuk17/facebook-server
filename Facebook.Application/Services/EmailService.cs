@@ -11,10 +11,6 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendEmailConfirmationEmailAsync(
         Guid userId, string email, string token, string baseUrl, string userName)
     {
-        //var encodedEmailToken = Encoding.UTF8.GetBytes(token);
-
-        //var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-
         string url = $"{baseUrl}api/authentication/confirm-email?userId={userId}&" +
             $"validEmailToken={WebUtility.UrlEncode(token)}";
 
@@ -39,11 +35,7 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendResetPasswordEmailAsync(
         string email, string token, string baseUrl, string userName)
     {
-        // var encodedToken = Encoding.UTF8.GetBytes(token);
-        //
-        // var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-
-        string url = $"{baseUrl}authentication/reset-password/{email}/{WebUtility.UrlEncode(token)}";
+        string url = $"{baseUrl}api/authentication/reset-password/?email={email}&validEmailToken={WebUtility.UrlEncode(token)}";
 
         string emailBody = string.Empty;
 
@@ -65,16 +57,6 @@ public class EmailService(ISmtpService _smtpService)
         string email, string token, string baseUrl, 
         string userName, string userId)
     {
-        // var encodedToken = Encoding.UTF8.GetBytes(token);
-        //
-        // var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-        
-        // string url = $"{baseUrl}api/authentication/confirm-email?userId={userId}&" +
-        //              $"validEmailToken={WebUtility.UrlEncode(token)}";
-        //
-        // string confirmationUrl = $" <a href='{url}'>Confirm now</a>";
-
-        // string url = $"{baseUrl}api/authentication/change-email?userId={userId}/{email}/{WebUtility.UrlEncode(token)}";
         string url = $"{baseUrl}api/authentication/change-email?userId={userId}&email={email}&token={WebUtility.UrlEncode(token)}";
         string emailBody = string.Empty;
 

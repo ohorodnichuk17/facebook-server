@@ -12,13 +12,22 @@ public class ForgotPasswordQueryHandler
     private readonly IUserRepository _userRepository;
     private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly EmailService _emailService;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public ForgotPasswordQueryHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService)
+    public ForgotPasswordQueryHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService, IJwtGenerator jwtGenerator)
     {
         _userRepository = userRepository;
         _userAuthenticationService = userAuthenticationService;
         _emailService = emailService;
+        _jwtGenerator = jwtGenerator;
     }
+
+    // public ForgotPasswordQueryHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService)
+    // {
+    //     _userRepository = userRepository;
+    //     _userAuthenticationService = userAuthenticationService;
+    //     _emailService = emailService;
+    // }
 
     
     public async Task<ErrorOr<Success>> Handle(ForgotPasswordQuery request, CancellationToken cancellationToken)

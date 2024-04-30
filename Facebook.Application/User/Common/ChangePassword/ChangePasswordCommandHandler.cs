@@ -2,8 +2,8 @@
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Users.Common.ChangePassword;
+using Facebook.Domain.User;
 using MediatR;
-using Facebook.Domain.UserEntity;
 
 namespace Facebook.Application.User.Common.ChangePassword;
 

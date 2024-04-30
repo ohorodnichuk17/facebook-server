@@ -1,12 +1,11 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace Facebook.Infrastructure.Persistance;
+namespace Facebook.Infrastructure.Repositories.User;
 
 public class UserRepository : IUserRepository
 {

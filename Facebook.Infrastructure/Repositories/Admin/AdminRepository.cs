@@ -4,7 +4,7 @@
 // using MediatR;
 // using Microsoft.AspNetCore.Identity;
 //
-// namespace Facebook.Infrastructure.Persistance;
+// namespace Facebook.Infrastructure.Repositories.Admin;
 //
 // public class AdminRepository : IAdminRepository
 // {

@@ -1,6 +1,6 @@
-using Facebook.Domain.UserEntity;
 using MediatR;
 using ErrorOr;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.ChangeEmail;
 

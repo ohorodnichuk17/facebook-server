@@ -19,13 +19,11 @@ builder.Services
 
 
 var app = builder.Build();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
     app.UseDeveloperExceptionPage();
 }
 else
@@ -50,5 +48,4 @@ app.MapControllers();
 
 UserAndRolesInitializer.SeedData(app);
 
-app.Run();
 app.Run();

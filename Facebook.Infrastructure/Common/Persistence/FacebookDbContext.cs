@@ -1,4 +1,6 @@
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
+using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +13,9 @@ public class FacebookDbContext
     public FacebookDbContext() : base() { }
     public FacebookDbContext(DbContextOptions<FacebookDbContext> options) : base(options) { }
 
-    
+    public DbSet<StoryEntity> Stories { get; set; }
+    public DbSet<PostEntity> Posts { get; set; }
+    public DbSet<ImagesEntity> Images { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -5,9 +5,9 @@ using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Domain.UserEntity;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
+using Facebook.Domain.User;
 using Microsoft.Extensions.Logging;
 
 

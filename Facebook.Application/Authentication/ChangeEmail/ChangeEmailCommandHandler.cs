@@ -1,9 +1,9 @@
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.UserEntity;
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Services;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.ChangeEmail;
 

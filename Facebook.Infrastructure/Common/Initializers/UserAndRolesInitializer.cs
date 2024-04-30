@@ -1,5 +1,5 @@
 ﻿using Facebook.Domain.Constants.Roles;
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;

@@ -3,12 +3,16 @@ using Facebook.Application.Common.Admin;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Domain.UserEntity;
+using Facebook.Application.Common.Interfaces.Story.IRepository;
+using Facebook.Application.Common.Interfaces.Story.IService;
+using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Persistance;
+using Facebook.Infrastructure.Repositories.Story;
+using Facebook.Infrastructure.Repositories.User;
 using Facebook.Infrastructure.Services;
 using Facebook.Infrastructure.Services.Common;
+using Facebook.Infrastructure.Services.Story;
 using Facebook.Infrastructure.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +53,7 @@ public static class DependencyInjection
 		
 			opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 		});
+		
 
 		return services;
 	}
@@ -77,7 +82,7 @@ public static class DependencyInjection
 	{
 		services.AddScoped<IUserRepository, UserRepository>();
 		// services.AddScoped<IAdminRepository, AdminRepository>();
-
+		services.AddScoped<IStoryRepository, StoryRepository>();
 		return services;
 	}
 
@@ -94,6 +99,9 @@ public static class DependencyInjection
 
 		services.AddScoped<IImageStorageService, ImageStorageService>();
 		services.AddTransient<ImageStorageService>();
+
+		services.AddScoped<IStoryService, StoryService>();
+		services.AddTransient<StoryService>();
 
 		return services;
 	}

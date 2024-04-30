@@ -1,9 +1,9 @@
-using Facebook.Domain.UserEntity;
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Services;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.ResetPassword;
 
@@ -42,7 +42,6 @@ public class ResetPasswordCommandHandler
         var userName = user.NormalizedUserName = request.Email.ToLower();
         var resetPasswordResult = await _emailService
             .SendResetPasswordEmailAsync(request.Email, request.Token, request.BaseUrl, userName);
-        // string email, string token, string baseUrl, string userName
 
         // return resetPasswordResult;
         var resultOfUserToUpdate = await _userRepository.SaveUserAsync(user);

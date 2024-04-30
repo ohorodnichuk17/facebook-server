@@ -3,7 +3,7 @@ using System.Text;
 using ErrorOr;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;

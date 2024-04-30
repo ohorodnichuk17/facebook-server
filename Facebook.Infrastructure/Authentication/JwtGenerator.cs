@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Text;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Domain.UserEntity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ErrorOr;
+using Facebook.Domain.User;
 
 namespace Facebook.Infrastructure.Authentication;
 

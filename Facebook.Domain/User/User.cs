@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Facebook.Domain.UserEntity;
+namespace Facebook.Domain.User;
 
 public class UserEntity : IdentityUser<Guid>
 {

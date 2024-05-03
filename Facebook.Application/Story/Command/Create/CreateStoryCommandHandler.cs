@@ -1,42 +1,46 @@
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Common.Interfaces.Services;
-using Facebook.Application.Common.Interfaces.Story.IService;
+using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Domain.Story;
-using Facebook.Domain.TypeExtensions;
 using MediatR;
 
 namespace Facebook.Application.Story.Command.Create;
 
-public class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, ErrorOr<StoryEntity>>
+public class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
 {
-    private readonly IStoryService _storyService;
+    private readonly IStoryRepository _storyRepository;
     private readonly IImageStorageService _imageStorageService;
+    private readonly IUserRepository _userRepository;
 
-    public CreateStoryCommandHandler(IStoryService storyService, IImageStorageService imageStorageService)
+    public CreateStoryCommandHandler(IStoryRepository storyRepository, IImageStorageService imageStorageService, IUserRepository userRepository)
     {
-        _storyService = storyService;
+        _storyRepository = storyRepository;
         _imageStorageService = imageStorageService;
+        _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<StoryEntity>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Unit>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
     {
+        // var user = await _userRepository.GetUserByIdAsync(request.UserId.ToString()); 
+        //
+        // if (user.IsError)
+        // {
+        //     return user.Errors;
+        // }
+        //
+        // var userResult = user.Value;
+        
         var storyEntity = new StoryEntity
         {
-            Id = request.Id,
             Content = request.Content,
-            CreatedAt = DateTime.Now 
+            CreatedAt = DateTime.Now,
+            UserId = request.UserId,
+            // User = userResult
         };
 
-        var storyResult = await _storyService.CreateStoryAsync(storyEntity);
-
-        // if (result.IsSuccess())
-        // {
-        //     return result.Value;
-        // }
-        // else
-        // {
-        //     return Error.Failure("Error");
-        // }
+        var storyResult = await _storyRepository.CreateStoryAsync(storyEntity);
+        
         if (storyResult.IsError)
         {
             return storyResult.Errors;
@@ -49,17 +53,18 @@ public class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, Err
             {
                 return Error.Unexpected("Avatar saving error");
             }
-
+        
             storyEntity.Image = imageName;
         }
 
-        var imageResult = await _storyService.SaveStoryAsync(storyEntity);
 
-        if (imageResult.IsError)
+        var result = await _storyRepository.SaveStoryAsync(storyEntity);
+        
+        if (result.IsError)
         {
-            return imageResult.Errors;
+            return result.Errors;
         }
-
-        return imageResult;
+        
+        return result;
     }
 }

@@ -9,10 +9,16 @@ public class StoryEntity
     public string? Content { get; set; } 
     public string? Image { get; set; } 
     // public string? Video { get; set; } 
-    public DateTime CreatedAt { get; set; } 
+    private DateTime _createdAt;
+    public DateTime CreatedAt
+    {
+        get { return _createdAt; }
+        set { _createdAt = DateTime.SpecifyKind(value, DateTimeKind.Utc); }
+    }
+    
     public DateTime ExpiresAt => CreatedAt.AddHours(24); 
 
-    public bool IsExpired => DateTime.Now > ExpiresAt; 
+    public bool IsExpired => DateTime.UtcNow > ExpiresAt;
     
     [ForeignKey("UserEntity")]
     public Guid UserId { get; set; } 

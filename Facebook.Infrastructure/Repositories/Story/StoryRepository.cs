@@ -75,10 +75,16 @@ public class StoryRepository : IStoryRepository
         }
     }
 
-    public async Task<ErrorOr<bool>> DeleteStoryAsync(StoryEntity story)
+    public async Task<ErrorOr<bool>> DeleteStoryAsync(Guid storyId)
     {
         try
         {
+            var story = await _context.Stories.FindAsync(storyId);
+            if (story == null)
+            {
+                return Error.Failure("Story not found");
+            }
+
             _context.Stories.Remove(story);
             await _context.SaveChangesAsync();
             return true;
@@ -89,17 +95,19 @@ public class StoryRepository : IStoryRepository
         }
     }
 
-    public async Task<ErrorOr<StoryEntity>> SaveStoryAsync(StoryEntity story)
+    public async Task<ErrorOr<Unit>> SaveStoryAsync(StoryEntity story)
     {
-        try
-        {
-            _context.Stories.Add(story);
-            await _context.SaveChangesAsync();
-            return story;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
+        await _context.SaveChangesAsync();
+        return Unit.Value;
+        // try
+        // {
+        //     _context.Stories.Add(story);
+        //     await _context.SaveChangesAsync();
+        //     return story;
+        // }
+        // catch (Exception ex)
+        // {
+        //     return Error.Failure(ex.Message);
+        // }
     }
 }

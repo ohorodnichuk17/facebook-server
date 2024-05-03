@@ -42,7 +42,7 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> RegisterAsync([FromForm]RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-
+        
         byte[] image = null;
         if (request.Avatar != null && request.Avatar.Length > 0)
         {
@@ -52,9 +52,10 @@ public class AuthenticationController : ApiController
                 image = memoryStream.ToArray();
             }
         }
-
-        var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl, image)));
-
+        
+        var authResult = await _mediatr.Send(_mapper
+            .Map<RegisterCommand>((request, baseUrl, image)));
+        
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));
@@ -115,7 +116,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPasswordAsync([FromQuery] ResetPasswordRequest request)
+    public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
 

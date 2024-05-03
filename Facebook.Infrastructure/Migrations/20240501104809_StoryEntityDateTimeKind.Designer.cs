@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Facebook.Infrastructure.Migrations
 {
     [DbContext(typeof(FacebookDbContext))]
-    partial class FacebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240501104809_StoryEntityDateTimeKind")]
+    partial class StoryEntityDateTimeKind
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,7 +344,7 @@ namespace Facebook.Infrastructure.Migrations
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
                 {
                     b.HasOne("Facebook.Domain.User.UserEntity", "User")
-                        .WithMany("Stories")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -403,11 +406,6 @@ namespace Facebook.Infrastructure.Migrations
             modelBuilder.Entity("Facebook.Domain.Post.PostEntity", b =>
                 {
                     b.Navigation("Images");
-                });
-
-            modelBuilder.Entity("Facebook.Domain.User.UserEntity", b =>
-                {
-                    b.Navigation("Stories");
                 });
 #pragma warning restore 612, 618
         }

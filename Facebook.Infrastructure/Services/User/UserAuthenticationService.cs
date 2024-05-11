@@ -3,7 +3,7 @@ using System.Text;
 using ErrorOr;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -64,12 +64,6 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         if (user == null)
             return Error.NotFound();
-
-        //Console.WriteLine($"Token before decoding: {token}");
-        //var decodedToken = WebEncoders.Base64UrlDecode(token);
-        //Console.WriteLine($"Token after decoding: {decodedToken}");
-
-        //var normalToken = Encoding.UTF8.GetString(decodedToken);
         
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
 
@@ -91,21 +85,19 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<Success>> ResetPasswordAsync(UserEntity user, string token, string password)
     {
-        // var decodedToken = WebEncoders.Base64UrlDecode(token);
-        // var normalToken = Encoding.UTF8.GetString(decodedToken);
-        
-        // var normalToken = WebUtility.UrlEncode(token);
-
+        Console.WriteLine($"Початковий пароль для користувача {user.UserName}: {password}");
         var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
-        // var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
 
         if (resetPasswordResult.Succeeded)
         {
+            Console.WriteLine($"Пароль для користувача {user.UserName} успішно змінено.");
+
             return Result.Success;
         }
         else
         {
-            return Error.Validation(resetPasswordResult.Errors.FirstOrDefault()!.Description.ToString());
+            Console.WriteLine($"Помилка зміни пароля для користувача {user.UserName}: {resetPasswordResult.Errors.FirstOrDefault()?.Description}");
+            return Error.Validation(resetPasswordResult.Errors.FirstOrDefault()?.Description.ToString());
         }
     }
 

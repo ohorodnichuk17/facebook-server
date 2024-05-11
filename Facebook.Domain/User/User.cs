@@ -1,6 +1,7 @@
+using Facebook.Domain.Story;
 using Microsoft.AspNetCore.Identity;
 
-namespace Facebook.Domain.UserEntity;
+namespace Facebook.Domain.User;
 
 public class UserEntity : IdentityUser<Guid>
 {
@@ -20,4 +21,6 @@ public class UserEntity : IdentityUser<Guid>
     public string? Avatar { get; set; }
 
     public string Gender { get; set; }
+    
+    public ICollection<StoryEntity> Stories { get; set; } = new List<StoryEntity>();
 }

@@ -1,7 +1,7 @@
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Common.Admin;
 

@@ -42,7 +42,7 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> RegisterAsync([FromForm]RegisterRequest request)
     {
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-
+        
         byte[] image = null;
         if (request.Avatar != null && request.Avatar.Length > 0)
         {
@@ -52,9 +52,10 @@ public class AuthenticationController : ApiController
                 image = memoryStream.ToArray();
             }
         }
-
-        var authResult = await _mediatr.Send(_mapper.Map<RegisterCommand>((request, baseUrl, image)));
-
+        
+        var authResult = await _mediatr.Send(_mapper
+            .Map<RegisterCommand>((request, baseUrl, image)));
+        
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));
@@ -92,7 +93,7 @@ public class AuthenticationController : ApiController
     }
     
     [HttpGet("forgot-password")]
-    public async Task<IActionResult> ForgotPasswordAsync(String email)
+    public async Task<IActionResult> ForgotPasswordAsync([FromQuery]String email)
     {
         await Console.Out.WriteLineAsync(email);
 
@@ -115,17 +116,33 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPasswordAsync([FromQuery] ResetPasswordRequest request)
+    public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest request)
     {
+        // Логування перед викликом методу ResetPasswordAsync
+        Console.WriteLine($"Спроба скинути пароль для користувача з email: {request.Email}");
+    
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
 
         var resetPasswordCommand = _mapper.Map<ResetPasswordCommand>(request); 
         resetPasswordCommand = resetPasswordCommand with { BaseUrl = baseUrl };
+    
         var resetPasswordResult = await _mediatr.Send(resetPasswordCommand);
+    
+        // Логування після виклику методу ResetPasswordAsync
         return resetPasswordResult.Match(
-            resetPasswordRes => Ok(resetPasswordResult.Value),
-            errors => Problem(errors));
+            resetPasswordRes =>
+            {
+                Console.WriteLine($"Пароль для користувача {request.Email} успішно скинуто.");
+                return Ok(resetPasswordResult.Value);
+            },
+            errors =>
+            {
+                Console.WriteLine($"Помилка при скиданні пароля для користувача {request.Email}.");
+                return Problem(errors);
+            }
+        );
     }
+
 
     [HttpPost("change-email")]
     public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailRequest request)

@@ -10,12 +10,12 @@ namespace Facebook.Infrastructure.Authentication;
 public class SmtpService : ISmtpService
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<SmtpService> _logger; // Додавання логгера
+    private readonly ILogger<SmtpService> _logger; 
 
     public SmtpService(IConfiguration configuration, ILogger<SmtpService> logger)
     {
         _configuration = configuration;
-        _logger = logger; // Ініціалізація логгера
+        _logger = logger; 
     }
 
     public async Task SendEmailAsync(string toEmail, string subject, string body)
@@ -46,7 +46,7 @@ public class SmtpService : ISmtpService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending email to {toEmail}", toEmail);
-                throw; // Перекиньте виняток далі, якщо потрібно обробити його в іншому місці
+                throw; 
             }
             finally
             {

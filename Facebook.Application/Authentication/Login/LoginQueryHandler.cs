@@ -1,3 +1,4 @@
+using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using ErrorOr;
@@ -5,7 +6,6 @@ using Facebook.Application.Authentication.Common;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Domain.Common.Errors;
-using Facebook.Domain.UserEntity;
 
 namespace Facebook.Application.Authentication.Queries;
 

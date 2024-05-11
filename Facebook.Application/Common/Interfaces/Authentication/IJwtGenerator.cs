@@ -1,5 +1,5 @@
-using Facebook.Domain.UserEntity;
 using ErrorOr;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Common.Interfaces.Authentication;
 

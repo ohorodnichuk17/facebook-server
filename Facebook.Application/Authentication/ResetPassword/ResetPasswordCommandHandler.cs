@@ -1,52 +1,43 @@
-using Facebook.Domain.UserEntity;
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Services;
+using Facebook.Domain.User;
+using Microsoft.AspNetCore.Identity;
 
-namespace Facebook.Application.Authentication.ResetPassword;
-
-public class ResetPasswordCommandHandler
-    : IRequestHandler<ResetPasswordCommand, ErrorOr<UserEntity>>
+namespace Facebook.Application.Authentication.ResetPassword
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IUserAuthenticationService _userAuthenticationService;
-    private readonly EmailService _emailService;
-
-    public ResetPasswordCommandHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService)
+    public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, ErrorOr<UserEntity>>
     {
-        _userRepository = userRepository;
-        _userAuthenticationService = userAuthenticationService;
-        _emailService = emailService;
-    }
+        private readonly UserManager<UserEntity> _userManager;
+        private readonly EmailService _emailService;
 
-    // public ResetPasswordCommandHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService)
-    // {
-    //     _userRepository = userRepository;
-    //     _userAuthenticationService = userAuthenticationService;
-    // }
-    //
-    public async Task<ErrorOr<UserEntity>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
-    {
-        var errorOrUser = await _userRepository.GetByEmailAsync(request.Email);
-        if (errorOrUser.IsError)
+        public ResetPasswordCommandHandler(UserManager<UserEntity> userManager, EmailService emailService)
         {
-            return Error.Validation("User with this email doesn't exist");
+            _userManager = userManager;
+            _emailService = emailService;
         }
 
-        var user = errorOrUser.Value;
-        // var resetPasswordResult = await _userAuthenticationService
-        //     .ResetPasswordAsync(user, request.Token, request.Password);
-        user.UserName = request.Email;
-        var userName = user.NormalizedUserName = request.Email.ToLower();
-        var resetPasswordResult = await _emailService
-            .SendResetPasswordEmailAsync(request.Email, request.Token, request.BaseUrl, userName);
-        // string email, string token, string baseUrl, string userName
+        public async Task<ErrorOr<UserEntity>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return Error.Validation("User with this email doesn't exist");
+            }
 
-        // return resetPasswordResult;
-        var resultOfUserToUpdate = await _userRepository.SaveUserAsync(user);
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, request.Password);
+            if (!result.Succeeded)
+            {
+                return Error.Validation("Failed to reset password");
+            }
 
-        return resultOfUserToUpdate;
+            var resetPasswordEmailResult = await _emailService.SendResetPasswordEmailAsync(request.Email, resetToken, request.BaseUrl, user.UserName);
+
+
+            return user;
+        }
     }
 }

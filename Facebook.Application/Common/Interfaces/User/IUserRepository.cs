@@ -1,5 +1,5 @@
-using Facebook.Domain.UserEntity;
 using ErrorOr;
+using Facebook.Domain.User;
 using MediatR;
 
 namespace Facebook.Application.Common.Interfaces.Persistance;

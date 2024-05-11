@@ -1,4 +1,4 @@
-using Facebook.Domain.UserEntity;
+using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.Common;
 

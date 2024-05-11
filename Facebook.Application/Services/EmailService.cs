@@ -35,8 +35,7 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendResetPasswordEmailAsync(
         string email, string token, string baseUrl, string userName)
     {
-        string url = $"{baseUrl}api/authentication/reset-password/?email={email}&validEmailToken={WebUtility.UrlEncode(token)}";
-
+        string url = $"{baseUrl}api/authentication/forgot-password?email={email}&" + $"validEmailToken={WebUtility.UrlEncode(token)}";
         string emailBody = string.Empty;
 
         using (StreamReader reader = new("./EmailTemplates/forgot-password.html"))

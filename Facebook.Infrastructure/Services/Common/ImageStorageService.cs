@@ -82,42 +82,7 @@ public class ImageStorageService : IImageStorageService
 
         return imageName;
     }
-
-    //public async Task<string?> AddStoryImageAsync(IFormFile? file)
-    //{
-    //    if (file == null)
-    //    {
-    //        return null;
-    //    }
-
-    //    string imageName = Path.GetRandomFileName() + ".webp";
-    //    var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "stories");
-
-    //    if (!Directory.Exists(uploadFolderPath))
-    //    {
-    //        Directory.CreateDirectory(uploadFolderPath);
-    //    }
-
-    //    string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
-
-    //    using (var stream = new FileStream(dirSaveImage, FileMode.Create))
-    //        await file.CopyToAsync(stream);
-
-    //    //using var image = Image.Load(file);
-    //    //image.Mutate(x =>
-    //    //{
-    //    //    x.Resize(new ResizeOptions
-    //    //    {
-    //    //        Size = new Size(800, 1600), 
-    //    //        Mode = ResizeMode.Max
-    //    //    });
-    //    //});
-
-    //    //using var stream = File.Create(dirSaveImage);
-    //    //await image.SaveAsync(stream, new WebpEncoder());
-
-    //    return imageName;
-    //}
+    
     public async Task<string?> AddStoryImageAsync(IFormFile? file)
     {
         if (file == null || file.Length == 0)

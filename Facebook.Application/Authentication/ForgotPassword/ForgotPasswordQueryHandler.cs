@@ -21,14 +21,6 @@ public class ForgotPasswordQueryHandler
         _emailService = emailService;
         _jwtGenerator = jwtGenerator;
     }
-
-    // public ForgotPasswordQueryHandler(IUserRepository userRepository, IUserAuthenticationService userAuthenticationService, EmailService emailService)
-    // {
-    //     _userRepository = userRepository;
-    //     _userAuthenticationService = userAuthenticationService;
-    //     _emailService = emailService;
-    // }
-
     
     public async Task<ErrorOr<Success>> Handle(ForgotPasswordQuery request, CancellationToken cancellationToken)
     {
@@ -63,7 +55,7 @@ public class ForgotPasswordQueryHandler
         }
 
         var sendEmailResult = await _emailService
-            .SendResetPasswordEmailAsync(user.Email!, token, request.BaseUrl, userName);
+            .SendResetPasswordEmailAsync(user.Email!, token, request.BaseUrl, userName, false);
 
         return sendEmailResult;
     }

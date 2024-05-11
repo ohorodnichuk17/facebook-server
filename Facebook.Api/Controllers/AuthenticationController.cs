@@ -5,20 +5,16 @@ using Facebook.Application.Authentication.ForgotPassword;
 using Facebook.Application.Authentication.Queries;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
-using Facebook.Contracts.Authentication.Common;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
-using Facebook.Contracts.Authentication.ForgotPassword;
 using Facebook.Contracts.Authentication.Login;
 using Facebook.Contracts.Authentication.Register;
 using Facebook.Contracts.Authentication.ResetPassword;
 using Facebook.Domain.Common.Errors;
-using Facebook.Server.Infrastructure.NLog;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace Facebook.Server.Controllers;
 
@@ -118,7 +114,6 @@ public class AuthenticationController : ApiController
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest request)
     {
-        // Логування перед викликом методу ResetPasswordAsync
         Console.WriteLine($"Спроба скинути пароль для користувача з email: {request.Email}");
     
         var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
@@ -128,7 +123,6 @@ public class AuthenticationController : ApiController
     
         var resetPasswordResult = await _mediatr.Send(resetPasswordCommand);
     
-        // Логування після виклику методу ResetPasswordAsync
         return resetPasswordResult.Match(
             resetPasswordRes =>
             {

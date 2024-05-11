@@ -109,8 +109,6 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<UserEntity>> ChangeEmailAsync(UserEntity user, string email, string token)
     {
-        // var decodedToken = WebEncoders.Base64UrlDecode(token);
-        // var normalToken = Encoding.UTF8.GetString(decodedToken);
         var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, token);
     
         if (!changeEmailResult.Succeeded)

@@ -4,6 +4,7 @@ using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.ForgotPassword;
 using Facebook.Application.Authentication.Queries;
+using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common;
@@ -27,7 +28,11 @@ public class AuthenticationMappingConfig : IRegister
         
 		
         config.NewConfig<ConfirmEmailRequest, ConfirmEmailCommand>();
-
+        
+        config.NewConfig<(ConfirmEmailRequest request, string BaseUrl), ResendConfirmEmailCommand>()
+            .Map(dest => dest.BaseUrl, src => src.BaseUrl)
+            .Map(dest => dest, src => src.request);
+        
         config.NewConfig<LoginRequest, LoginQuery>();
         
         config.NewConfig<AuthenticationResult, AuthenticationResponse>()

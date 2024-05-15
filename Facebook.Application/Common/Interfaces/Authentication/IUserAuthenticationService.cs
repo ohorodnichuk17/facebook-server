@@ -10,6 +10,7 @@ public interface IUserAuthenticationService
     Task<ErrorOr<Success>> LogoutUserAsync(Guid userId);
     Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user);
     Task<ErrorOr<Success>> ConfirmEmailAsync(Guid userId, string token);
+    Task<bool> ResendEmailConfirmationAsync(UserEntity user, string emailToken, string baseUrl);
     Task<string> GeneratePasswordResetTokenAsync(UserEntity user);
     Task<ErrorOr<Success>> ResetPasswordAsync(UserEntity user, string token, string password);
     Task<string> GenerateEmailChangeTokenAsync(UserEntity user, string email);

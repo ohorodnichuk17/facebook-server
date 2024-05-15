@@ -3,18 +3,19 @@ using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.ForgotPassword;
 using Facebook.Application.Authentication.Queries;
+using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
-using Facebook.Contracts.Authentication.Login;
-using Facebook.Contracts.Authentication.Register;
-using Facebook.Contracts.Authentication.ResetPassword;
 using Facebook.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LoginRequest = Facebook.Contracts.Authentication.Login.LoginRequest;
+using RegisterRequest = Facebook.Contracts.Authentication.Register.RegisterRequest;
+using ResetPasswordRequest = Facebook.Contracts.Authentication.ResetPassword.ResetPasswordRequest;
 
 namespace Facebook.Server.Controllers;
 
@@ -48,7 +49,7 @@ public class AuthenticationController : ApiController
                 image = memoryStream.ToArray();
             }
         }
-        
+
         var authResult = await _mediatr.Send(_mapper
             .Map<RegisterCommand>((request, baseUrl, image)));
         
@@ -64,10 +65,23 @@ public class AuthenticationController : ApiController
         var confirmEmailResult = await _mediatr.Send(_mapper.Map<ConfirmEmailCommand>(request));
 
         return confirmEmailResult.Match(
-            authResult => Ok(confirmEmailResult.Value),
+            confirmResult => Ok(confirmEmailResult.Value),
             errors => Problem(errors));
-      
     }
+
+   
+    [HttpGet("resend-confirmation-email")]
+    public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery]ConfirmEmailRequest request)
+    {
+        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var resendConfirmationResult = await _mediatr.Send(_mapper
+            .Map<ResendConfirmEmailCommand>((request, baseUrl)));
+
+        return resendConfirmationResult.Match(
+            success => Ok("Confirmation email resent successfully"),
+            errors => Problem(errors));
+    }
+
 
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)

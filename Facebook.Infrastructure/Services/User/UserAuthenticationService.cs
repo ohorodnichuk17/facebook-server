@@ -3,9 +3,12 @@ using System.Text;
 using ErrorOr;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
+using Facebook.Application.Services;
+using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Facebook.Infrastructure.Services.User;
@@ -14,13 +17,15 @@ public class UserAuthenticationService : IUserAuthenticationService
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly SignInManager<UserEntity> _signInManager; 
-    private readonly ILogger<ChangeEmailCommandHandler> _logger; 
+    private readonly ILogger<ChangeEmailCommandHandler> _logger;
+    private readonly EmailService _emailService;
 
-    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, ILogger<ChangeEmailCommandHandler> logger)
+    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, ILogger<ChangeEmailCommandHandler> logger, EmailService emailService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _logger = logger;
+        _emailService = emailService;
     }
 
     public async Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password)
@@ -75,6 +80,18 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         return Result.Success;
     }
+    
+    public async Task<bool> ResendEmailConfirmationAsync(UserEntity user, string emailToken, string baseUrl)
+    {
+        string? userName = !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName)
+            ? $"{user.FirstName} {user.LastName}"
+            : user.Email;
+
+        var emailResult = await _emailService.SendEmailConfirmationEmailAsync(user.Id, user.Email!, emailToken, baseUrl, userName!);
+
+        return emailResult.IsSuccess(); 
+    }
+
     
     public async Task<string> GeneratePasswordResetTokenAsync(UserEntity user)
     {

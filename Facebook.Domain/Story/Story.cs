@@ -8,7 +8,6 @@ public class StoryEntity
     public Guid Id { get; set; }
     public string? Content { get; set; } 
     public string? Image { get; set; } 
-    // public string? Video { get; set; } 
     private DateTime _createdAt;
     public DateTime CreatedAt
     {
@@ -20,7 +19,7 @@ public class StoryEntity
 
     public bool IsExpired => DateTime.UtcNow > ExpiresAt;
     
-    [ForeignKey("UserEntity")]
+    // [ForeignKey("UserEntity")]
     public Guid UserId { get; set; } 
-    public UserEntity User { get; set; }
+    // public UserEntity User { get; set; }
 }

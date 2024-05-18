@@ -1,13 +1,13 @@
-using Facebook.Application.Story.Command.Create;
-using Facebook.Contracts.Story.Create;
-using Mapster;
+using AutoMapper;
+using Facebook.Application.Story.Command.Delete;
+using Facebook.Contracts.Story.Delete;
 
 namespace Facebook.Server.Common.Mapping;
 
-public class StoryMappingConfig
+public class StoryMappingConfig : Profile
 {
-    public StoryMappingConfig(TypeAdapterConfig config)
+    public StoryMappingConfig()
     {
-        config.NewConfig<CreateStoryRequest, CreateStoryCommand>();
+        CreateMap<DeleteStoryRequest, DeleteStoryCommand>();
     }
 }

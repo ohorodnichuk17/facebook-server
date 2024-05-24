@@ -111,7 +111,6 @@ public class ImageStorageService : IImageStorageService
         }
         catch (Exception ex)
         {
-            // Handle or log the exception
             Console.WriteLine($"Error occurred while saving the image: {ex.Message}");
             return null;
         }

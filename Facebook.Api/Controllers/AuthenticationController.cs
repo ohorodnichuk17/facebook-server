@@ -121,7 +121,7 @@ public class AuthenticationController : ApiController
         await Console.Out.WriteLineAsync(forgotPasswordResult.ToString());
 
         return forgotPasswordResult.Match(
-            forgotPasswordRes => Ok(forgotPasswordResult.Value),
+            forgotPasswordRes => Redirect("http://localhost:5173/set-new-password"),
             errors => Problem(errors));
     }
 

@@ -35,10 +35,10 @@ public class EmailService(ISmtpService _smtpService)
     public async Task<ErrorOr<Success>> SendResetPasswordEmailAsync(
         string email, string token, string baseUrl, string userName, bool isReset = true)
     {
-        // string endpoint = isReset ? "reset-password" : "forgot-password";
-        // string url = $"{baseUrl}api/authentication/{endpoint}?email={email}&" +
-        //              $"validEmailToken={WebUtility.UrlEncode(token)}";
-        string url = $"http://localhost:5173/set-new-password";
+        string endpoint = isReset ? "reset-password" : "forgot-password";
+        string url = $"{baseUrl}api/authentication/{endpoint}?email={email}&" +
+                     $"validEmailToken={WebUtility.UrlEncode(token)}";
+
         WebUtility.UrlEncode(token);
         string emailTemplate = isReset ? "./EmailTemplates/reset-password-success.html" : "./EmailTemplates/forgot-password.html";
 

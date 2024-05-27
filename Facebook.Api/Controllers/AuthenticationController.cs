@@ -1,3 +1,4 @@
+using AutoMapper;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.ConfirmEmail;
@@ -9,7 +10,6 @@ using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Domain.Common.Errors;
-using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,11 +1,8 @@
 using Facebook.Server.Common.Errors;
 using Facebook.Server.Infrastructure;
 using Facebook.Server.Infrastructure.NLog;
-using Mapster;
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 namespace Facebook.Server;
 
@@ -26,8 +23,7 @@ public static class DependencyInjection
         services.AddSwagger();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-        services.AddMappings();
+        
 
         //	services.AddRequestValidation();
 
@@ -80,15 +76,4 @@ public static class DependencyInjection
     //
     // 	return services;
     // }
-
-    public static IServiceCollection AddMappings(this IServiceCollection services)
-    {
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(Assembly.GetExecutingAssembly());
-
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
-
-        return services;
-    }
 }

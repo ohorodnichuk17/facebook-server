@@ -1,3 +1,4 @@
+using AutoMapper;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.Common;
@@ -10,50 +11,44 @@ using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
-using Mapster;
 using Microsoft.AspNetCore.Identity.Data;
 using LoginRequest = Facebook.Contracts.Authentication.Login.LoginRequest;
 using RegisterRequest = Facebook.Contracts.Authentication.Register.RegisterRequest;
 
 namespace Facebook.Server.Common.Mapping;
 
-public class AuthenticationMappingConfig : IRegister
+public class AuthenticationMappingProfile : Profile
 {
-    public void Register(TypeAdapterConfig config)
+    public AuthenticationMappingProfile()
     {
-        config.NewConfig<(RegisterRequest registerRequest, string BaseUrl, byte[] Image), RegisterCommand>()
-            .Map(dest => dest.BaseUrl, src => src.BaseUrl)
-            .Map(dest => dest.Avatar, src => src.Image)
-            .Map(dest => dest, src => src.registerRequest);
-        
-		
-        config.NewConfig<ConfirmEmailRequest, ConfirmEmailCommand>();
-        
-        config.NewConfig<(ConfirmEmailRequest request, string BaseUrl), ResendConfirmEmailCommand>()
-            .Map(dest => dest.BaseUrl, src => src.BaseUrl)
-            .Map(dest => dest, src => src.request);
-        
-        config.NewConfig<LoginRequest, LoginQuery>();
-        
-        config.NewConfig<AuthenticationResult, AuthenticationResponse>()
-            .Map(dest => dest.Token, src => src.Token)
-            .Map(dest => dest.Birthday, src => src.User.Birthday.ToString("yyyy-MM-dd")) 
-            .Map(dest => dest, src => src.User);
-        
+        CreateMap<(RegisterRequest registerRequest, string BaseUrl, byte[] Image), RegisterCommand>()
+            .ForMember(dest => dest.BaseUrl, opt => opt.MapFrom(src => src.BaseUrl))
+            .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Image))
+            .ForMember(dest => dest, opt => opt.MapFrom(src => src.registerRequest));
 
-        config.NewConfig<LoginRequest, LoginQuery>();
-        
-        config.NewConfig<(ForgotPasswordRequest registerRequest, string BaseUrl), ForgotPasswordQuery>()
-            // .Map(dest => dest.Email, src => src.registerRequest.Email)
-            .Map(dest => dest.BaseUrl, src => src.BaseUrl)
-            .Map(dest => dest, src => src.registerRequest);
+        CreateMap<ConfirmEmailRequest, ConfirmEmailCommand>();
 
-        config.NewConfig<ResetPasswordRequest, ResetPasswordCommand>();
+        CreateMap<(ConfirmEmailRequest request, string BaseUrl), ResendConfirmEmailCommand>()
+            .ForMember(dest => dest.BaseUrl, opt => opt.MapFrom(src => src.BaseUrl))
+            .ForMember(dest => dest, opt => opt.MapFrom(src => src.request));
 
-        config.NewConfig<ChangeEmailRequest, ChangeEmailCommand>();
-        
-        config.NewConfig<(ChangeEmailRequest changeEmailRequest, string BaseUrl), ChangeEmailCommand>()
-            .Map(dest => dest.Email, src => src.changeEmailRequest.Email)
-            .Map(dest => dest.BaseUrl, src => src.BaseUrl);
+        CreateMap<LoginRequest, LoginQuery>();
+
+        CreateMap<AuthenticationResult, AuthenticationResponse>()
+            .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.Token))
+            .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.User.Birthday.ToString("yyyy-MM-dd")))
+            .ForMember(dest => dest, opt => opt.MapFrom(src => src.User));
+
+        CreateMap<(ForgotPasswordRequest registerRequest, string BaseUrl), ForgotPasswordQuery>()
+            .ForMember(dest => dest.BaseUrl, opt => opt.MapFrom(src => src.BaseUrl))
+            .ForMember(dest => dest, opt => opt.MapFrom(src => src.registerRequest));
+
+        CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
+
+        CreateMap<ChangeEmailRequest, ChangeEmailCommand>();
+
+        CreateMap<(ChangeEmailRequest changeEmailRequest, string BaseUrl), ChangeEmailCommand>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.changeEmailRequest.Email))
+            .ForMember(dest => dest.BaseUrl, opt => opt.MapFrom(src => src.BaseUrl));
     }
 }

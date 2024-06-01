@@ -1,13 +1,13 @@
-using AutoMapper;
 using Facebook.Application.Story.Command.Create;
 using Facebook.Contracts.Story.Create;
+using Mapster;
 
 namespace Facebook.Server.Common.Mapping;
 
-public class StoryMappingProfile : Profile
+public class StoryMappingConfig
 {
-    public StoryMappingProfile()
+    public StoryMappingConfig(TypeAdapterConfig config)
     {
-        CreateMap<CreateStoryRequest, CreateStoryCommand>();
+        config.NewConfig<CreateStoryRequest, CreateStoryCommand>();
     }
 }

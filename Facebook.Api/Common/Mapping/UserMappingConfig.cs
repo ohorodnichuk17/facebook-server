@@ -1,15 +1,15 @@
-using AutoMapper;
 using Facebook.Application.Users.Common.ChangePassword;
 using Facebook.Contracts.User.Common.ChangePassword;
+using Mapster;
 
 namespace Facebook.Server.Common.Mapping;
 
-public class UserMappingProfile : Profile
+public class UserMappingConfig : IRegister
 {
-    public UserMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<(ChangePasswordRequest changePassword, string UserId), ChangePasswordCommand>()
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-            .ForMember(dest => dest, opt => opt.MapFrom(src => src.changePassword));
+        config.NewConfig<(ChangePasswordRequest changePassword, string UserId),	ChangePasswordCommand>()
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest, src => src.changePassword);
     }
 }

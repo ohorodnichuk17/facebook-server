@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Facebook.Infrastructure.Migrations
 {
     [DbContext(typeof(FacebookDbContext))]
-    partial class FacebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240527203002_AddImagePathToImages")]
+    partial class AddImagePathToImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,15 +73,12 @@ namespace Facebook.Infrastructure.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("UserEntityId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserEntityId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
@@ -337,9 +337,13 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.Post.PostEntity", b =>
                 {
-                    b.HasOne("Facebook.Domain.User.UserEntity", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("UserEntityId");
+                    b.HasOne("Facebook.Domain.User.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
@@ -407,8 +411,6 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.User.UserEntity", b =>
                 {
-                    b.Navigation("Posts");
-
                     b.Navigation("Stories");
                 });
 #pragma warning restore 612, 618

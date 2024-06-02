@@ -1,3 +1,4 @@
+using Facebook.Domain.Post;
 using Facebook.Domain.Story;
 using Microsoft.AspNetCore.Identity;
 
@@ -23,4 +24,5 @@ public class UserEntity : IdentityUser<Guid>
     public string Gender { get; set; }
     
     public ICollection<StoryEntity> Stories { get; set; } = new List<StoryEntity>();
+    public ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
 }

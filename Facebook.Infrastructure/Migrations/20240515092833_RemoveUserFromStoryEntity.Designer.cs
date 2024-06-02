@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Facebook.Infrastructure.Migrations
 {
     [DbContext(typeof(FacebookDbContext))]
-    partial class FacebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240515092833_RemoveUserFromStoryEntity")]
+    partial class RemoveUserFromStoryEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,10 +31,6 @@ namespace Facebook.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid");
@@ -53,12 +52,13 @@ namespace Facebook.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsArchive")
+                    b.Property<bool>("IsArhive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Location")
@@ -68,17 +68,15 @@ namespace Facebook.Infrastructure.Migrations
                         .HasColumnType("text[]");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("UserEntityId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserEntityId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
@@ -337,9 +335,13 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.Post.PostEntity", b =>
                 {
-                    b.HasOne("Facebook.Domain.User.UserEntity", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("UserEntityId");
+                    b.HasOne("Facebook.Domain.User.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
@@ -407,8 +409,6 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.User.UserEntity", b =>
                 {
-                    b.Navigation("Posts");
-
                     b.Navigation("Stories");
                 });
 #pragma warning restore 612, 618

@@ -7,7 +7,7 @@ namespace Facebook.Server.Common.Mapping;
 
 public class StoryMappingConfig 
 {
-    public StoryMappingConfig(TypeAdapterConfig config)
+    public StoryMappingConfig()
     {
         config.NewConfig<(CreateStoryRequest request, string BaseUrl, byte[] Image), CreateStoryCommand>()
             .Map(dest => dest.Image, src => src.Image)

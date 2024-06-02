@@ -53,34 +53,38 @@ public class ImageStorageService : IImageStorageService
     
     public async Task<string?> AddPostImageAsync(byte[]? file)
     {
-        if (file == null)
-        {
-            return null;
-        }
+        var imageNames = new List<string>();
 
-        string imageName = Path.GetRandomFileName() + ".webp";
-        var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "posts");
-
-        if (!Directory.Exists(uploadFolderPath))
+        foreach (var file in files)
         {
-            Directory.CreateDirectory(uploadFolderPath);
-        }
+            if (file == null) continue;
 
-        string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
-        using var image = Image.Load(file);
-        image.Mutate(x =>
-        {
-            x.Resize(new ResizeOptions
+            string imageName = Path.GetRandomFileName() + ".webp";
+            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "posts");
+
+            if (!Directory.Exists(uploadFolderPath))
             {
-                Size = new Size(1200, 1200),
-                Mode = ResizeMode.Max
+                Directory.CreateDirectory(uploadFolderPath);
+            }
+
+            string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
+            using var image = Image.Load(file);
+            image.Mutate(x =>
+            {
+                x.Resize(new ResizeOptions
+                {
+                    Size = new Size(1200, 1200),
+                    Mode = ResizeMode.Max
+                });
             });
-        });
 
-        using var stream = File.Create(dirSaveImage);
-        await image.SaveAsync(stream, new WebpEncoder());
+            using var stream = File.Create(dirSaveImage);
+            await image.SaveAsync(stream, new WebpEncoder());
 
-        return imageName;
+            imageNames.Add(imageName);
+        }
+
+        return imageNames;
     }
 
     public async Task<string?> AddStoryImageAsync(byte[]? file)

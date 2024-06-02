@@ -48,7 +48,7 @@ public class CreateStoryCommandHandler : IRequestHandler<CreateStoryCommand, Err
 
         if (request.Image != null)
         {
-            var imageName = await _imageStorageService.AddStoryImageAsync(request.Image);
+            var imageName = await imageStorageService.AddStoryImageAsync(request.Image);
             if (imageName == null)
             {
                 return Error.Unexpected("Avatar saving error");

@@ -2,11 +2,13 @@ using System.Text;
 using Facebook.Application.Common.Admin;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Application.Common.Interfaces.Services;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
+using Facebook.Infrastructure.Repositories.Post;
 using Facebook.Infrastructure.Repositories.Story;
 using Facebook.Infrastructure.Repositories.User;
 using Facebook.Infrastructure.Services;
@@ -81,6 +83,7 @@ public static class DependencyInjection
 		services.AddScoped<IUserRepository, UserRepository>();
 		// services.AddScoped<IAdminRepository, AdminRepository>();
 		services.AddScoped<IStoryRepository, StoryRepository>();
+		services.AddScoped<IPostRepository, PostRepository>();
 		return services;
 	}
 

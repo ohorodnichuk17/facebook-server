@@ -25,7 +25,7 @@ public static class DependencyInjection
 
         services.AddSwagger();
 
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddMappings();
 

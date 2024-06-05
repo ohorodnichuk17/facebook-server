@@ -8,13 +8,13 @@ using MediatR;
 namespace Facebook.Application.Story.Command.Create;
 
 public class CreateStoryCommandHandler(
-    IStoryRepository _storyRepository,
-    IImageStorageService _imageStorageService,
-    IUserRepository _userRepository) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
+    IStoryRepository storyRepository,
+    IImageStorageService imageStorageService,
+    IUserRepository userRepository) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserByIdAsync(request.UserId.ToString());
+        var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
 
         if (user.IsError)
         {
@@ -30,7 +30,7 @@ public class CreateStoryCommandHandler(
             UserId = request.UserId,
         };
 
-        var storyResult = await _storyRepository.CreateStoryAsync(storyEntity);
+        var storyResult = await storyRepository.CreateStoryAsync(storyEntity);
 
         if (storyResult.IsError)
         {
@@ -39,7 +39,7 @@ public class CreateStoryCommandHandler(
 
         if (request.Image != null)
         {
-            var imageName = await _imageStorageService.AddStoryImageAsync(request.Image);
+            var imageName = await imageStorageService.SaveImageAsByteArrayAsync(request.Image);
             if (imageName == null)
             {
                 return Error.Unexpected("Avatar saving error");
@@ -47,7 +47,7 @@ public class CreateStoryCommandHandler(
             storyEntity.Image = imageName;
         }
 
-        var result = await _storyRepository.SaveStoryAsync(storyEntity);
+        var result = await storyRepository.SaveStoryAsync(storyEntity);
 
         if (result.IsError)
         {

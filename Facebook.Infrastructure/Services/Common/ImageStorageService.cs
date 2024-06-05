@@ -51,38 +51,69 @@ public class ImageStorageService : IImageStorageService
 
         return imageName;
     }
-    public async Task<string?> AddPostImageAsync(byte[]? file)
+    public async Task<List<string>> AddPostImagesAsync(List<byte[]> files)
     {
-        if (file == null)
+        var imageNames = new List<string>();
+
+        foreach (var file in files)
         {
+            if (file == null) continue;
+
+            string imageName = Path.GetRandomFileName() + ".webp";
+            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "posts");
+
+            if (!Directory.Exists(uploadFolderPath))
+            {
+                Directory.CreateDirectory(uploadFolderPath);
+            }
+
+            string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
+            using var image = Image.Load(file);
+            image.Mutate(x =>
+            {
+                x.Resize(new ResizeOptions
+                {
+                    Size = new Size(1200, 1200),
+                    Mode = ResizeMode.Max
+                });
+            });
+
+            using var stream = File.Create(dirSaveImage);
+            await image.SaveAsync(stream, new WebpEncoder());
+
+            imageNames.Add(imageName);
+        }
+
+        return imageNames;
+    }
+    public async Task<string?> SaveImageAsByteArrayAsync(byte[] imageBytes)
+    {
+        if (imageBytes == null || imageBytes.Length == 0)
+        {
+            throw new ArgumentException("Image byte array cannot be null or empty.", nameof(imageBytes));
+        }
+
+        string imageName = Guid.NewGuid().ToString() + ".webp";
+        var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "stories");
+
+        try
+        {
+            if (!Directory.Exists(uploadFolderPath))
+            {
+                Directory.CreateDirectory(uploadFolderPath);
+            }
+
+            string filePath = Path.Combine(uploadFolderPath, imageName);
+            await File.WriteAllBytesAsync(filePath, imageBytes);
+
+            return imageName;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error occurred while saving the image: {ex.Message}");
             return null;
         }
-
-        string imageName = Path.GetRandomFileName() + ".webp";
-        var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "posts");
-
-        if (!Directory.Exists(uploadFolderPath))
-        {
-            Directory.CreateDirectory(uploadFolderPath);
-        }
-
-        string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
-        using var image = Image.Load(file);
-        image.Mutate(x =>
-        {
-            x.Resize(new ResizeOptions
-            {
-                Size = new Size(1200, 1200),
-                Mode = ResizeMode.Max
-            });
-        });
-
-        using var stream = File.Create(dirSaveImage);
-        await image.SaveAsync(stream, new WebpEncoder());
-
-        return imageName;
     }
-    
     public async Task<string?> AddStoryImageAsync(IFormFile? file)
     {
         if (file == null || file.Length == 0)

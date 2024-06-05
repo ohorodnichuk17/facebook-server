@@ -70,7 +70,7 @@ public class RegisterCommandHandler :
             return userResult.Errors;
         }
 
-        if (command.Avatar != null) // Check for avatar existence
+        if (command.Avatar != null) 
         {
             var imageName = await _imageStorageService.AddAvatarAsync(user, command.Avatar);
             if (imageName == null)

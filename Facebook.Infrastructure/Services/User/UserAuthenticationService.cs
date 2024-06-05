@@ -1,5 +1,3 @@
-using System.Net;
-using System.Text;
 using ErrorOr;
 using Facebook.Application.Authentication.ChangeEmail;
 using Facebook.Application.Common.Interfaces.Authentication;
@@ -7,8 +5,6 @@ using Facebook.Application.Services;
 using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Facebook.Infrastructure.Services.User;

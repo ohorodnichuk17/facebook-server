@@ -38,6 +38,8 @@ public class EmailService(ISmtpService _smtpService)
         string endpoint = isReset ? "reset-password" : "forgot-password";
         string url = $"{baseUrl}api/authentication/{endpoint}?email={email}&" +
                      $"validEmailToken={WebUtility.UrlEncode(token)}";
+
+        WebUtility.UrlEncode(token);
         string emailTemplate = isReset ? "./EmailTemplates/reset-password-success.html" : "./EmailTemplates/forgot-password.html";
 
         string emailBody = string.Empty;

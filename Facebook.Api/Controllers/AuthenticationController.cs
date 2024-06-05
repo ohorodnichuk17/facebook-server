@@ -65,7 +65,7 @@ public class AuthenticationController : ApiController
         var confirmEmailResult = await _mediatr.Send(_mapper.Map<ConfirmEmailCommand>(request));
 
         return confirmEmailResult.Match(
-            confirmResult => Ok(confirmEmailResult.Value),
+            confirmResult => Redirect("http://localhost:5173/email-confirmed"),
             errors => Problem(errors));
     }
 
@@ -121,7 +121,7 @@ public class AuthenticationController : ApiController
         await Console.Out.WriteLineAsync(forgotPasswordResult.ToString());
 
         return forgotPasswordResult.Match(
-            forgotPasswordRes => Ok(forgotPasswordResult.Value),
+            forgotPasswordRes => Redirect("http://localhost:5173/set-new-password"),
             errors => Problem(errors));
     }
 

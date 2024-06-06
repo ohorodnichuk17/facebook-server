@@ -6,7 +6,8 @@ namespace Facebook.Application.Common.Interfaces.Services;
 public interface IImageStorageService
 {
     Task<string?> AddAvatarAsync(UserEntity user, byte[]? file);
-    Task<string?> AddPostImageAsync(byte[]? file);
+    Task<List<string>?> AddPostImagesAsync(List<byte[]> files);
     Task<string?> AddStoryImageAsync(IFormFile? file);
+    Task<string?> SaveImageAsByteArrayAsync(byte[] imageBytes);
     Task<bool> DeleteImageAsync(string imageName);
 }

@@ -4,10 +4,13 @@ using Mapster;
 
 namespace Facebook.Server.Common.Mapping;
 
-public class StoryMappingConfig
+public class StoryMappingConfig : IRegister
 {
-    public StoryMappingConfig(TypeAdapterConfig config)
+    public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CreateStoryRequest, CreateStoryCommand>();
+        config.NewConfig<(CreateStoryRequest request, byte[] Image), CreateStoryCommand>()
+            .Map(dest => dest.Content, src => src.request.Content)
+            .Map(dest => dest.Image, src => src.Image)
+            .Map(dest => dest.UserId, src => src.request.UserId);
     }
 }

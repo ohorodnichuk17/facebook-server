@@ -33,7 +33,6 @@ public class StoryRepository : IStoryRepository
         return story;
     }
 
-
     public async Task<ErrorOr<Guid>> CreateStoryAsync(StoryEntity story)
     {
         try
@@ -61,8 +60,6 @@ public class StoryRepository : IStoryRepository
 
             existingStory.Content = story.Content;
             existingStory.Image = story.Image;
-            existingStory.CreatedAt = story.CreatedAt;
-            existingStory.UserId = story.UserId; 
 
             _context.Stories.Update(existingStory);
             await _context.SaveChangesAsync();
@@ -99,15 +96,5 @@ public class StoryRepository : IStoryRepository
     {
         await _context.SaveChangesAsync();
         return Unit.Value;
-        // try
-        // {
-        //     _context.Stories.Add(story);
-        //     await _context.SaveChangesAsync();
-        //     return story;
-        // }
-        // catch (Exception ex)
-        // {
-        //     return Error.Failure(ex.Message);
-        // }
     }
 }

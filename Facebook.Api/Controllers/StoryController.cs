@@ -1,7 +1,9 @@
 using Facebook.Application.Story.Command.Create;
+using Facebook.Application.Story.Command.Delete;
 using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.Story.Query.GetById;
 using Facebook.Contracts.Story.Create;
+using Facebook.Contracts.Story.Delete;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
@@ -46,6 +48,17 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
         {
             return Problem(ex.Message);
         }
+    }
+    
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteAsync(DeleteStoryRequest request)
+    {
+        var command = mapper.Map<DeleteStoryCommand>(request);
+        var deleteStoryResult = await mediatr.Send(command);
+
+        return deleteStoryResult.Match(
+            success => Ok(success),
+            error => Problem(error));
     }
 
     [HttpGet("getAll")]

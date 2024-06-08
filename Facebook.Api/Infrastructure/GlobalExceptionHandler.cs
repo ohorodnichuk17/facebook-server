@@ -4,20 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Infrastructure;
 
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILoggerService loggerService) : IExceptionHandler
 {
-    private readonly ILoggerService _loggerService;
-
-    public GlobalExceptionHandler(ILoggerService loggerService)
-    {
-        _loggerService = loggerService;
-    }
-    
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext,
         Exception exception, CancellationToken cancellationToken)
 
     {
-        _loggerService.LogError(exception, $"Exception occured: {exception.Message}");
+        loggerService.LogError(exception, $"Exception occured: {exception.Message}");
 
 
         var problemDetails = new ProblemDetails

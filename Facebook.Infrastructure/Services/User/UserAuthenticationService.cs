@@ -9,24 +9,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Facebook.Infrastructure.Services.User;
 
-public class UserAuthenticationService : IUserAuthenticationService
+public class UserAuthenticationService(
+    UserManager<UserEntity> userManager,
+    SignInManager<UserEntity> signInManager,
+    ILogger<ChangeEmailCommandHandler> logger,
+    EmailService emailService)
+    : IUserAuthenticationService
 {
-    private readonly UserManager<UserEntity> _userManager;
-    private readonly SignInManager<UserEntity> _signInManager; 
-    private readonly ILogger<ChangeEmailCommandHandler> _logger;
-    private readonly EmailService _emailService;
-
-    public UserAuthenticationService(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, ILogger<ChangeEmailCommandHandler> logger, EmailService emailService)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _logger = logger;
-        _emailService = emailService;
-    }
+    private readonly ILogger<ChangeEmailCommandHandler> _logger = logger;
 
     public async Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password)
     {
-        var signinResult = await _signInManager.PasswordSignInAsync(user, password,
+        var signinResult = await signInManager.PasswordSignInAsync(user, password,
             isPersistent: true, lockoutOnFailure: true);
 		
         if (signinResult.IsNotAllowed)
@@ -38,7 +32,7 @@ public class UserAuthenticationService : IUserAuthenticationService
         if (!signinResult.Succeeded)
             return Error.Failure("Wrong password");
 
-        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        var role = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
         if (role == null)
             return Error.NotFound("Role of user is not found");
@@ -48,25 +42,25 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<Success>> LogoutUserAsync(Guid userId)
     {
-        await _signInManager.SignOutAsync();
+        await signInManager.SignOutAsync();
         return Result.Success;
     }
     
     public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
     {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
         return token;
     }
 
     public async Task<ErrorOr<Success>> ConfirmEmailAsync(Guid userId, string token)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await userManager.FindByIdAsync(userId.ToString());
 
         if (user == null)
             return Error.NotFound();
         
-        var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
+        var confirmEmailResult = await userManager.ConfirmEmailAsync(user, token);
 
         if (!confirmEmailResult.Succeeded)
         {
@@ -83,7 +77,7 @@ public class UserAuthenticationService : IUserAuthenticationService
             ? $"{user.FirstName} {user.LastName}"
             : user.Email;
 
-        var emailResult = await _emailService.SendEmailConfirmationEmailAsync(user.Id, user.Email!, emailToken, baseUrl, userName!);
+        var emailResult = await emailService.SendEmailConfirmationEmailAsync(user.Id, user.Email!, emailToken, baseUrl, userName!);
 
         return emailResult.IsSuccess(); 
     }
@@ -91,7 +85,7 @@ public class UserAuthenticationService : IUserAuthenticationService
     
     public async Task<string> GeneratePasswordResetTokenAsync(UserEntity user)
     {
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
         return token;
     }
@@ -99,7 +93,7 @@ public class UserAuthenticationService : IUserAuthenticationService
     public async Task<ErrorOr<Success>> ResetPasswordAsync(UserEntity user, string token, string password)
     {
         Console.WriteLine($"Початковий пароль для користувача {user.UserName}: {password}");
-        var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
+        var resetPasswordResult = await userManager.ResetPasswordAsync(user, token, password);
 
         if (resetPasswordResult.Succeeded)
         {
@@ -116,13 +110,13 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<string> GenerateEmailChangeTokenAsync(UserEntity user, string email)
     {
-        var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
+        var token = await userManager.GenerateChangeEmailTokenAsync(user, email);
         return token;
     }
 
     public async Task<ErrorOr<UserEntity>> ChangeEmailAsync(UserEntity user, string email, string token)
     {
-        var changeEmailResult = await _userManager.ChangeEmailAsync(user, email, token);
+        var changeEmailResult = await userManager.ChangeEmailAsync(user, email, token);
     
         if (!changeEmailResult.Succeeded)
         {
@@ -134,7 +128,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task<ErrorOr<UserEntity>> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword)
     {
-        var changePassword = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        var changePassword = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 
         if (!changePassword.Succeeded)
         {

@@ -1,13 +1,12 @@
-using System.Net;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using ErrorOr;
 using Facebook.Application.Authentication.Common;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Domain.Common.Errors;
+using Facebook.Application.Common.Interfaces.User;
+using Facebook.Application.Common.Interfaces.User.IRepository;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
-namespace Facebook.Application.Authentication.Queries;
+namespace Facebook.Application.Authentication.Login;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {

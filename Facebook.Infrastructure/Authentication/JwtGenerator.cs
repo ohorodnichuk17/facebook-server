@@ -2,26 +2,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Domain.User;
 
 namespace Facebook.Infrastructure.Authentication;
 
-public class JwtGenerator : IJwtGenerator
+public class JwtGenerator(
+    IDateTimeProvider dateTimeProvider,
+    IOptions<JwtSettings> jwtOptions)
+    : IJwtGenerator
 {
-    private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly JwtSettings _jwtSettings;
+    private readonly JwtSettings _jwtSettings = jwtOptions.Value;
 
-    public JwtGenerator(IDateTimeProvider dateTimeProvider, 
-        IOptions<JwtSettings> jwtOptions)
-    {
-        _dateTimeProvider = dateTimeProvider;
-        _jwtSettings = jwtOptions.Value;
-    }
-    
     public async Task<string> GenerateJwtTokenAsync(UserEntity userEntity, string role)
     {
         var signingCredentials = new SigningCredentials(
@@ -45,7 +40,7 @@ public class JwtGenerator : IJwtGenerator
         var securityToken = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
-            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+            expires: dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             claims: claims,
             signingCredentials: signingCredentials);
 

@@ -1,4 +1,4 @@
-using Facebook.Application.Common.Interfaces.Services;
+using Facebook.Application.Common.Interfaces.Common;
 
 namespace Facebook.Infrastructure.Services.Common;
 

@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.User;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.Services;
 using MediatR;
 

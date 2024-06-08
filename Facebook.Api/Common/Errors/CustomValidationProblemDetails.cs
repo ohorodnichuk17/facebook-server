@@ -7,7 +7,7 @@ namespace Facebook.Server.Common.Errors;
 public class CustomValidationProblemDetails : ValidationProblemDetails
 {
     [JsonPropertyName("errors")]
-    public new IEnumerable<ValidationError> Errors { get; } = new List<ValidationError>();
+    public new IEnumerable<ValidationError> Errors { get; }
 
 
     public CustomValidationProblemDetails(IEnumerable<ValidationError> errors)

@@ -8,20 +8,14 @@ using MediatR;
 
 namespace Facebook.Application.Post.Query.GetAll;
 
-public class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, ErrorOr<IEnumerable<PostEntity>>>
+public class GetAllPostsQueryHandler(IPostRepository postRepository)
+    : IRequestHandler<GetAllPostsQuery, ErrorOr<IEnumerable<PostEntity>>>
 {
-    private readonly IPostRepository _postRepository;
-
-    public GetAllPostsQueryHandler(IPostRepository postRepository)
-    {
-        _postRepository = postRepository;
-    }
-
     public async Task<ErrorOr<IEnumerable<PostEntity>>> Handle(GetAllPostsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _postRepository.GetAllPostsAsync();
+            var result = await postRepository.GetAllPostsAsync();
 
             if (result.IsError)
             {

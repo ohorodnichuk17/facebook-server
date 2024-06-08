@@ -1,4 +1,4 @@
-using Facebook.Application.Common.Interfaces.Services;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;

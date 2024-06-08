@@ -1,21 +1,24 @@
-using MediatR;
 using ErrorOr;
 using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
+using Facebook.Application.Common.Interfaces.Admin;
+using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Application.Common.Interfaces.Services;
+using Facebook.Application.Common.Interfaces.Common;
+using Facebook.Application.Common.Interfaces.User;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
-
-namespace Facebook.Application.Authentication.Commands.Register;
+namespace Facebook.Application.Authentication.Register;
 
 public class RegisterCommandHandler : 
     IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
+    private readonly IAdminRepository _adminRepository;
     private readonly IUserRepository _userRepository;
     private readonly ISender _mediatr;
     private readonly ILogger<RegisterCommandHandler> _logger;
@@ -23,12 +26,14 @@ public class RegisterCommandHandler :
     private readonly IImageStorageService _imageStorageService;
 
     public RegisterCommandHandler(
-        IUserRepository userRepository, 
+        IAdminRepository adminRepository, 
+        IUserRepository userRepository,
         ISender mediatr,
         ILogger<RegisterCommandHandler> logger, 
         IJwtGenerator jwtGenerator,
         IImageStorageService imageStorageService)
     {
+        _adminRepository = adminRepository;
         _userRepository = userRepository;
         _mediatr = mediatr;
         _logger = logger;
@@ -63,7 +68,7 @@ public class RegisterCommandHandler :
 
         var role = Roles.User;
 
-        var userResult = await _userRepository.CreateUserAsync(user, command.Password, role);
+        var userResult = await _adminRepository.CreateAsync(user, command.Password, role);
 
         if (userResult.IsError)
         {

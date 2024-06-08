@@ -4,20 +4,14 @@ using Facebook.Application.Common.Interfaces.Post.IRepository;
 
 namespace Facebook.Application.Post.Command.Delete;
 
-public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, ErrorOr<bool>>
+public class DeletePostCommandHandler(IPostRepository postRepository)
+    : IRequestHandler<DeletePostCommand, ErrorOr<bool>>
 {
-    private readonly IPostRepository _postRepository;
-
-    public DeletePostCommandHandler(IPostRepository postRepository)
-    {
-        _postRepository = postRepository;
-    }
-    
     public async Task<ErrorOr<bool>> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _postRepository.DeletePostAsync(request.Id);
+            var result = await postRepository.DeletePostAsync(request.Id);
 
             if (result.IsError)
             {

@@ -1,8 +1,8 @@
-using MediatR;
 using ErrorOr;
 using Facebook.Application.Authentication.Common;
+using MediatR;
 
-namespace Facebook.Application.Authentication.Queries;
+namespace Facebook.Application.Authentication.Login;
 
 public record LoginQuery(
     string Email,

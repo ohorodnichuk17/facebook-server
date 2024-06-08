@@ -1,6 +1,7 @@
 ﻿using Facebook.Application.Common.Interfaces.Authentication;
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.User;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using MediatR;
 
 namespace Facebook.Application.Authentication.ConfirmEmail;

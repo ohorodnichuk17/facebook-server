@@ -1,4 +1,4 @@
-using Facebook.Application.Users.Common.ChangePassword;
+using Facebook.Application.User.Common.ChangePassword;
 using Facebook.Contracts.User.Common.ChangePassword;
 using Mapster;
 

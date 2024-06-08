@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Facebook.Contracts.Post.Create;
 
-public class CreatePostRequest
+public record CreatePostRequest
 {
     [StringLength(10, ErrorMessage = "{PropertyName} cannot exceed 10 characters")]
     public string? Title { get; init; }

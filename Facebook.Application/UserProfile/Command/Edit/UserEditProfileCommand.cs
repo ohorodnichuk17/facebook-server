@@ -15,6 +15,7 @@ public record UserEditProfileCommand(
     string? UserName,
     byte[]? CoverPhoto,
     byte[]? Avatar,
+    string? Pronouns,
     string? Biography,
     bool IsProfilePublic,
     bool isBlocked,

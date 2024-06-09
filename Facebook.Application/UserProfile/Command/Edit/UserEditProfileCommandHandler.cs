@@ -50,6 +50,7 @@ public class UserEditProfileCommandHandler :
             userProfile.Biography = request.Biography;
             userProfile.City = request.City;
             userProfile.Country = request.Country;
+            userProfile.Pronouns = request.Pronouns;
             userProfile.IsBlocked = request.isBlocked;
             userProfile.IsProfilePublic = request.IsProfilePublic;
             userProfile.Region = request.Region;

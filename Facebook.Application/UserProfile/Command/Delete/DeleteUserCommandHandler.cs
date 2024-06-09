@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.UserProfile.Command.Delete;
 
-public class DeleteUserCommandHandle :
+public class DeleteUserCommandHandler :
  IRequestHandler<DeleteUserCommand, ErrorOr<bool>>
 {
     private readonly IUserProfileRepository _userProfileRepository;
-    private readonly ILogger<DeleteUserCommandHandle> _logger;
-    public DeleteUserCommandHandle(IUserProfileRepository userProfileRepository, ILogger<DeleteUserCommandHandle> logger)
+    private readonly ILogger<DeleteUserCommandHandler> _logger;
+    public DeleteUserCommandHandler(IUserProfileRepository userProfileRepository, ILogger<DeleteUserCommandHandler> logger)
     {
         _userProfileRepository = userProfileRepository;
         _logger = logger;

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.UserProfile.Command.Edit;
 
-public class UserEditProfileCommandValidation : AbstractValidator<UserEditProfileCommand>
+public class UserEditProfileCommandValidator : AbstractValidator<UserEditProfileCommand>
 {
-    public UserEditProfileCommandValidation()
+    public UserEditProfileCommandValidator()
     {
         RuleFor(r => r.Biography)
            .MaximumLength(100).WithMessage("Biography must not exceed 100 characters.")
@@ -33,6 +33,10 @@ public class UserEditProfileCommandValidation : AbstractValidator<UserEditProfil
             .MaximumLength(100).WithMessage("City must not exceed 100 characters.")
             .MinimumLength(5).WithMessage("City must be at least 5 characters.")
             .When(r => !string.IsNullOrEmpty(r.City));
+
+        RuleFor(r => r.Pronouns)
+            .Must(pronouns => pronouns == "she/her" || pronouns == "he/him" || pronouns == "they/them" || pronouns == "do not specify")
+            .WithMessage("Invalid pronouns value.");
 
         RuleFor(r => r.Region)
             .MaximumLength(100).WithMessage("Region must not exceed 100 characters.")

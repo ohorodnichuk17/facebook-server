@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.UserProfile.Command.Delete;
 
-public class DeleteUserCommandValidation : AbstractValidator<DeleteUserCommand>
+public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
 {
-    public DeleteUserCommandValidation()
+    public DeleteUserCommandValidator()
     {
         RuleFor(r => r.UserId).NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != null);
     }

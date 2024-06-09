@@ -14,6 +14,7 @@ public class UserEditProfileRequest
     public IFormFile? CoverPhoto { get; set; }
     public IFormFile? Avatar { get; set; }
     public string? Country { get; set; }
+    public string? Pronouns { get; set; }
     public string? City { get; set; }
     public string? Region { get; set; }
     public string? Biography { get; set; }

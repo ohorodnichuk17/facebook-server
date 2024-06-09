@@ -51,6 +51,47 @@ public class ImageStorageService : IImageStorageService
 
         return imageName;
     }
+    public async Task<string?> CoverPhotoAsync(UserProfileEntity userProfile, byte[]? file)
+    {
+        if (file == null)
+        {
+            return null;
+        }
+        string imageName = Path.GetRandomFileName() + ".webp";
+        var uploadFolderPath = Path.Combine(
+            Directory.GetCurrentDirectory(), "images", "coverPhotos");
+
+        if (!Directory.Exists(uploadFolderPath))
+        {
+            Directory.CreateDirectory(uploadFolderPath);
+        }
+
+        if (!userProfile.CoverPhoto.IsNullOrEmpty())
+        {
+            var deleteFilePath = Path.Combine(
+                uploadFolderPath, userProfile.CoverPhoto!);
+            if (File.Exists(deleteFilePath))
+            {
+                File.Delete(deleteFilePath);
+            }
+        }
+
+        string dirSaveImage = Path.Combine(uploadFolderPath, imageName);
+        using var image = Image.Load(file);
+        image.Mutate(x =>
+        {
+            x.Resize(new ResizeOptions
+            {
+                Size = new Size(1200, 1200),
+                Mode = ResizeMode.Max
+            });
+        });
+
+        using var stream = File.Create(dirSaveImage);
+        await image.SaveAsync(stream, new WebpEncoder());
+
+        return imageName;
+    }
     public async Task<List<string>> AddPostImagesAsync(List<byte[]> files)
     {
         var imageNames = new List<string>();

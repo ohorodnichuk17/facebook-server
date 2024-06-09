@@ -16,6 +16,7 @@ public class FacebookDbContext
     public DbSet<StoryEntity> Stories { get; set; }
     public DbSet<PostEntity> Posts { get; set; }
     public DbSet<ImagesEntity> Images { get; set; }
+    public DbSet<UserProfileEntity> UsersProfiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

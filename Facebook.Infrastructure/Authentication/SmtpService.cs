@@ -7,23 +7,14 @@ using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Facebook.Infrastructure.Authentication;
 
-public class SmtpService : ISmtpService
+public class SmtpService(IConfiguration configuration, ILogger<SmtpService> logger) : ISmtpService
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<SmtpService> _logger; 
-
-    public SmtpService(IConfiguration configuration, ILogger<SmtpService> logger)
-    {
-        _configuration = configuration;
-        _logger = logger; 
-    }
-
     public async Task SendEmailAsync(string toEmail, string subject, string body)
     {
-        string fromEmail = _configuration["EmailSettings:User"]!;
-        string SMTP = _configuration["EmailSettings:SMTP"]!;
-        int port = int.Parse(_configuration["EmailSettings:port"]!);
-        string password = _configuration["EmailSettings:Password"]!;
+        string fromEmail = configuration["EmailSettings:User"]!;
+        string SMTP = configuration["EmailSettings:SMTP"]!;
+        int port = int.Parse(configuration["EmailSettings:port"]!);
+        string password = configuration["EmailSettings:Password"]!;
 
         var email = new MimeMessage();
         email.From.Add(MailboxAddress.Parse(fromEmail));
@@ -41,11 +32,11 @@ public class SmtpService : ISmtpService
                 smtp.Connect(SMTP, port, SecureSocketOptions.SslOnConnect);
                 smtp.Authenticate(fromEmail, password);
                 await smtp.SendAsync(email);
-                _logger.LogInformation("Email sent successfully to {toEmail}", toEmail);
+                logger.LogInformation("Email sent successfully to {toEmail}", toEmail);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending email to {toEmail}", toEmail);
+                logger.LogError(ex, "Error sending email to {toEmail}", toEmail);
                 throw; 
             }
             finally

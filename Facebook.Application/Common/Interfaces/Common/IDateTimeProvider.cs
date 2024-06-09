@@ -1,4 +1,4 @@
-namespace Facebook.Application.Common.Interfaces.Services;
+namespace Facebook.Application.Common.Interfaces.Common;
 
 public interface IDateTimeProvider
 {

@@ -1,9 +1,9 @@
 using Facebook.Application.Authentication.ChangeEmail;
-using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.ForgotPassword;
-using Facebook.Application.Authentication.Queries;
+using Facebook.Application.Authentication.Login;
+using Facebook.Application.Authentication.Register;
 using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;

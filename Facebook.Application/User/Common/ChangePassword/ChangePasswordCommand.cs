@@ -2,7 +2,7 @@
 using Facebook.Domain.User;
 using MediatR;
 
-namespace Facebook.Application.Users.Common.ChangePassword;
+namespace Facebook.Application.User.Common.ChangePassword;
 public record ChangePasswordCommand(
     string CurrentPassword,
     string NewPassword,

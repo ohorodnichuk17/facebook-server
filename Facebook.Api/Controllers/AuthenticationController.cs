@@ -1,8 +1,8 @@
 using Facebook.Application.Authentication.ChangeEmail;
-using Facebook.Application.Authentication.Commands.Register;
 using Facebook.Application.Authentication.ConfirmEmail;
 using Facebook.Application.Authentication.ForgotPassword;
-using Facebook.Application.Authentication.Queries;
+using Facebook.Application.Authentication.Login;
+using Facebook.Application.Authentication.Register;
 using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
@@ -22,23 +22,13 @@ namespace Facebook.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [AllowAnonymous]
-public class AuthenticationController : ApiController
+public class AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)
+    : ApiController
 {
-    private readonly ISender _mediatr;
-    private readonly IMapper _mapper;
-    private readonly IConfiguration _configuration;
-    
-    public AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)
-    {
-        _mediatr = mediatr;
-        _mapper = mapper;
-        _configuration = configuration;
-    }
-
     [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync([FromForm]RegisterRequest request)
     {
-        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
         
         byte[] image = null;
         if (request.Avatar != null && request.Avatar.Length > 0)
@@ -50,11 +40,11 @@ public class AuthenticationController : ApiController
             }
         }
 
-        var authResult = await _mediatr.Send(_mapper
+        var authResult = await mediatr.Send(mapper
             .Map<RegisterCommand>((request, baseUrl, image)));
         
         return authResult.Match(
-            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
+            authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
             errors => Problem(errors));
     }
 
@@ -62,7 +52,7 @@ public class AuthenticationController : ApiController
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmailAsync([FromQuery]ConfirmEmailRequest request)
     {
-        var confirmEmailResult = await _mediatr.Send(_mapper.Map<ConfirmEmailCommand>(request));
+        var confirmEmailResult = await mediatr.Send(mapper.Map<ConfirmEmailCommand>(request));
 
         return confirmEmailResult.Match(
             confirmResult => Redirect("http://localhost:5173/email-confirmed"),
@@ -73,8 +63,8 @@ public class AuthenticationController : ApiController
     [HttpGet("resend-confirmation-email")]
     public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery]ConfirmEmailRequest request)
     {
-        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-        var resendConfirmationResult = await _mediatr.Send(_mapper
+        var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var resendConfirmationResult = await mediatr.Send(mapper
             .Map<ResendConfirmEmailCommand>((request, baseUrl)));
 
         return resendConfirmationResult.Match(
@@ -86,8 +76,8 @@ public class AuthenticationController : ApiController
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
-        var query = _mapper.Map<LoginQuery>(request);
-        var authenticationResult = await _mediatr.Send(query);
+        var query = mapper.Map<LoginQuery>(request);
+        var authenticationResult = await mediatr.Send(query);
 
         if (authenticationResult.IsError && authenticationResult
                 .FirstError == Errors.Authentication.InvalidCredentials)
@@ -97,7 +87,7 @@ public class AuthenticationController : ApiController
         }
 
         return authenticationResult.Match(
-            authenticationResult => Ok(_mapper
+            authenticationResult => Ok(mapper
                 .Map<AuthenticationResponse>(authenticationResult)),
             errors => Problem(errors));
     }
@@ -107,7 +97,7 @@ public class AuthenticationController : ApiController
     {
         await Console.Out.WriteLineAsync(email);
 
-        var baseUrl = _configuration.GetRequiredSection(
+        var baseUrl = configuration.GetRequiredSection(
             "HostSettings:ClientURL").Value;
 
         await Console.Out.WriteLineAsync(baseUrl);
@@ -116,7 +106,7 @@ public class AuthenticationController : ApiController
 
         await Console.Out.WriteLineAsync(query.Email);
 
-        var forgotPasswordResult = await _mediatr.Send(query);
+        var forgotPasswordResult = await mediatr.Send(query);
 
         await Console.Out.WriteLineAsync(forgotPasswordResult.ToString());
 
@@ -130,12 +120,12 @@ public class AuthenticationController : ApiController
     {
         Console.WriteLine($"Спроба скинути пароль для користувача з email: {request.Email}");
     
-        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
 
-        var resetPasswordCommand = _mapper.Map<ResetPasswordCommand>(request); 
+        var resetPasswordCommand = mapper.Map<ResetPasswordCommand>(request); 
         resetPasswordCommand = resetPasswordCommand with { BaseUrl = baseUrl };
     
-        var resetPasswordResult = await _mediatr.Send(resetPasswordCommand);
+        var resetPasswordResult = await mediatr.Send(resetPasswordCommand);
     
         return resetPasswordResult.Match(
             resetPasswordRes =>
@@ -155,10 +145,10 @@ public class AuthenticationController : ApiController
     [HttpPost("change-email")]
     public async Task<IActionResult> ChangeEmailAsync([FromBody] ChangeEmailRequest request)
     {
-        var baseUrl = _configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-        var changeEmailCommand = _mapper.Map<ChangeEmailCommand>(request); 
+        var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+        var changeEmailCommand = mapper.Map<ChangeEmailCommand>(request); 
         changeEmailCommand = changeEmailCommand with { BaseUrl = baseUrl }; 
-        var changeEmailResult = await _mediatr.Send(changeEmailCommand);
+        var changeEmailResult = await mediatr.Send(changeEmailCommand);
   
         return changeEmailResult.Match(
             changeEmailRes => Ok(changeEmailResult.Value),

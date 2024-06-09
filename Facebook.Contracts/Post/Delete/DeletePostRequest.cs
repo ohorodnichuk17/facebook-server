@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Facebook.Contracts.Story.Common.Validation;
 
-namespace Facebook.Contracts.Story.Delete;
+namespace Facebook.Contracts.Post.Delete;
 
-public record DeleteStoryRequest
+public record DeletePostRequest
 {
     [Required(ErrorMessage = "{PropertyName} is required.")]
     [GuidValidation(ErrorMessage = "{PropertyName} must be a valid GUID.")]

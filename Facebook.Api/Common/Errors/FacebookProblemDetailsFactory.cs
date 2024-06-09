@@ -8,16 +8,11 @@ using Microsoft.Extensions.Options;
 
 namespace Facebook.Server.Common.Errors;
 
-public class FacebookProblemDetailsFactory : ProblemDetailsFactory
+public class FacebookProblemDetailsFactory(IOptions<ApiBehaviorOptions> options) : ProblemDetailsFactory
 {
-    private readonly ApiBehaviorOptions _options;
+    private readonly ApiBehaviorOptions _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
-    public FacebookProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
-    {
-        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-    }
-   
-	public override ProblemDetails CreateProblemDetails(
+    public override ProblemDetails CreateProblemDetails(
 		HttpContext httpContext,
 		int? statusCode = null,
 		string? title = null,

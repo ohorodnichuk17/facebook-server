@@ -7,23 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Story;
 
-public class StoryRepository : IStoryRepository
+public class StoryRepository(FacebookDbContext context) : IStoryRepository
 {
-    private readonly FacebookDbContext _context;
-
-    public StoryRepository(FacebookDbContext context)
-    {
-        _context = context;
-    }
-    
     public async Task<ErrorOr<IEnumerable<StoryEntity>>> GetAllStoriesAsync()
     {
-        return await _context.Stories.ToListAsync();
+        return await context.Stories.ToListAsync();
     }
     
     public async Task<ErrorOr<StoryEntity>> GetStoryByIdAsync(Guid id)
     {
-        var story = await _context.Stories.FindAsync(id);
+        var story = await context.Stories.FindAsync(id);
 
         if (story == null)
         {
@@ -37,8 +30,8 @@ public class StoryRepository : IStoryRepository
     {
         try
         {
-            _context.Stories.Add(story);
-            await _context.SaveChangesAsync();
+            context.Stories.Add(story);
+            await context.SaveChangesAsync();
             return story.Id;
         }
         catch (Exception ex)
@@ -51,7 +44,7 @@ public class StoryRepository : IStoryRepository
     {
         try
         {
-            var existingStory = await _context.Stories.FindAsync(story.Id);
+            var existingStory = await context.Stories.FindAsync(story.Id);
 
             if (existingStory == null)
             {
@@ -61,8 +54,8 @@ public class StoryRepository : IStoryRepository
             existingStory.Content = story.Content;
             existingStory.Image = story.Image;
 
-            _context.Stories.Update(existingStory);
-            await _context.SaveChangesAsync();
+            context.Stories.Update(existingStory);
+            await context.SaveChangesAsync();
         
             return Unit.Value; 
         }
@@ -76,14 +69,14 @@ public class StoryRepository : IStoryRepository
     {
         try
         {
-            var story = await _context.Stories.FindAsync(storyId);
+            var story = await context.Stories.FindAsync(storyId);
             if (story == null)
             {
                 return Error.Failure("Story not found");
             }
 
-            _context.Stories.Remove(story);
-            await _context.SaveChangesAsync();
+            context.Stories.Remove(story);
+            await context.SaveChangesAsync();
             return true;
         }
         catch (Exception ex)
@@ -94,7 +87,7 @@ public class StoryRepository : IStoryRepository
 
     public async Task<ErrorOr<Unit>> SaveStoryAsync(StoryEntity story)
     {
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return Unit.Value;
     }
 }

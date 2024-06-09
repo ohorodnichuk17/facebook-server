@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Facebook.Application.Authentication.Queries;
+namespace Facebook.Application.Authentication.Login;
 
 public class LoginQueryValidator : AbstractValidator<LoginQuery>
 {

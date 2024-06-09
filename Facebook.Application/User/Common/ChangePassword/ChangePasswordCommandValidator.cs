@@ -1,5 +1,4 @@
-﻿using Facebook.Application.Users.Common.ChangePassword;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Facebook.Application.User.Common.ChangePassword;
 

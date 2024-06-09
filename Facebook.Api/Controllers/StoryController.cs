@@ -104,5 +104,4 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
             return StatusCode(500, "An error occurred while getting story.");
         }
     }
-
 }

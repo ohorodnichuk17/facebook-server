@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace Facebook.Application.Services;
 
-public class EmailService(ISmtpService _smtpService)
+public class EmailService(ISmtpService smtpService)
 {
     public async Task<ErrorOr<Success>> SendEmailConfirmationEmailAsync(
         Guid userId, string email, string token, string baseUrl, string userName)
@@ -27,7 +27,7 @@ public class EmailService(ISmtpService _smtpService)
 
         emailBody = emailBody.Replace("{{ code }}", confirmationUrl);
 
-        await _smtpService.SendEmailAsync(email, "Email confirmation.", emailBody);
+        await smtpService.SendEmailAsync(email, "Email confirmation.", emailBody);
 
         return Result.Success;
     }
@@ -54,7 +54,7 @@ public class EmailService(ISmtpService _smtpService)
 
         string emailSubject = isReset ? "Reset password" : "Forgot password";
     
-        await _smtpService.SendEmailAsync(email, emailSubject, emailBody);
+        await smtpService.SendEmailAsync(email, emailSubject, emailBody);
 
         return Result.Success;
     }
@@ -81,7 +81,7 @@ public class EmailService(ISmtpService _smtpService)
 
         emailBody = emailBody.Replace("{{ url }}", url);
 
-        await _smtpService.SendEmailAsync(email, "Change Email", emailBody);
+        await smtpService.SendEmailAsync(email, "Change Email", emailBody);
 
         return Result.Success;
     }

@@ -1,7 +1,7 @@
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Http;
 
-namespace Facebook.Application.Common.Interfaces.Services;
+namespace Facebook.Application.Common.Interfaces.Common;
 
 public interface IImageStorageService
 {

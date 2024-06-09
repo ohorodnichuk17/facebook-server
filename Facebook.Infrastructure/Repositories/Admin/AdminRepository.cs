@@ -1,101 +1,123 @@
-// using ErrorOr;
-// using Facebook.Application.Common.Admin;
-// using Facebook.Domain.User;
-// using MediatR;
-// using Microsoft.AspNetCore.Identity;
-//
-// namespace Facebook.Infrastructure.Repositories.Admin;
-//
-// public class AdminRepository : IAdminRepository
-// {
-//     private readonly UserManager<User> _userManager;
-//     
-//     public AdminRepository(UserManager<User> userManager)
-//     {
-//         _userManager = userManager;
-//     }
-//     
-     // public async Task<ErrorOr<User>> CreateAsync(User user, string password, string role)
-     // {
-     //     user.UserName = $"{user.Email}".ToLower();
-     //
-     //     var createUserResult = await _userManager.CreateAsync(user, password);
-     //
-     //     if (!createUserResult.Succeeded)
-     //     {
-     //         foreach (var error in createUserResult.Errors)
-     //         {
-     //             Console.WriteLine($"Error creating user: {error.Description}");
-     //         }
-     //         return Error.Failure("Error creating user");
-     //     }
-     //
-     //     var addToRoleResult = await _userManager.AddToRoleAsync(user, role);
-     //
-     //     if (!addToRoleResult.Succeeded)
-     //     {
-     //         foreach (var error in addToRoleResult.Errors)
-     //         {
-     //             Console.WriteLine($"Error adding user to role: {error.Description}");
-     //         }
-     //         return Error.Failure("Error adding user to role");
-     //     }
-     //
-     //     return user;
-     // }
-//
-//     public Task<ErrorOr<Unit>> BlockUserAsync(string userId)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<Unit>> SetProfilePrivacyAsync(string userId, bool isProfilePublic)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<bool>> GetProfilePrivacyAsync(string userId)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<Unit>> DeleteUserAsync(string userId)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<User>> GetUserByEmailAsync(string email)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<User>> GetUserByIdAsync(string userId)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<List<User>>> GetAllUsersAsync()
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<List<User>>> SearchUsersAsync(string firstName, string lastName)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<List<User>>> GetRecentlyAddedUsersAsync(DateTime sinceDate)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     public Task<ErrorOr<List<User>>> GetBlockedUsersAsync()
-//     {
-//         throw new NotImplementedException();
-//     }
-// }
+using ErrorOr;
+using Facebook.Application.Common.Interfaces.Admin;
+using Facebook.Application.Common.Interfaces.Admin.IRepository;
+using Facebook.Domain.User;
+using Facebook.Infrastructure.Repositories.User;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+namespace Facebook.Infrastructure.Repositories.Admin;
+
+public class AdminRepository(UserManager<UserEntity> userManager) : UserRepository(userManager), IAdminRepository
+{
+    private readonly UserManager<UserEntity> _userManager = userManager;
+
+    public async Task<ErrorOr<UserEntity>> CreateAsync(UserEntity user, string password, string role)
+     {
+         user.UserName = $"{user.Email}".ToLower();
+     
+         var createUserResult = await _userManager.CreateAsync(user, password);
+     
+         if (!createUserResult.Succeeded)
+         {
+             foreach (var error in createUserResult.Errors)
+             {
+                 Console.WriteLine($"Error creating user: {error.Description}");
+             }
+             return Error.Failure("Error creating user");
+         }
+     
+         var addToRoleResult = await _userManager.AddToRoleAsync(user, role);
+     
+         if (!addToRoleResult.Succeeded)
+         {
+             foreach (var error in addToRoleResult.Errors)
+             {
+                 Console.WriteLine($"Error adding user to role: {error.Description}");
+             }
+             return Error.Failure("Error adding user to role");
+         }
+     
+         return user;
+     }
+
+    public async Task<ErrorOr<Unit>> DeleteUserAsync(string userId)
+    {
+        try
+        {
+            var userToDelete = await _userManager.FindByIdAsync(userId);
+            if (userToDelete == null)
+            {
+                return Error.Failure("User not found");
+            }
+
+            var deleteResult = await _userManager.DeleteAsync(userToDelete);
+            if (!deleteResult.Succeeded)
+            {
+                foreach (var error in deleteResult.Errors)
+                {
+                    Console.WriteLine($"Error deleting user: {error.Description}");
+                }
+                return Error.Failure("Error deleting user");
+            }
+
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return Error.Failure("An error occurred while deleting the user");
+        }
+    }
+
+    public async Task<ErrorOr<UserEntity>> GetUserByEmailAsync(string email)
+    {
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return Error.Failure("User not found");
+            }
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Error.Failure("An error occurred while retrieving the user");
+        }
+    }
+
+    public new async Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Error.Failure("User not found");
+            }
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Error.Failure("An error occurred while retrieving the user");
+        }
+    }
+
+    public new async Task<ErrorOr<List<UserEntity>>> GetAllUsersAsync()
+    {
+        try
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return users;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Error.Failure("An error occurred while retrieving the users");
+        }
+    }
+}

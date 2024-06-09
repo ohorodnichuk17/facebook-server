@@ -1,7 +1,8 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Application.Common.Interfaces.Services;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
+using Facebook.Application.Common.Interfaces.User;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Story;
 using MediatR;
 

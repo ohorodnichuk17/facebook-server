@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Facebook.Application.Authentication.Commands.Register;
+namespace Facebook.Application.Authentication.Register;
 
 public class RegisterCommandValidator :  AbstractValidator<RegisterCommand>
 {

@@ -6,20 +6,14 @@ using Facebook.Domain.TypeExtensions;
 
 namespace Facebook.Application.Story.Query.GetById;
 
-public class GetStoryByIdQueryHandler : IRequestHandler<GetStoryByIdQuery, ErrorOr<StoryEntity>>
+public class GetStoryByIdQueryHandler(IStoryRepository storyRepository)
+    : IRequestHandler<GetStoryByIdQuery, ErrorOr<StoryEntity>>
 {
-    private readonly IStoryRepository _storyRepository;
-
-    public GetStoryByIdQueryHandler(IStoryRepository storyRepository)
-    {
-        _storyRepository = storyRepository;
-    }
-
     public async Task<ErrorOr<StoryEntity>> Handle(GetStoryByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _storyRepository.GetStoryByIdAsync(request.Id);
+            var result = await storyRepository.GetStoryByIdAsync(request.Id);
 
             if (result.IsError)
             {

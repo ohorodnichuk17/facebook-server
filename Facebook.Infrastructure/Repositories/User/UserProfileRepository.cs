@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Facebook.Infrastructure.Repositories;
+namespace Facebook.Infrastructure.Repositories.User;
 
 public class UserProfileRepository : IUserProfileRepository
 {

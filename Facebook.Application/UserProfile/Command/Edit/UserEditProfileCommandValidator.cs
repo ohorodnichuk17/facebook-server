@@ -36,7 +36,9 @@ public class UserEditProfileCommandValidator : AbstractValidator<UserEditProfile
 
         RuleFor(r => r.Pronouns)
             .Must(pronouns => pronouns == "she/her" || pronouns == "he/him" || pronouns == "they/them" || pronouns == "do not specify")
-            .WithMessage("Invalid pronouns value.");
+            .WithMessage("Invalid pronouns value.")
+            .When(r => !string.IsNullOrEmpty(r.Pronouns)); 
+
 
         RuleFor(r => r.Region)
             .MaximumLength(100).WithMessage("Region must not exceed 100 characters.")

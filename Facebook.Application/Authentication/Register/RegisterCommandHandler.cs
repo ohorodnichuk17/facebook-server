@@ -16,47 +16,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Facebook.Application.Authentication.Register;
 
-public class RegisterCommandHandler :
-    IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+public class RegisterCommandHandler(
+    IAdminRepository adminRepository,
+    IUserRepository userRepository,
+    IUserProfileRepository userProfileRepository,
+    ISender mediatr,
+    ILogger<RegisterCommandHandler> logger,
+    IJwtGenerator jwtGenerator,
+    IImageStorageService imageStorageService)
+    :
+        IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
-    private readonly IAdminRepository _adminRepository;
-    private readonly IUserProfileRepository _userProfileRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ISender _mediatr;
-    private readonly ILogger<RegisterCommandHandler> _logger;
-    private readonly IJwtGenerator _jwtGenerator;
-    private readonly IImageStorageService _imageStorageService;
-
-    public RegisterCommandHandler(
-        IAdminRepository adminRepository,
-        IUserRepository userRepository,
-        IUserProfileRepository userProfileRepository,
-        ISender mediatr,
-        ILogger<RegisterCommandHandler> logger,
-        IJwtGenerator jwtGenerator,
-        IImageStorageService imageStorageService)
-    {
-        _adminRepository = adminRepository;
-        _userRepository = userRepository;
-        _userProfileRepository = userProfileRepository;
-        _mediatr = mediatr;
-        _logger = logger;
-        _jwtGenerator = jwtGenerator;
-        _imageStorageService = imageStorageService;
-    }
-
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command,
     CancellationToken cancellationToken)
     {
         try
         {
-            _logger.LogInformation("Starting user registration process...");
+            logger.LogInformation("Starting user registration process...");
 
-            var errorOrUser = await _userRepository.GetByEmailAsync(command.Email);
+            var errorOrUser = await userRepository.GetByEmailAsync(command.Email);
 
             if (errorOrUser.IsSuccess())
             {
-                _logger.LogWarning("User with email {Email} already exists", command.Email);
+                logger.LogWarning("User with email {Email} already exists", command.Email);
                 return Error.Validation("User with this email already exists");
             }
 
@@ -72,8 +54,8 @@ public class RegisterCommandHandler :
 
             var role = Roles.User;
 
-            var userResult = await _adminRepository.CreateAsync(user, command.Password, role);
-            var userProfileResult = await _userProfileRepository.UserCreateProfileAsync(user.Id);
+            var userResult = await adminRepository.CreateAsync(user, command.Password, role);
+            var userProfileResult = await userProfileRepository.UserCreateProfileAsync(user.Id);
 
             if (userResult.IsError || userProfileResult.IsError)
             {
@@ -82,7 +64,7 @@ public class RegisterCommandHandler :
 
             if (command.Avatar != null)
             {
-                var imageName = await _imageStorageService.AddAvatarAsync(user, command.Avatar);
+                var imageName = await imageStorageService.AddAvatarAsync(user, command.Avatar);
                 if (imageName == null)
                 {
                     return Error.Unexpected("Avatar saving error");
@@ -90,14 +72,13 @@ public class RegisterCommandHandler :
                 user.Avatar = imageName;
             }
 
-
-            var avatarResult = await _userRepository.SaveUserAsync(user);
+            var avatarResult = await userRepository.SaveUserAsync(user);
             if (avatarResult.IsError)
             {
                 return avatarResult.Errors;
             }
 
-            var sendConfirmationResult = await _mediatr.Send(
+            var sendConfirmationResult = await mediatr.Send(
                 new SendConfirmationEmailCommand(user.Email, command.BaseUrl));
 
             if (sendConfirmationResult.IsError)
@@ -105,15 +86,15 @@ public class RegisterCommandHandler :
                 return sendConfirmationResult.Errors;
             }
 
-            var token = await _jwtGenerator.GenerateJwtTokenAsync(user, role);
+            var token = await jwtGenerator.GenerateJwtTokenAsync(user, role);
 
-            _logger.LogInformation("User registration process completed successfully");
+            logger.LogInformation("User registration process completed successfully");
 
             return new AuthenticationResult(user.Id, user, token);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred during user registration");
+            logger.LogError(ex, "Error occurred during user registration");
             throw;
         }
     }

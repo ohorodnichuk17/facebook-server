@@ -15,7 +15,6 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[AllowAnonymous]
 public class UserProfileController : ApiController
 {
     private readonly ISender _mediatr;

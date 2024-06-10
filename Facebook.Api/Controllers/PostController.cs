@@ -15,7 +15,6 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[AllowAnonymous]
 public class PostController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
 {
     [HttpPost("create")]

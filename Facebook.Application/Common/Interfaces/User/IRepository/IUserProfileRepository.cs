@@ -11,7 +11,8 @@ namespace Facebook.Application.Common.Interfaces.Persistance;
 
 public interface IUserProfileRepository
 {
-    Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile, string name, string avatar);
+    public Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
+        string firstName, string lastName, string avatar);
     Task<ErrorOr<UserProfileEntity>> UserCreateProfileAsync(Guid userId);
     Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId);
     Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId);

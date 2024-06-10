@@ -11,7 +11,7 @@ public class PostEntity
     public string? Location { get; set; }
     public ICollection<ImagesEntity>? Images { get; set; }
 
-    public bool IsArchive { get; set; }
+    public bool IsArchive { get; set; } = false;
 
     private DateTime _createdAt;
     public DateTime CreatedAt

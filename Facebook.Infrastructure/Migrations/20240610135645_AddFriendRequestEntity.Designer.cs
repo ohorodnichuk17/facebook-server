@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Facebook.Infrastructure.Migrations
 {
     [DbContext(typeof(FacebookDbContext))]
-    partial class FacebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610135645_AddFriendRequestEntity")]
+    partial class AddFriendRequestEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,12 +98,15 @@ namespace Facebook.Infrastructure.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("UserEntityId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Stories");
                 });
@@ -255,8 +261,7 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersProfiles");
                 });
@@ -417,9 +422,7 @@ namespace Facebook.Infrastructure.Migrations
                 {
                     b.HasOne("Facebook.Domain.User.UserEntity", null)
                         .WithMany("Stories")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEntityId");
                 });
 
             modelBuilder.Entity("Facebook.Domain.User.FriendRequestEntity", b =>
@@ -451,8 +454,8 @@ namespace Facebook.Infrastructure.Migrations
             modelBuilder.Entity("Facebook.Domain.User.UserProfileEntity", b =>
                 {
                     b.HasOne("Facebook.Domain.User.UserEntity", "UserEntity")
-                        .WithOne()
-                        .HasForeignKey("Facebook.Domain.User.UserProfileEntity", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

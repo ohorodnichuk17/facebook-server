@@ -16,10 +16,15 @@ public class UserEditProfileCommandValidator : AbstractValidator<UserEditProfile
            .MinimumLength(5).WithMessage("Biography must be at least 5 characters.")
            .When(r => !string.IsNullOrEmpty(r.Biography));
 
-        RuleFor(r => r.UserName)
-            .MaximumLength(100).WithMessage("User name must not exceed 100 characters.")
-            .MinimumLength(5).WithMessage("User name must be at least 5 characters.")
-            .When(r => !string.IsNullOrEmpty(r.UserName));
+        RuleFor(r => r.FirstName)
+            .MaximumLength(100).WithMessage("First name must not exceed 100 characters.")
+            .MinimumLength(5).WithMessage("First name must be at least 5 characters.")
+            .When(r => !string.IsNullOrEmpty(r.FirstName));
+        
+        RuleFor(r => r.LastName)
+            .MaximumLength(100).WithMessage("Last name must not exceed 100 characters.")
+            .MinimumLength(5).WithMessage("Last name must be at least 5 characters.")
+            .When(r => !string.IsNullOrEmpty(r.LastName));
 
         RuleFor(r => r.UserId)
             .NotEmpty().WithMessage("User ID is required.");

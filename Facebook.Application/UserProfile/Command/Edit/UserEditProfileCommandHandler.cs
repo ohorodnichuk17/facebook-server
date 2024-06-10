@@ -54,7 +54,9 @@ public class UserEditProfileCommandHandler :
             userProfile.IsBlocked = request.isBlocked;
             userProfile.IsProfilePublic = request.IsProfilePublic;
             userProfile.Region = request.Region;
-            user.UserName = request.UserName;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+
             if (request.CoverPhoto != null && request.CoverPhoto.Length != 0)
             {
                 var coverPhoto = await _imageStorageService.CoverPhotoAsync(userProfile, request.CoverPhoto);
@@ -66,7 +68,7 @@ public class UserEditProfileCommandHandler :
                 user.Avatar = avatar;
             }
 
-            var editprofileResult = await _userProfileRepository.UserEditProfileAsync(userProfile, user.UserName, user.Avatar);
+            var editprofileResult = await _userProfileRepository.UserEditProfileAsync(userProfile, user.FirstName, user.LastName, user.Avatar);
 
             if (editprofileResult.IsError)
                 return editprofileResult.Errors;

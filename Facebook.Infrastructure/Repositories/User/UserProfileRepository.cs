@@ -73,7 +73,8 @@ public class UserProfileRepository : IUserProfileRepository
         return userProfile;
     }
 
-    public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile, string name, string avatar)
+    public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile, 
+        string firstName,  string lastName, string avatar)
     {
         var existProfile = await _context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
         var user = await _userManager.FindByIdAsync(userProfile.UserId.ToString());
@@ -89,7 +90,8 @@ public class UserProfileRepository : IUserProfileRepository
         existProfile.Region = userProfile.Region;
         existProfile.Country = userProfile.Country;
         existProfile.City = userProfile.City;
-        user.UserName = name;
+        user.FirstName = firstName;
+        user.LastName = lastName;
         user.Avatar = avatar;
 
         _context.UsersProfiles.Update(existProfile);

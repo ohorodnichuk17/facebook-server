@@ -8,31 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.User;
 
-public class UserProfileRepository : IUserProfileRepository
+public class UserProfileRepository(UserManager<UserEntity> userManager, FacebookDbContext context)
+    : IUserProfileRepository
 {
-    private readonly UserManager<UserEntity> _userManager;
-    private readonly FacebookDbContext _context;
-
-    public UserProfileRepository(UserManager<UserEntity> userManager, FacebookDbContext context)
-    {
-        _userManager = userManager;
-        _context = context;
-    }
-
     public async Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId)
     {
         try
         {
-            var deleteUser = await _userManager.FindByIdAsync(userId);
-            var deleteUserProfile = await _context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
+            var deleteUser = await userManager.FindByIdAsync(userId);
+            var deleteUserProfile = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
             if (deleteUser == null)
             {
                 return Error.Failure("User not found");
             }
 
-            _context.Users.Remove(deleteUser);
-            _context.UsersProfiles.Remove(deleteUserProfile);
-            await _context.SaveChangesAsync();
+            context.Users.Remove(deleteUser);
+            context.UsersProfiles.Remove(deleteUserProfile);
+            await context.SaveChangesAsync();
             return true;
         }
         catch (Exception ex)
@@ -48,7 +40,7 @@ public class UserProfileRepository : IUserProfileRepository
             return Error.Failure("Invalid userId");
         }
 
-        var user = await _context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
+        var user = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
 
         if (user == null)
         {
@@ -67,8 +59,8 @@ public class UserProfileRepository : IUserProfileRepository
             IsProfilePublic = true
         };
 
-        await _context.UsersProfiles.AddAsync(userProfile);
-        await _context.SaveChangesAsync();
+        await context.UsersProfiles.AddAsync(userProfile);
+        await context.SaveChangesAsync();
 
         return userProfile;
     }
@@ -76,8 +68,8 @@ public class UserProfileRepository : IUserProfileRepository
     public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile, 
         string firstName,  string lastName, string avatar)
     {
-        var existProfile = await _context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
-        var user = await _userManager.FindByIdAsync(userProfile.UserId.ToString());
+        var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
+        var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
         if (existProfile == null || user == null)
         {
             return Error.Failure("Profile not found!");
@@ -94,9 +86,9 @@ public class UserProfileRepository : IUserProfileRepository
         user.LastName = lastName;
         user.Avatar = avatar;
 
-        _context.UsersProfiles.Update(existProfile);
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
+        context.UsersProfiles.Update(existProfile);
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
 
         return existProfile;
     }
@@ -105,7 +97,7 @@ public class UserProfileRepository : IUserProfileRepository
     {
         try
         {
-            var userToBlock = await _context.UsersProfiles.FindAsync(userId);
+            var userToBlock = await context.UsersProfiles.FindAsync(userId);
 
             if (userToBlock == null)
             {
@@ -114,7 +106,7 @@ public class UserProfileRepository : IUserProfileRepository
 
             userToBlock.IsBlocked = true;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return Unit.Value;
         }
@@ -128,7 +120,7 @@ public class UserProfileRepository : IUserProfileRepository
     {
         try
         {
-            var userToUnBlock = await _context.UsersProfiles.FindAsync(userId);
+            var userToUnBlock = await context.UsersProfiles.FindAsync(userId);
 
             if (userToUnBlock == null)
             {
@@ -137,7 +129,7 @@ public class UserProfileRepository : IUserProfileRepository
 
             userToUnBlock.IsBlocked = false;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return Unit.Value;
         }

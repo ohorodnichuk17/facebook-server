@@ -6,25 +6,14 @@ using Facebook.Contracts.UserProfile.EditUserProfile;
 using Facebook.Contracts.UserProfile.GetUserProfileById;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System.Security.Claims;
 
 namespace Facebook.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserProfileController : ApiController
+public class UserProfileController(ISender mediatr, IMapper mapper) : ApiController
 {
-    private readonly ISender _mediatr;
-    private readonly IMapper _mapper;
-
-    public UserProfileController(ISender mediatr, IMapper mapper)
-    {
-        _mediatr = mediatr;
-        _mapper = mapper;
-    }
     [HttpPut("edit-profile")]
     public async Task<IActionResult> EditProfileAsync([FromForm] UserEditProfileRequest request)
     {
@@ -46,8 +35,8 @@ public class UserProfileController : ApiController
             avatar = memoryStream.ToArray();
         }
 
-        var editResult = await _mediatr.Send(
-            _mapper.Map<UserEditProfileCommand>((request, coverPhoto, avatar)));
+        var editResult = await mediatr.Send(
+            mapper.Map<UserEditProfileCommand>((request, coverPhoto, avatar)));
 
         return editResult.Match(
             authResult => Ok(),
@@ -56,8 +45,8 @@ public class UserProfileController : ApiController
     [HttpDelete("delete-profile")]
     public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteUserRequest request)
     {
-        var command = _mapper.Map<DeleteUserCommand>(request);
-        var deleteResult = await _mediatr.Send(command);
+        var command = mapper.Map<DeleteUserCommand>(request);
+        var deleteResult = await mediatr.Send(command);
 
         return deleteResult.Match(
         deleteRes => Ok(),
@@ -66,8 +55,8 @@ public class UserProfileController : ApiController
     [HttpGet("get-profile-by-id")]
     public async Task<IActionResult> GetUserProfileByIdAsync([FromQuery] GetUserProfileByIdRequest request)
     {
-        var query = _mapper.Map<GetUserProfileByIdQuery>(request);
-        var getRes = await _mediatr.Send(query);
+        var query = mapper.Map<GetUserProfileByIdQuery>(request);
+        var getRes = await mediatr.Send(query);
 
         return getRes.Match(
         getRes => Ok(getRes),

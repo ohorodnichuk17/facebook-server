@@ -2,6 +2,7 @@ using ErrorOr;
 using Facebook.Application.Common.Interfaces.Admin;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Domain.User;
+using Facebook.Infrastructure.Common.Persistence;
 using Facebook.Infrastructure.Repositories.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Admin;
 
-public class AdminRepository(UserManager<UserEntity> userManager) : UserRepository(userManager), IAdminRepository
+public class AdminRepository(UserManager<UserEntity> userManager, FacebookDbContext context) 
+    : UserRepository(userManager, context), IAdminRepository
 {
     private readonly UserManager<UserEntity> _userManager = userManager;
 

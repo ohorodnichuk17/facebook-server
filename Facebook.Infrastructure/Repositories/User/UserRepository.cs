@@ -168,8 +168,8 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
    public async Task<ErrorOr<Unit>> SendFriendRequestAsync(string userId, string friendId)
    {
       var sender = await userManager.Users
-          .Include(u => u.SentFriendRequests)
-          .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+         .Include(u => u.SentFriendRequests)
+         .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
 
       if (sender == null)
       {
@@ -177,8 +177,8 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
       }
 
       var receiver = await userManager.Users
-          .Include(u => u.ReceivedFriendRequests)
-          .FirstOrDefaultAsync(u => u.Id.ToString() == friendId);
+         .Include(u => u.ReceivedFriendRequests)
+         .FirstOrDefaultAsync(u => u.Id.ToString() == friendId);
 
       if (receiver == null)
       {
@@ -190,14 +190,15 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
          Id = Guid.NewGuid(),
          SenderId = sender.Id,
          ReceiverId = receiver.Id,
-         SentAt = DateTime.UtcNow
+         SentAt = DateTime.UtcNow,
+         IsAccepted = false
       };
 
       sender.SentFriendRequests.Add(friendRequest);
       receiver.ReceivedFriendRequests.Add(friendRequest);
 
-      await userManager.UpdateAsync(sender);
-      await userManager.UpdateAsync(receiver);
+      await context.FriendRequests.AddAsync(friendRequest);
+      await context.SaveChangesAsync();
 
       return Unit.Value;
    }
@@ -206,92 +207,52 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
    {
       try
       {
-         var receiver = context.Users
-             .Include(u => u.ReceivedFriendRequests)
-             .Where(u => u.Id.ToString() == userId).FirstOrDefault();
-         
-         var sender = context.Users
-            .Include(u => u.SentFriendRequests)
-            .Where(u => u.Id.ToString() == userId).FirstOrDefault();
+         var friendRequest = await context.FriendRequests
+            .FirstOrDefaultAsync(fr => fr.Id.ToString() == friendRequestId && fr.ReceiverId.ToString() == userId);
 
-         if (receiver == null)
-         {
-            Console.Error.WriteLine("User not found");
-            return Error.Failure("User not found");
-         }
-
-         Console.WriteLine($"User found: {receiver.Id}");
-
-         var friendRequest = new FriendRequestEntity
-         {
-            Id = new Guid(),
-            SenderId = sender.Id,
-            ReceiverId = receiver.Id,
-            SentAt = DateTime.UtcNow
-         };
-         
          if (friendRequest == null)
          {
-            Console.Error.WriteLine("Friend request not found");
             return Error.Failure("Friend request not found");
          }
 
-         Console.WriteLine($"Friend request found: {friendRequest.Id}");
-
          if (friendRequest.IsAccepted)
          {
-            Console.Error.WriteLine("Friend request already accepted");
             return Error.Failure("Friend request already accepted");
          }
 
          friendRequest.IsAccepted = true;
-
-         context.FriendRequests.Add(friendRequest);
+         context.FriendRequests.Update(friendRequest);
          await context.SaveChangesAsync();
 
          return Unit.Value;
       }
       catch (Exception ex)
       {
-         Console.Error.WriteLine($"Error accepting friend request: {ex.Message}");
-         Console.Error.WriteLine(ex.StackTrace);
          return Error.Failure(ex.ToString());
       }
    }
 
    public async Task<ErrorOr<Unit>> RejectFriendRequestAsync(string userId, string friendRequestId)
    {
-      var receiver = await userManager.Users
-          .Include(u => u.ReceivedFriendRequests)
-          .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
-
-      if (receiver == null)
+      try
       {
-         return Error.Failure("User not found");
+         var friendRequest = await context.FriendRequests
+            .FirstOrDefaultAsync(fr => fr.Id.ToString() == friendRequestId && fr.ReceiverId.ToString() == userId);
+
+         if (friendRequest == null)
+         {
+            return Error.Failure("Friend request not found");
+         }
+
+         context.FriendRequests.Remove(friendRequest);
+         await context.SaveChangesAsync();
+
+         return Unit.Value;
       }
-
-      var friendRequest = receiver.ReceivedFriendRequests.FirstOrDefault(fr => fr.Id.ToString() == friendRequestId);
-
-      if (friendRequest == null)
+      catch (Exception ex)
       {
-         return Error.Failure("Friend request not found");
+         return Error.Failure(ex.ToString());
       }
-
-      receiver.ReceivedFriendRequests.Remove(friendRequest);
-
-      var sender = await userManager.Users
-          .Include(u => u.SentFriendRequests)
-          .FirstOrDefaultAsync(u => u.Id == friendRequest.SenderId);
-
-      if (sender != null)
-      {
-         sender.SentFriendRequests.Remove(friendRequest);
-         await userManager.UpdateAsync(sender);
-      }
-
-      await userManager.UpdateAsync(receiver);
-
-      return Unit.Value;
    }
 
    public async Task<ErrorOr<Unit>> RemoveFriendAsync(string userId, string friendId)
@@ -299,14 +260,13 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
       try
       {
          var friendRequest = await context.FriendRequests
-             .FirstOrDefaultAsync(fr =>
-                 (fr.SenderId.ToString() == userId && fr.ReceiverId.ToString() == friendId) ||
-                 (fr.SenderId.ToString() == friendId && fr.ReceiverId.ToString() == userId) &&
-                 fr.IsAccepted);
+            .FirstOrDefaultAsync(fr =>
+               ((fr.SenderId.ToString() == userId && fr.ReceiverId.ToString() == friendId) ||
+                (fr.SenderId.ToString() == friendId && fr.ReceiverId.ToString() == userId)) &&
+               fr.IsAccepted);
 
          if (friendRequest == null)
          {
-            Console.Error.WriteLine("Friend relationship not found");
             return Error.Failure("Friend relationship not found");
          }
 
@@ -317,11 +277,10 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
       }
       catch (Exception ex)
       {
-         Console.Error.WriteLine($"Error removing friend: {ex.Message}");
-         Console.Error.WriteLine(ex.StackTrace);
          return Error.Failure(ex.Message);
       }
    }
+
 
 
    public async Task<ErrorOr<UserEntity>> GetFriendByIdAsync(string userId, string friendId)

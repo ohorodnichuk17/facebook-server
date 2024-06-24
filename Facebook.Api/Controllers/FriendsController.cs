@@ -1,8 +1,11 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
+using Facebook.Application.User.Friends.Query.GetAll;
 using Facebook.Application.User.Friends.Query.GetById;
 using Facebook.Contracts.Friends.AcceptFriendRequest;
 using Facebook.Contracts.Friends.RejectFriendRequest;
@@ -70,11 +73,11 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
    }
 
    [HttpGet("get-all-friends")]
-   public async Task<IActionResult> GetAllFriends()
+   public async Task<IActionResult> GetAllFriends([FromQuery] Guid userId)
    {
       try
       {
-         var query = new GetAllStoriesQuery();
+         var query = new GetAllFriendsQuery(userId);
          var friends = await mediatr.Send(query);
 
          return Ok(friends.Value);
@@ -100,7 +103,16 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
             {
                return NotFound();
             }
-            return Ok(friend);
+
+            var options = new JsonSerializerOptions
+            {
+               ReferenceHandler = ReferenceHandler.Preserve,
+               WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(friend, options);
+
+            return Ok(json);
          }
          else
          {

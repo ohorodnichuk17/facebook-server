@@ -153,17 +153,20 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
    public async Task<List<UserEntity>> GetAllFriendsAsync(string userId)
    {
       var users = await context.FriendRequests
-          .Include(u => u.Receiver)
-          .Where(u => u.ReceiverId.ToString() == userId)
-          .Select(u => u.Receiver).ToListAsync();
+         .Include(u => u.Sender)
+         .Include(u => u.Receiver)
+         .Where(u => u.ReceiverId.ToString() == userId || u.SenderId.ToString() == userId)
+         .Select(u => u.ReceiverId.ToString() == userId ? u.Sender : u.Receiver)
+         .ToListAsync();
 
       if (users.Count == 0)
       {
-         throw new Exception("User not found");
+         throw new Exception("Friends not found");
       }
 
       return users;
    }
+
 
    public async Task<ErrorOr<Unit>> SendFriendRequestAsync(string userId, string friendId)
    {

@@ -10,7 +10,7 @@ public class PostEntity
     public List<string>? Tags { get; set; }
     public string? Location { get; set; }
     public ICollection<ImagesEntity>? Images { get; set; }
-
+    public ICollection<ReactionEntity>? Reactions { get; set; }
     public bool IsArchive { get; set; } = false;
 
     private DateTime _createdAt;

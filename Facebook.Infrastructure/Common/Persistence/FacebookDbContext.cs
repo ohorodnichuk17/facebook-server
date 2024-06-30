@@ -36,8 +36,10 @@ public class FacebookDbContext
             .HasForeignKey(i => i.PostId);
 
         builder.Entity<ReactionEntity>()
-            .HasMany(i => i.Posts)
-            .WithMany(p => p.Reactions);
+            .HasOne(r => r.PostEntity)
+            .WithMany(p => p.Reactions)
+            .HasForeignKey(r => r.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<PostEntity>()
             .HasOne(p => p.User)
@@ -61,15 +63,5 @@ public class FacebookDbContext
             .HasForeignKey(fr => fr.ReceiverId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<ReactionEntity>().HasData(
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":like:", Emoji = "👍" },    
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":love:", Emoji = "❤️" },    
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":haha:", Emoji = "🤣" },
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":wow:", Emoji = "😮" },
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":sad:", Emoji = "😭" },    
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":angry:", Emoji = "🤬" },    
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":clown:", Emoji = "🤡" },    
-            new ReactionEntity { Id = Guid.NewGuid(), Code = ":smart:", Emoji = "🤓" }    
-        );
     }
 }

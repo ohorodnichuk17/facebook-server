@@ -5,15 +5,18 @@ using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.Persistance;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
+using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Domain.Post;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
 using Facebook.Infrastructure.Repositories;
 using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Post;
+using Facebook.Infrastructure.Repositories.Reaction;
 using Facebook.Infrastructure.Repositories.Story;
 using Facebook.Infrastructure.Repositories.User;
 using Facebook.Infrastructure.Services;
@@ -90,6 +93,7 @@ public static class DependencyInjection
 		services.AddScoped<IAdminRepository, AdminRepository>();
 		services.AddScoped<IStoryRepository, StoryRepository>();
 		services.AddScoped<IPostRepository, PostRepository>();
+		services.AddScoped<IReactionRepository, ReactionRepository>();
 		return services;
 	}
 

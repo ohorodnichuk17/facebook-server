@@ -11,7 +11,7 @@ public class UserProfileEntity
     public bool IsProfilePublic { get; set; } = true;
     public string? Pronouns { get; set; }
     public string? Country { get; set; }
-    public string? City { get; set; }
+    // public string? City { get; set; }
     public string? Region { get; set; }
     public UserEntity UserEntity { get; set; }
     // [ForeignKey("UserEntity")]

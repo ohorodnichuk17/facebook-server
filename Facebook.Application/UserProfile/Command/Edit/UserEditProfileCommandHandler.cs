@@ -34,7 +34,7 @@ public class UserEditProfileCommandHandler(
             var user = getU.Value;
 
             userProfile.Biography = request.Biography;
-            userProfile.City = request.City;
+            // userProfile.City = request.City;
             userProfile.Country = request.Country;
             userProfile.Pronouns = request.Pronouns;
             userProfile.IsBlocked = request.isBlocked;

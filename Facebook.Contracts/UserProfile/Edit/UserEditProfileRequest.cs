@@ -16,7 +16,7 @@ public class UserEditProfileRequest
     public IFormFile? Avatar { get; set; }
     public string? Country { get; set; }
     public string? Pronouns { get; set; }
-    public string? City { get; set; }
+    // public string? City { get; set; }
     public string? Region { get; set; }
     public string? Biography { get; set; }
     public bool IsProfilePublic { get; set; }

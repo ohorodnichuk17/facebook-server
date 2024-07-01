@@ -81,7 +81,7 @@ public class UserProfileRepository(UserManager<UserEntity> userManager, Facebook
         existProfile.IsBlocked = userProfile.IsBlocked;
         existProfile.Region = userProfile.Region;
         existProfile.Country = userProfile.Country;
-        existProfile.City = userProfile.City;
+        // existProfile.City = userProfile.City;
         user.FirstName = firstName;
         user.LastName = lastName;
         user.Avatar = avatar;

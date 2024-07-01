@@ -22,6 +22,6 @@ public record UserEditProfileCommand(
     bool IsProfilePublic,
     bool isBlocked,
     string? Country,
-    string? Region,
-    string? City
+    string? Region
+    // string? City
 ) : IRequest<ErrorOr<UserProfileEntity>>;

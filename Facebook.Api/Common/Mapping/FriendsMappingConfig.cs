@@ -2,6 +2,7 @@ using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
+using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends.AcceptFriendRequest;
 using Facebook.Contracts.Friends.RejectFriendRequest;
 using Facebook.Contracts.Friends.RemoveFriend;

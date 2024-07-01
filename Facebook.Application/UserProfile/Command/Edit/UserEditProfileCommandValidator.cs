@@ -34,7 +34,7 @@ public class UserEditProfileCommandValidator : AbstractValidator<UserEditProfile
             .MinimumLength(5).WithMessage("Country must be at least 5 characters.")
             .When(r => !string.IsNullOrEmpty(r.Country));
 
-        // RuleFor(r => r.City)
+        // RuleFor(r => r.City)git 
         //     .MaximumLength(100).WithMessage("City must not exceed 100 characters.")
         //     .MinimumLength(5).WithMessage("City must be at least 5 characters.")
         //     .When(r => !string.IsNullOrEmpty(r.City));

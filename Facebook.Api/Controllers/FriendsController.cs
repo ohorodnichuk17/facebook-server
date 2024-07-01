@@ -7,9 +7,11 @@ using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
 using Facebook.Application.User.Friends.Query.GetAll;
 using Facebook.Application.User.Friends.Query.GetById;
+using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends.AcceptFriendRequest;
 using Facebook.Contracts.Friends.RejectFriendRequest;
 using Facebook.Contracts.Friends.RemoveFriend;
+using Facebook.Contracts.Friends.SearchUsersByFirstAndLastNamesRequest;
 using Facebook.Contracts.Friends.SendFriendRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
@@ -123,5 +125,15 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
       {
          return StatusCode(500, "An error occurred while getting friend.");
       }
+   }
+   
+   [HttpPost("search-friends-by-first-and-last-names")]
+   public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
+   {
+      var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
+      
+      return result.Match(
+         success => Ok(success),
+         error => Problem(error));
    }
 }

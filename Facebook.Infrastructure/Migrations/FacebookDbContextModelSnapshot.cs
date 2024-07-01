@@ -43,7 +43,7 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("Facebook.Domain.Post.PostEntity", b =>
@@ -77,7 +77,7 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
@@ -102,7 +102,7 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Stories");
+                    b.ToTable("Stories", (string)null);
                 });
 
             modelBuilder.Entity("Facebook.Domain.User.FriendRequestEntity", b =>
@@ -129,7 +129,7 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("FriendRequests");
+                    b.ToTable("FriendRequests", (string)null);
                 });
 
             modelBuilder.Entity("Facebook.Domain.User.UserEntity", b =>
@@ -250,7 +250,7 @@ namespace Facebook.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UsersProfiles");
+                    b.ToTable("UsersProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

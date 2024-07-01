@@ -1,4 +1,5 @@
 using ErrorOr;
+using Facebook.Application.DTO_s;
 using Facebook.Domain.User;
 using MediatR;
 
@@ -11,7 +12,7 @@ public interface IUserRepository
    Task<ErrorOr<UserEntity>> CreateUserAsync(UserEntity user, string password);
    Task<ErrorOr<Unit>> DeleteUserAsync(string userId);
    Task<ErrorOr<UserEntity>> SaveUserAsync(UserEntity user);
-   Task<ErrorOr<List<UserEntity>>> SearchUsersByFirstNameAndLastNameAsync(string firstName, string lastName);
+   Task<ErrorOr<List<UserDto>>> SearchUsersByFirstNameAndLastNameAsync(string firstName, string lastName);
    Task<ErrorOr<UserEntity>> GetByEmailAsync(string email);
    Task<List<UserEntity>> GetAllFriendsAsync(string userId);
    Task<ErrorOr<Unit>> SendFriendRequestAsync(string userId, string friendId);

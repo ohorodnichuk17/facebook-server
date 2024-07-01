@@ -1,5 +1,8 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.DTO_s;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using MediatR;
@@ -104,7 +107,7 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
       return roles.ToList();
    }
 
-   public async Task<ErrorOr<List<UserEntity>>> SearchUsersByFirstNameAndLastNameAsync(string? firstName, string? lastName)
+   public async Task<ErrorOr<List<UserDto>>> SearchUsersByFirstNameAndLastNameAsync(string firstName, string lastName)
    {
       try
       {
@@ -113,26 +116,53 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
             return Error.Failure("No search criteria provided");
          }
 
-         var query = userManager.Users.AsQueryable();
+         var usersQuery = userManager.Users
+            .Include(u => u.Stories)
+            .Include(u => u.Posts)
+            .AsQueryable();
 
          if (!string.IsNullOrEmpty(firstName))
          {
-            query = query.Where(u => u.FirstName.Contains(firstName));
+            usersQuery = usersQuery.Where(u => u.FirstName.Contains(firstName));
          }
 
          if (!string.IsNullOrEmpty(lastName))
          {
-            query = query.Where(u => u.LastName.Contains(lastName));
+            usersQuery = usersQuery.Where(u => u.LastName.Contains(lastName));
          }
 
-         var searchResult = await query.ToListAsync();
+         var users = await usersQuery.ToListAsync();
 
-         if (searchResult.Count == 0)
+         var userIds = users.Select(u => u.Id).ToList();
+
+         var profilesQuery = context.UsersProfiles
+            .Where(up => userIds.Contains(up.UserId))
+            .ToDictionaryAsync(up => up.UserId);
+
+         var profiles = await profilesQuery;
+
+         var result = users.Select(u => new UserDto
+         {
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Avatar = u.Avatar,
+            IsProfilePublic = profiles.ContainsKey(u.Id) && profiles[u.Id].IsProfilePublic,
+            Birthday = profiles.ContainsKey(u.Id) && profiles[u.Id].IsProfilePublic ? u.Birthday : null,
+            Gender = profiles.ContainsKey(u.Id) && profiles[u.Id].IsProfilePublic ? u.Gender : null,
+            Stories = profiles.ContainsKey(u.Id) && profiles[u.Id].IsProfilePublic
+               ? u.Stories.ToList()
+               : new List<StoryEntity>(),
+            Posts = profiles.ContainsKey(u.Id) && profiles[u.Id].IsProfilePublic
+               ? u.Posts.ToList()
+               : new List<PostEntity>()
+         }).ToList();
+
+         if (result.Count == 0)
          {
             return Error.Failure("No users found");
          }
 
-         return searchResult;
+         return result;
       }
       catch (Exception ex)
       {

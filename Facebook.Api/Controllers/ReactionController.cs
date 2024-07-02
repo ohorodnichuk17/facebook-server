@@ -10,7 +10,8 @@ namespace Facebook.Server.Controllers;
 [AllowAnonymous]
 public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
 {
-    public IActionResult Index()
+    [HttpGet("get-reaction")]
+    public async Task<IActionResult> GetReaction()
     {
         return Ok();
     }

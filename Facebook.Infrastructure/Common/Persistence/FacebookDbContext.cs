@@ -41,6 +41,12 @@ public class FacebookDbContext
             .HasForeignKey(r => r.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Entity<ReactionEntity>()
+            .HasOne(r => r.UserEntity)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<PostEntity>()
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)

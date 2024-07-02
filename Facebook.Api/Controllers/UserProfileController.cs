@@ -13,6 +13,7 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class UserProfileController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPut("edit-profile")]

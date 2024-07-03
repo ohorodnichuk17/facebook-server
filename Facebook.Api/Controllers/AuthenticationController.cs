@@ -11,6 +11,8 @@ using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Facebook.Contracts.Authentication.Login.LoginRequest;
@@ -154,7 +156,7 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
             changeEmailRes => Ok(changeEmailResult.Value),
             errors => Problem(errors));
     }
-
+    
 
     [HttpGet("ping")]
     public IActionResult Ping()

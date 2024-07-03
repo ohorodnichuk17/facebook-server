@@ -11,131 +11,131 @@ namespace Facebook.Infrastructure.Repositories.User;
 public class UserProfileRepository(UserManager<UserEntity> userManager, FacebookDbContext context)
     : IUserProfileRepository
 {
-    public async Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId)
-    {
-        try
-        {
-            var deleteUser = await userManager.FindByIdAsync(userId);
-            var deleteUserProfile = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
-            if (deleteUser == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            context.Users.Remove(deleteUser);
-            context.UsersProfiles.Remove(deleteUserProfile);
-            await context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId)
-    {
-        if (userId == null)
-        {
-            return Error.Failure("Invalid userId");
-        }
-
-        var user = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
-
-        if (user == null)
-        {
+   public async Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId)
+   {
+      try
+      {
+         var deleteUser = await userManager.FindByIdAsync(userId);
+         var deleteUserProfile = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
+         if (deleteUser == null)
+         {
             return Error.Failure("User not found");
-        }
-        return user;
-    }
+         }
 
-    public async Task<ErrorOr<UserProfileEntity>> UserCreateProfileAsync(Guid userId)
-    {
-        UserProfileEntity userProfile = new UserProfileEntity()
-        {
-            Id = Guid.NewGuid(),
-            UserId = userId,
-            IsBlocked = false,
-            IsProfilePublic = true
-        };
+         context.Users.Remove(deleteUser);
+         context.UsersProfiles.Remove(deleteUserProfile);
+         await context.SaveChangesAsync();
+         return true;
+      }
+      catch (Exception ex)
+      {
+         return Error.Failure(ex.Message);
+      }
+   }
 
-        await context.UsersProfiles.AddAsync(userProfile);
-        await context.SaveChangesAsync();
+   public async Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId)
+   {
+      if (userId == null)
+      {
+         return Error.Failure("Invalid userId");
+      }
 
-        return userProfile;
-    }
+      var user = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
 
-    public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile, 
-        string firstName,  string lastName, string avatar)
-    {
-        var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
-        var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
-        if (existProfile == null || user == null)
-        {
-            return Error.Failure("Profile not found!");
-        }
+      if (user == null)
+      {
+         return Error.Failure("User not found");
+      }
+      return user;
+   }
 
-        existProfile.Biography = userProfile.Biography;
-        existProfile.CoverPhoto = userProfile.CoverPhoto;
-        existProfile.IsProfilePublic = userProfile.IsProfilePublic;
-        existProfile.IsBlocked = userProfile.IsBlocked;
-        existProfile.Region = userProfile.Region;
-        existProfile.Country = userProfile.Country;
-        // existProfile.City = userProfile.City;
-        user.FirstName = firstName;
-        user.LastName = lastName;
-        user.Avatar = avatar;
+   public async Task<ErrorOr<UserProfileEntity>> UserCreateProfileAsync(Guid userId)
+   {
+      UserProfileEntity userProfile = new UserProfileEntity()
+      {
+         Id = Guid.NewGuid(),
+         UserId = userId,
+         IsBlocked = false,
+         IsProfilePublic = true
+      };
 
-        context.UsersProfiles.Update(existProfile);
-        context.Users.Update(user);
-        await context.SaveChangesAsync();
+      await context.UsersProfiles.AddAsync(userProfile);
+      await context.SaveChangesAsync();
 
-        return existProfile;
-    }
+      return userProfile;
+   }
 
-    public async Task<ErrorOr<Unit>> BlockUserAsync(string userId)
-    {
-        try
-        {
-            var userToBlock = await context.UsersProfiles.FindAsync(userId);
+   public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
+       string firstName, string lastName, string avatar)
+   {
+      var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
+      var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
+      if (existProfile == null || user == null)
+      {
+         return Error.Failure("Profile not found!");
+      }
 
-            if (userToBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
+      existProfile.Biography = userProfile.Biography;
+      existProfile.CoverPhoto = userProfile.CoverPhoto;
+      existProfile.IsProfilePublic = userProfile.IsProfilePublic;
+      existProfile.IsBlocked = userProfile.IsBlocked;
+      existProfile.Region = userProfile.Region;
+      existProfile.Country = userProfile.Country;
+      // existProfile.City = userProfile.City;
+      user.FirstName = firstName;
+      user.LastName = lastName;
+      user.Avatar = avatar;
 
-            userToBlock.IsBlocked = true;
+      context.UsersProfiles.Update(existProfile);
+      context.Users.Update(user);
+      await context.SaveChangesAsync();
 
-            await context.SaveChangesAsync();
+      return existProfile;
+   }
 
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
+   public async Task<ErrorOr<Unit>> BlockUserAsync(string userId)
+   {
+      try
+      {
+         var userToBlock = await context.UsersProfiles.FindAsync(userId);
 
-    public async Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
-    {
-        try
-        {
-            var userToUnBlock = await context.UsersProfiles.FindAsync(userId);
+         if (userToBlock == null)
+         {
+            return Error.Failure("User not found");
+         }
 
-            if (userToUnBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
+         userToBlock.IsBlocked = true;
 
-            userToUnBlock.IsBlocked = false;
+         await context.SaveChangesAsync();
 
-            await context.SaveChangesAsync();
+         return Unit.Value;
+      }
+      catch (Exception ex)
+      {
+         return Error.Failure(ex.Message);
+      }
+   }
 
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
+   public async Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
+   {
+      try
+      {
+         var userToUnBlock = await context.UsersProfiles.FindAsync(userId);
+
+         if (userToUnBlock == null)
+         {
+            return Error.Failure("User not found");
+         }
+
+         userToUnBlock.IsBlocked = false;
+
+         await context.SaveChangesAsync();
+
+         return Unit.Value;
+      }
+      catch (Exception ex)
+      {
+         return Error.Failure(ex.Message);
+      }
+   }
 }

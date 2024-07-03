@@ -13,22 +13,22 @@ namespace Facebook.Server.Common.Mapping;
 
 public class FriendsMappingConfig : IRegister
 {
-    public void Register(TypeAdapterConfig config)
-    {
-        config.NewConfig<AcceptFriendRequestRequest, AcceptFriendRequestCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendRequestId, src => src.FriendRequestId);
-        
-        config.NewConfig<SendFriendRequestRequest, SendFriendRequestCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendId, src => src.FriendId);
-        
-        config.NewConfig<RejectFriendRequestRequest, RejectFriendRequestCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendRequestId, src => src.FriendRequestId);
-        
-        config.NewConfig<RemoveFriendRequest, RemoveFriendCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendId, src => src.FriendId);
-    }
+   public void Register(TypeAdapterConfig config)
+   {
+      config.NewConfig<AcceptFriendRequestRequest, AcceptFriendRequestCommand>()
+          .Map(dest => dest.UserId, src => src.UserId)
+          .Map(dest => dest.FriendRequestId, src => src.FriendRequestId);
+
+      config.NewConfig<SendFriendRequestRequest, SendFriendRequestCommand>()
+          .Map(dest => dest.UserId, src => src.UserId)
+          .Map(dest => dest.FriendId, src => src.FriendId);
+
+      config.NewConfig<RejectFriendRequestRequest, RejectFriendRequestCommand>()
+          .Map(dest => dest.UserId, src => src.UserId)
+          .Map(dest => dest.FriendRequestId, src => src.FriendRequestId);
+
+      config.NewConfig<RemoveFriendRequest, RemoveFriendCommand>()
+          .Map(dest => dest.UserId, src => src.UserId)
+          .Map(dest => dest.FriendId, src => src.FriendId);
+   }
 }

@@ -30,45 +30,45 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
    public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
-    
+
       return result.Match(
          success => Ok(success),
-         error => 
+         error =>
          {
             Console.Error.WriteLine($"Error in AcceptFriendRequest: {error}");
             return Problem(error.First().Description);
          });
    }
-   
+
    [HttpPost("send-friend-request")]
    public async Task<IActionResult> SendFriendRequest(SendFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SendFriendRequestCommand>(request));
-      
+
       return result.Match(
          success => Ok(success),
          error => Problem(error));
    }
-   
+
    [HttpPost("reject-friend-request")]
    public async Task<IActionResult> RejectFriendRequest(RejectFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
-    
+
       return result.Match(
          success => Ok(success),
-         error => 
+         error =>
          {
             Console.Error.WriteLine($"Error in RejectFriendRequest: {error}");
             return Problem(error.First().Description);
          });
    }
-   
+
    [HttpPost("remove-friend")]
    public async Task<IActionResult> RemoveFriend(RemoveFriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
-      
+
       return result.Match(
          success => Ok(success),
          error => Problem(error));
@@ -126,12 +126,12 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
          return StatusCode(500, "An error occurred while getting friend.");
       }
    }
-   
+
    [HttpPost("search-friends-by-first-and-last-names")]
    public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
-      
+
       return result.Match(
          success => Ok(success),
          error => Problem(error));

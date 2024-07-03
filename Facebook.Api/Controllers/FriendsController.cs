@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Facebook.Application.Story.Query.GetAll;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
@@ -24,51 +24,52 @@ namespace Facebook.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [AllowAnonymous]
-public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
+public class FriendsController(ISender mediatr, IMapper mapper, 
+   IConfiguration configuration, IUserRepository userRepository) : ApiController
 {
    [HttpPost("accept-friend-request")]
    public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
-
+    
       return result.Match(
          success => Ok(success),
-         error =>
+         error => 
          {
             Console.Error.WriteLine($"Error in AcceptFriendRequest: {error}");
             return Problem(error.First().Description);
          });
    }
-
+   
    [HttpPost("send-friend-request")]
    public async Task<IActionResult> SendFriendRequest(SendFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SendFriendRequestCommand>(request));
-
+      
       return result.Match(
          success => Ok(success),
          error => Problem(error));
    }
-
+   
    [HttpPost("reject-friend-request")]
    public async Task<IActionResult> RejectFriendRequest(RejectFriendRequestRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
-
+    
       return result.Match(
          success => Ok(success),
-         error =>
+         error => 
          {
             Console.Error.WriteLine($"Error in RejectFriendRequest: {error}");
             return Problem(error.First().Description);
          });
    }
-
+   
    [HttpPost("remove-friend")]
    public async Task<IActionResult> RemoveFriend(RemoveFriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
-
+      
       return result.Match(
          success => Ok(success),
          error => Problem(error));
@@ -126,14 +127,20 @@ public class FriendsController(ISender mediatr, IMapper mapper, IConfiguration c
          return StatusCode(500, "An error occurred while getting friend.");
       }
    }
-
+   
    [HttpPost("search-friends-by-first-and-last-names")]
    public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
+      
+      var options = new JsonSerializerOptions
+      {
+         ReferenceHandler = ReferenceHandler.Preserve,
+         WriteIndented = true
+      };
 
-      return result.Match(
-         success => Ok(success),
-         error => Problem(error));
+      var json = JsonSerializer.Serialize(result, options);
+
+      return Ok(json);
    }
 }

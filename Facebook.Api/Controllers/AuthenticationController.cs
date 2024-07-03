@@ -14,6 +14,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Facebook.Contracts.Authentication.Login.LoginRequest;
 using RegisterRequest = Facebook.Contracts.Authentication.Register.RegisterRequest;
@@ -156,7 +157,13 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
             changeEmailRes => Ok(changeEmailResult.Value),
             errors => Problem(errors));
     }
-    
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> LogoutAsync()
+    {
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        return Ok("Logged out successfully");
+    }
 
     [HttpGet("ping")]
     public IActionResult Ping()

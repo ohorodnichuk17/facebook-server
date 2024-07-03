@@ -1,13 +1,8 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
-using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
+using Facebook.Domain.Reaction;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Infrastructure.Repositories.Reaction;
 

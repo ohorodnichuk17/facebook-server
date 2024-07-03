@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Facebook.Domain.User;
+﻿namespace Facebook.Domain.User;
 
 public class UserProfileEntity
 {
@@ -11,9 +9,7 @@ public class UserProfileEntity
     public bool IsProfilePublic { get; set; } = true;
     public string? Pronouns { get; set; }
     public string? Country { get; set; }
-    // public string? City { get; set; }
     public string? Region { get; set; }
     public UserEntity UserEntity { get; set; }
-    // [ForeignKey("UserEntity")]
     public Guid UserId { get; set; }
 }

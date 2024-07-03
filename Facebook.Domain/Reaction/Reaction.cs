@@ -1,11 +1,7 @@
-﻿using Facebook.Domain.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Facebook.Domain.Post;
+using Facebook.Domain.User;
 
-namespace Facebook.Domain.Post;
+namespace Facebook.Domain.Reaction;
 
 public class ReactionEntity
 {

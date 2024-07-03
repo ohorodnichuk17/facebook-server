@@ -16,7 +16,5 @@ public class StoryEntity
 
    public bool IsExpired => DateTime.UtcNow > ExpiresAt;
 
-   // [ForeignKey("UserEntity")]
    public Guid UserId { get; set; }
-   // public UserEntity User { get; set; }
 }

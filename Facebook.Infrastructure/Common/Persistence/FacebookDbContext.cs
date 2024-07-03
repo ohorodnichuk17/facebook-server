@@ -1,10 +1,10 @@
 using Facebook.Domain.Post;
+using Facebook.Domain.Reaction;
 using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Facebook.Infrastructure.Common.Persistence;
 
@@ -47,9 +47,9 @@ public class FacebookDbContext
           .WithMany()
           .HasForeignKey(r => r.UserId)
           .OnDelete(DeleteBehavior.Cascade);
-
+      
       builder.Entity<PostEntity>()
-          .HasOne(p => p.User)
+          .HasOne<UserEntity>()
           .WithMany(u => u.Posts)
           .HasForeignKey(p => p.UserId);
 

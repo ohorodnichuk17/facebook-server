@@ -2,7 +2,7 @@
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
 using Facebook.Contracts.UserProfile.DeleteUser;
-using Facebook.Contracts.UserProfile.EditUserProfile;
+using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetUserProfileById;
 using MapsterMapper;
 using MediatR;

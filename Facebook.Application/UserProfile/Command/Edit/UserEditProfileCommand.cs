@@ -12,16 +12,14 @@ using System.Threading.Tasks;
 namespace Facebook.Application.UserProfile.Command.Edit;
 public record UserEditProfileCommand(
     Guid UserId,
-    // string? UserName,
     string? FirstName,
     string? LastName,
     byte[]? CoverPhoto,
     byte[]? Avatar,
     string? Pronouns,
     string? Biography,
-    bool IsProfilePublic,
-    bool isBlocked,
+    bool? IsProfilePublic,
+    bool? isBlocked,
     string? Country,
     string? Region
-    // string? City
 ) : IRequest<ErrorOr<UserProfileEntity>>;

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.DTO_s;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
@@ -132,15 +133,35 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
-      
+
+      if (result.IsError)
+      {
+         return BadRequest(result.Errors);
+      }
+
+      var users = result.Value; 
+
+      var response = users.Select(u => new UserDto
+      {
+         FirstName = u.FirstName,
+         LastName = u.LastName,
+         Avatar = u.Avatar,
+         Birthday = u.Birthday,
+         Gender = u.Gender,
+         Stories = u.Stories,
+         Posts = u.Posts,
+         IsProfilePublic = u.IsProfilePublic
+      }).ToList();
+
       var options = new JsonSerializerOptions
       {
          ReferenceHandler = ReferenceHandler.Preserve,
          WriteIndented = true
       };
 
-      var json = JsonSerializer.Serialize(result, options);
+      var json = JsonSerializer.Serialize(response, options);
 
       return Ok(json);
    }
+
 }

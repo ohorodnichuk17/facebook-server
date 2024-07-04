@@ -16,5 +16,11 @@ public class FriendRequestEntity
             _sentAt = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
-    public bool IsAccepted { get; set; } = false;
+    
+    private bool _isAccepted= false;
+    public bool IsAccepted 
+    { 
+        get => _isAccepted;
+        set => _isAccepted = value;
+    }
 }

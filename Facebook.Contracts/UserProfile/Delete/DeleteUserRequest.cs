@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.UserProfile.DeleteUser;
+namespace Facebook.Contracts.UserProfile.Delete;
 
-public class DeleteUserRequest
+public record DeleteUserRequest
 {
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public required string UserId { get; init; }

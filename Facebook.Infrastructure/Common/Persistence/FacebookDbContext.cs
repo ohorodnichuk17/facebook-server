@@ -1,5 +1,4 @@
 using Facebook.Domain.Post;
-using Facebook.Domain.Reaction;
 using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -21,6 +20,7 @@ public class FacebookDbContext
 
    public DbSet<ReactionEntity> Reactions { get; set; }
    public DbSet<FriendRequestEntity> FriendRequests { get; set; }
+   public DbSet<FeelingEntity> Feelings { get; set; }
 
    protected override void OnModelCreating(ModelBuilder builder)
    {
@@ -68,6 +68,12 @@ public class FacebookDbContext
           .HasOne(fr => fr.Receiver)
           .WithMany(u => u.ReceivedFriendRequests)
           .HasForeignKey(fr => fr.ReceiverId)
+          .OnDelete(DeleteBehavior.Restrict);
+      
+      builder.Entity<PostEntity>()
+          .HasOne(p => p.Feeling)
+          .WithMany()
+          .HasForeignKey(p => p.FeelingId)
           .OnDelete(DeleteBehavior.Restrict);
    }
 }

@@ -1,7 +1,6 @@
-﻿using Facebook.Domain.Post;
-using Facebook.Domain.User;
+﻿using Facebook.Domain.User;
 
-namespace Facebook.Domain.Reaction;
+namespace Facebook.Domain.Post;
 
 public class ReactionEntity
 {

@@ -49,17 +49,14 @@ public class CreatePostCommandHandler(
 
             var imagesEntities = request.Images.Select((image, index) => new ImagesEntity
             {
-                //Id = Guid.NewGuid(),
                 PostId = post.Id,
                 PriorityImage = image.Priority,
-                //Post = post,
                 ImagePath = imageNames[index]
             }).ToList();
 
             post.Images = imagesEntities;
         }
 
-        //var result = await postRepository.SavePostAsync(post);
         var result = await postRepository.UpdatePostAsync(post);
 
         if (result.IsError)

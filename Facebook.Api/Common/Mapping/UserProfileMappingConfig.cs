@@ -1,9 +1,9 @@
 ﻿using Facebook.Application.UserProfile.Command.Delete;
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
-using Facebook.Contracts.UserProfile.DeleteUser;
+using Facebook.Contracts.UserProfile.Delete;
 using Facebook.Contracts.UserProfile.Edit;
-using Facebook.Contracts.UserProfile.GetUserProfileById;
+using Facebook.Contracts.UserProfile.GetById;
 using Mapster;
 
 namespace Facebook.Server.Common.Mapping;

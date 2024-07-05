@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Facebook.Contracts.UserProfile.Edit;
 
-public class UserEditProfileRequest
+public record UserEditProfileRequest
 {
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public Guid UserId { get; set; }

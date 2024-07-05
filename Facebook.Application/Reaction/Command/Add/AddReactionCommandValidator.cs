@@ -15,9 +15,9 @@ public class AddReactionCommandValidator : AbstractValidator<AddReactionCommand>
            .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
 
         RuleFor(r => r.PostId)
-           .NotEmpty().WithMessage("UserId must not be empty").When(r => r.PostId != Guid.Empty);
+           .NotEmpty().WithMessage("PostId must not be empty").When(r => r.PostId != Guid.Empty);
 
         RuleFor(r => r.TypeCode)
-            .MaximumLength(1000).WithMessage("Content must not exceed 1000 characters.");
+            .MaximumLength(1000).WithMessage("TypeCode must not exceed 1000 characters.");
     }
 }

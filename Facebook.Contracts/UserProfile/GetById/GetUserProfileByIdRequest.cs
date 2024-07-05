@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.UserProfile.GetUserProfileById
+namespace Facebook.Contracts.UserProfile.GetById
 {
-    public class GetUserProfileByIdRequest
+    public record GetUserProfileByIdRequest
     {
         [Required(ErrorMessage = "{PropertyName} is required.")]
         public required Guid UserId { get; init; }

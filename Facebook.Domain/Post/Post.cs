@@ -1,4 +1,3 @@
-using Facebook.Domain.Reaction;
 using Facebook.Domain.User;
 
 namespace Facebook.Domain.Post;
@@ -23,4 +22,7 @@ public class PostEntity
    }
 
    public Guid UserId { get; set; }
+   
+   public Guid? FeelingId { get; set; }
+   public FeelingEntity? Feeling { get; set; }
 }

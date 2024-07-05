@@ -1,17 +1,18 @@
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 
 namespace Facebook.Application.Post.Command.Delete;
 
-public class DeletePostCommandHandler(IPostRepository postRepository)
+public class DeletePostCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<DeletePostCommand, ErrorOr<bool>>
 {
     public async Task<ErrorOr<bool>> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await postRepository.DeletePostAsync(request.Id);
+            var result = await unitOfWork.Post.DeleteAsync(request.Id);
 
             if (result.IsError)
             {

@@ -4,7 +4,7 @@ using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
-using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
@@ -95,6 +95,7 @@ public static class DependencyInjection
       services.AddScoped<IPostRepository, PostRepository>();
       services.AddScoped<IReactionRepository, ReactionRepository>();
       services.AddScoped<IFeelingRepository, FeelingRepository>();
+      services.AddScoped<IUnitOfWork, UnitOfWork>();
       return services;
    }
 

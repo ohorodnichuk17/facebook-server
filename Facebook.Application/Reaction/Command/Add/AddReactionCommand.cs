@@ -13,4 +13,4 @@ public record AddReactionCommand (
     string TypeCode,
     Guid PostId,
     Guid UserId
-) : IRequest<ErrorOr<ReactionEntity>>;
+) : IRequest<ErrorOr<Unit>>;

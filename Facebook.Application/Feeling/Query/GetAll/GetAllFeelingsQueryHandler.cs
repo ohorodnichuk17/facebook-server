@@ -1,18 +1,19 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
 using MediatR;
 
 namespace Facebook.Application.Feeling.Query.GetAll;
 
-public class GetAllFeelingsQueryHandler(IFeelingRepository feelingRepository)
+public class GetAllFeelingsQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllFeelingsQuery, ErrorOr<IEnumerable<FeelingEntity>>>
 {
     public async Task<ErrorOr<IEnumerable<FeelingEntity>>> Handle(GetAllFeelingsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await feelingRepository.GetAllFeelingsAsync();
+            var result = await unitOfWork.Feeling.GetAllAsync();
 
             if (result.IsError)
             {

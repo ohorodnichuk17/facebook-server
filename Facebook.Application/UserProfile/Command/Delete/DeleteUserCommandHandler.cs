@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.TypeExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Facebook.Application.UserProfile.Command.Delete;
 
 public class DeleteUserCommandHandler(
-    IUserProfileRepository userProfileRepository,
+    IUnitOfWork unitOfWork,
     ILogger<DeleteUserCommandHandler> logger)
     :
         IRequestHandler<DeleteUserCommand, ErrorOr<bool>>
@@ -17,7 +18,7 @@ public class DeleteUserCommandHandler(
         try
         {
             logger.LogInformation("Starting delete user process...");
-            var user = await userProfileRepository.DeleteUserProfileAsync(request.UserId);
+            var user = await unitOfWork.UserProfile.DeleteAsync(request.UserId);
             if (user.IsSuccess())
             {
                 logger.LogInformation("Delete user process completed successfully");

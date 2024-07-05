@@ -6,22 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Reaction;
 
-public class ReactionRepository(FacebookDbContext context) : IReactionRepository
+public class ReactionRepository(FacebookDbContext context)
+    : Repository<ReactionEntity>(context), IReactionRepository
 {
-    public async Task<ErrorOr<ReactionEntity>> AddReactionAsync(ReactionEntity reaction)
-    {
-        try
-        {
-            context.Reactions.Add(reaction);
-            await context.SaveChangesAsync();
-            return reaction;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
     public async Task<ErrorOr<bool>> DeleteReactionAsync(Guid postId, Guid userId)
     {
         try

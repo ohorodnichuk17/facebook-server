@@ -1,12 +1,9 @@
 using ErrorOr;
 using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
-using Facebook.Application.Common.Interfaces.Admin;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Application.Common.Interfaces.Persistance;
-using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;

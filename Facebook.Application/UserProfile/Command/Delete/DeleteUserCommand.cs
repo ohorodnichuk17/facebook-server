@@ -9,5 +9,5 @@ using System.Threading.Tasks;
 namespace Facebook.Application.UserProfile.Command.Delete;
 
 public record DeleteUserCommand(
-    string UserId
+    Guid UserId
 ) : IRequest<ErrorOr<bool>>;

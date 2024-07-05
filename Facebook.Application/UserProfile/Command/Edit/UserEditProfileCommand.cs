@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.UserProfile.Command.Edit;
 public record UserEditProfileCommand(
-    Guid UserId,
+    string UserId,
     string? FirstName,
     string? LastName,
     byte[]? CoverPhoto,

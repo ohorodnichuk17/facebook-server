@@ -1,21 +1,18 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.User;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Application.Common.Interfaces.Persistance;
+namespace Facebook.Application.Common.Interfaces.User.IRepository;
 
-public interface IUserProfileRepository
+public interface IUserProfileRepository : IRepository<UserProfileEntity>
 {
     public Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
         string firstName, string lastName, string avatar);
     Task<ErrorOr<UserProfileEntity>> UserCreateProfileAsync(Guid userId);
-    Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId);
-    Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId);
     Task<ErrorOr<Unit>> BlockUserAsync(string userId);
     Task<ErrorOr<Unit>> UnblockUserAsync(string userId);
+    Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId);
+
+    Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId);
 }

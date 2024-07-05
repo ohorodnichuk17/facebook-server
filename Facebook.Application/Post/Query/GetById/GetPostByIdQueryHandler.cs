@@ -1,18 +1,19 @@
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
 
 namespace Facebook.Application.Post.Query.GetById;
 
-public class GetPostByIdQueryHandler(IPostRepository postRepository)
+public class GetPostByIdQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetPostByIdQuery, ErrorOr<PostEntity>>
 {
     public async Task<ErrorOr<PostEntity>> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await postRepository.GetPostByIdAsync(request.Id);
+            var result = await unitOfWork.Post.GetByIdAsync(request.Id.ToString());
 
             if (result.IsError)
             {

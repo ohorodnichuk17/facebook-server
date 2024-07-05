@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Application.Common.Interfaces.Persistance;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
@@ -11,7 +11,7 @@ namespace Facebook.Application.UserProfile.Command.Edit;
 
 public class UserEditProfileCommandHandler(
     IUserRepository userRepository,
-    IUserProfileRepository userProfileRepository,
+    IUnitOfWork unitOfWork,
     ILogger<UserEditProfileCommandHandler> logger,
     IImageStorageService imageStorageService)
     :
@@ -23,7 +23,7 @@ public class UserEditProfileCommandHandler(
         {
             logger.LogInformation("Starting update user profile process...");
 
-            var getProf = await userProfileRepository.GetUserProfileByIdAsync(request.UserId.ToString());
+            var getProf = await unitOfWork.UserProfile.GetUserProfileByIdAsync(request.UserId);
             var getU = await userRepository.GetUserByIdAsync(request.UserId.ToString());
             if (!getProf.IsSuccess())
             {
@@ -53,7 +53,7 @@ public class UserEditProfileCommandHandler(
                 user.Avatar = avatar;
             }
 
-            var editprofileResult = await userProfileRepository.UserEditProfileAsync(userProfile, user.FirstName, user.LastName, user.Avatar);
+            var editprofileResult = await unitOfWork.UserProfile.UserEditProfileAsync(userProfile, user.FirstName, user.LastName, user.Avatar);
 
             if (editprofileResult.IsError)
                 return editprofileResult.Errors;

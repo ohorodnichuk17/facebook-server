@@ -1,11 +1,12 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
 using MediatR;
 
 namespace Facebook.Application.Feeling.Command.Add;
 
-public class AddFeelingCommandHandler(IFeelingRepository feelingRepository)
+public class AddFeelingCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<AddFeelingCommand, ErrorOr<Guid>>
 {
     public async Task<ErrorOr<Guid>> Handle(AddFeelingCommand request, CancellationToken cancellationToken)
@@ -14,12 +15,11 @@ public class AddFeelingCommandHandler(IFeelingRepository feelingRepository)
         {
             var feeling = new FeelingEntity
             {
-                // Id = new Guid(),
                 Name = request.Name,
                 Emoji = request.Emoji
             };
             
-            var result = await feelingRepository.AddFeelingAsync(feeling);
+            var result = await unitOfWork.Feeling.CreateAsync(feeling);
 
             if (result.IsError)
             {

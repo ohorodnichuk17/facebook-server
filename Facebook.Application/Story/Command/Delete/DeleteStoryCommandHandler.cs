@@ -1,17 +1,18 @@
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 
 namespace Facebook.Application.Story.Command.Delete;
 
-public class DeleteStoryCommandHandler(IStoryRepository storyRepository)
+public class DeleteStoryCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<DeleteStoryCommand, ErrorOr<bool>>
 {
     public async Task<ErrorOr<bool>> Handle(DeleteStoryCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await storyRepository.DeleteStoryAsync(request.Id);
+            var result = await unitOfWork.Story.DeleteAsync(request.Id);
         
             if (result.IsError)
             {

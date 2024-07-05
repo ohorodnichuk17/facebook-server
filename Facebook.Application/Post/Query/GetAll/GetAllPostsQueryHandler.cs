@@ -1,4 +1,5 @@
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Story.Query.GetAll;
@@ -8,14 +9,14 @@ using MediatR;
 
 namespace Facebook.Application.Post.Query.GetAll;
 
-public class GetAllPostsQueryHandler(IPostRepository postRepository)
+public class GetAllPostsQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllPostsQuery, ErrorOr<IEnumerable<PostEntity>>>
 {
     public async Task<ErrorOr<IEnumerable<PostEntity>>> Handle(GetAllPostsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await postRepository.GetAllPostsAsync();
+            var result = await unitOfWork.Post.GetAllAsync();
 
             if (result.IsError)
             {

@@ -1,5 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
@@ -9,7 +10,7 @@ using MediatR;
 namespace Facebook.Application.Story.Command.Create;
 
 public class CreateStoryCommandHandler(
-    IStoryRepository storyRepository,
+    IUnitOfWork unitOfWork,
     IImageStorageService imageStorageService,
     IUserRepository userRepository) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
 {
@@ -31,7 +32,7 @@ public class CreateStoryCommandHandler(
             UserId = request.UserId,
         };
 
-        var storyResult = await storyRepository.CreateStoryAsync(storyEntity);
+        var storyResult = await unitOfWork.Story.CreateAsync(storyEntity);
 
         if (storyResult.IsError)
         {
@@ -48,7 +49,7 @@ public class CreateStoryCommandHandler(
             storyEntity.Image = imageName;
         }
 
-        var result = await storyRepository.SaveStoryAsync(storyEntity);
+        var result = await unitOfWork.Story.SaveAsync(storyEntity);
 
         if (result.IsError)
         {

@@ -1,5 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
@@ -9,7 +10,7 @@ using MediatR;
 namespace Facebook.Application.Post.Command.Create;
 
 public class CreatePostCommandHandler(
-        IPostRepository postRepository,
+        IUnitOfWork unitOfWork,
         IImageStorageService imageStorageService,
         IUserRepository userRepository) : IRequestHandler<CreatePostCommand, ErrorOr<Unit>>
 {
@@ -36,7 +37,7 @@ public class CreatePostCommandHandler(
             CreatedAt = DateTime.Now,
         };
 
-        var postResult = await postRepository.CreatePostAsync(post);
+        var postResult = await unitOfWork.Post.CreateAsync(post);
 
         if (postResult.IsError)
         {
@@ -57,7 +58,7 @@ public class CreatePostCommandHandler(
             post.Images = imagesEntities;
         }
 
-        var result = await postRepository.UpdatePostAsync(post);
+        var result = await unitOfWork.Post.UpdatePostAsync(post);
 
         if (result.IsError)
         {

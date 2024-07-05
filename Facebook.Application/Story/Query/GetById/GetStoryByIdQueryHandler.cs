@@ -1,19 +1,20 @@
 using Facebook.Domain.Story;
 using MediatR;
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Domain.TypeExtensions;
 
 namespace Facebook.Application.Story.Query.GetById;
 
-public class GetStoryByIdQueryHandler(IStoryRepository storyRepository)
+public class GetStoryByIdQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetStoryByIdQuery, ErrorOr<StoryEntity>>
 {
     public async Task<ErrorOr<StoryEntity>> Handle(GetStoryByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await storyRepository.GetStoryByIdAsync(request.Id);
+            var result = await unitOfWork.Story.GetByIdAsync(request.Id.ToString());
 
             if (result.IsError)
             {

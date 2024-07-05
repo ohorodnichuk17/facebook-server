@@ -1,15 +1,8 @@
 using Facebook.Domain.Post;
-using ErrorOr;
-using MediatR;
+using Facebook.Application.Common.Interfaces.IRepository;
 
 namespace Facebook.Application.Common.Interfaces.Feeling.IRepository;
 
-public interface IFeelingRepository
+public interface IFeelingRepository : IRepository<FeelingEntity>
 {
-    Task<ErrorOr<IEnumerable<FeelingEntity>>> GetAllFeelingsAsync();
-    Task<ErrorOr<FeelingEntity>> GetFeelingById(Guid id);
-    Task<ErrorOr<Guid>> AddFeelingAsync(FeelingEntity feeling);
-    Task<ErrorOr<bool>> DeleteFeelingAsync(Guid feelingId);
-
-    Task<ErrorOr<Unit>> SaveFeelingAsync(FeelingEntity feeling);
 }

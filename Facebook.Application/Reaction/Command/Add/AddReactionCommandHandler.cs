@@ -11,18 +11,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 
 namespace Facebook.Application.Reaction.Command.Add;
 
 public class AddReactionCommandHandler(
-    IReactionRepository reactionRepository,
-    IUserRepository userRepository,
-    IPostRepository postRepository) : IRequestHandler<AddReactionCommand, ErrorOr<ReactionEntity>>
+    IUnitOfWork unitOfWork,
+    IUserRepository userRepository)
+    : IRequestHandler<AddReactionCommand, ErrorOr<Unit>>
 {
-    public async Task<ErrorOr<ReactionEntity>> Handle(AddReactionCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Unit>> Handle(AddReactionCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
-        var post = await postRepository.GetPostByIdAsync(request.PostId);
+        var post = await unitOfWork.Post.GetByIdAsync(request.PostId.ToString());
 
         if (user.IsError)
         {
@@ -42,13 +43,13 @@ public class AddReactionCommandHandler(
             TypeCode = request.TypeCode
         };
 
-        var reactionResult = await reactionRepository.AddReactionAsync(reaction);
+        var reactionResult = await unitOfWork.Reaction.CreateAsync(reaction);
 
         if (reactionResult.IsError)
         {
             return reactionResult.Errors;
         }
 
-        return reactionResult;
+        return Unit.Value;
     }
 }

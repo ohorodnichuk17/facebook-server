@@ -18,7 +18,7 @@ public class DeleteUserCommandHandler(
         try
         {
             logger.LogInformation("Starting delete user process...");
-            var user = await unitOfWork.UserProfile.DeleteAsync(request.UserId);
+            var user = await unitOfWork.UserProfile.DeleteUserProfileAsync(request.UserId.ToString());
             if (user.IsSuccess())
             {
                 logger.LogInformation("Delete user process completed successfully");

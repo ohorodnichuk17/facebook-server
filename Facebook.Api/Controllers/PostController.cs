@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/post")]
 [ApiController]
 public class PostController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
 {

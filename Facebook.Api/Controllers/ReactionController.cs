@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/reaction")]
 [ApiController]
 public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
 {

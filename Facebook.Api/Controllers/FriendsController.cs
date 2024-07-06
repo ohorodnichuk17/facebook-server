@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/friends")]
 [ApiController]
 [AllowAnonymous]
 public class FriendsController(ISender mediatr, IMapper mapper, 

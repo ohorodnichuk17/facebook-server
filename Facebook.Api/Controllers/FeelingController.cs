@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/feeling")]
 [ApiController]
 public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration configuration) 
     : ApiController

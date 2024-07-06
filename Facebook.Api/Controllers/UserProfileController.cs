@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/user-profile")]
 [ApiController]
 public class UserProfileController(ISender mediatr, IMapper mapper) : ApiController
 {

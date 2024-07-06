@@ -22,7 +22,7 @@ using ResetPasswordRequest = Facebook.Contracts.Authentication.ResetPassword.Res
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/authentication")]
 [ApiController]
 [AllowAnonymous]
 public class AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)

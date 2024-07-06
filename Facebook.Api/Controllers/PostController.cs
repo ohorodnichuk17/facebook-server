@@ -2,12 +2,11 @@ using Facebook.Application.Post.Command.Create;
 using Facebook.Application.Post.Command.Delete;
 using Facebook.Application.Post.Query.GetAll;
 using Facebook.Application.Post.Query.GetById;
+using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Post.Create;
-using Facebook.Contracts.Post.Delete;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -30,7 +29,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteAsync(DeletePostRequest request)
+    public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {
         var command = mapper.Map<DeletePostCommand>(request);
         var deletePostResult = await mediatr.Send(command);

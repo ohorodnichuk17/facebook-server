@@ -2,8 +2,8 @@ using Facebook.Application.Feeling.Command.Add;
 using Facebook.Application.Feeling.Command.Delete;
 using Facebook.Application.Feeling.Query.GetAll;
 using Facebook.Application.Feeling.Query.GetById;
+using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Feeling.Add;
-using Facebook.Contracts.Feeling.Delete;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
@@ -40,7 +40,7 @@ public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration c
     }
     
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteAsync(DeleteFeelingRequest request)
+    public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {
         var command = mapper.Map<DeleteFeelingCommand>(request);
         var result = await mediatr.Send(command);

@@ -9,11 +9,8 @@ using Facebook.Application.User.Friends.Command.SendFriendRequest;
 using Facebook.Application.User.Friends.Query.GetAll;
 using Facebook.Application.User.Friends.Query.GetById;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
-using Facebook.Contracts.Friends.AcceptFriendRequest;
-using Facebook.Contracts.Friends.RejectFriendRequest;
-using Facebook.Contracts.Friends.RemoveFriend;
+using Facebook.Contracts.Friends;
 using Facebook.Contracts.Friends.SearchUsersByFirstAndLastNamesRequest;
-using Facebook.Contracts.Friends.SendFriendRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
@@ -29,7 +26,7 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    IConfiguration configuration, IUserRepository userRepository) : ApiController
 {
    [HttpPost("accept-friend-request")]
-   public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequestRequest request)
+   public async Task<IActionResult> AcceptFriendRequest(FriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
     
@@ -43,7 +40,7 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    }
    
    [HttpPost("send-friend-request")]
-   public async Task<IActionResult> SendFriendRequest(SendFriendRequestRequest request)
+   public async Task<IActionResult> SendFriendRequest(FriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<SendFriendRequestCommand>(request));
       
@@ -53,7 +50,7 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    }
    
    [HttpPost("reject-friend-request")]
-   public async Task<IActionResult> RejectFriendRequest(RejectFriendRequestRequest request)
+   public async Task<IActionResult> RejectFriendRequest(FriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
     
@@ -67,7 +64,7 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    }
    
    [HttpPost("remove-friend")]
-   public async Task<IActionResult> RemoveFriend(RemoveFriendRequest request)
+   public async Task<IActionResult> RemoveFriend(FriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
       

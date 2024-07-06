@@ -2,12 +2,11 @@ using Facebook.Application.Story.Command.Create;
 using Facebook.Application.Story.Command.Delete;
 using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.Story.Query.GetById;
+using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Story.Create;
-using Facebook.Contracts.Story.Delete;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -50,7 +49,7 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
     }
     
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteAsync(DeleteStoryRequest request)
+    public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {
         var command = mapper.Map<DeleteStoryCommand>(request);
         var deleteStoryResult = await mediatr.Send(command);

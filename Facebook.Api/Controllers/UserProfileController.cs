@@ -1,12 +1,11 @@
 ﻿using Facebook.Application.UserProfile.Command.Delete;
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
-using Facebook.Contracts.UserProfile.Delete;
+using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetById;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -44,7 +43,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
           errors => Problem(errors));
    }
    [HttpDelete("delete-profile")]
-   public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteUserRequest request)
+   public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteRequest request)
    {
       var command = mapper.Map<DeleteUserCommand>(request);
       var deleteResult = await mediatr.Send(command);

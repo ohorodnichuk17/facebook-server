@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.Friends.RejectFriendRequest;
+namespace Facebook.Contracts.Friends;
 
-public record RejectFriendRequestRequest
+public record FriendRequest
 {
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public Guid UserId { get; set; }
     
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
-    public Guid FriendRequestId { get; set; }
+    public Guid FriendId { get; set; }
 }

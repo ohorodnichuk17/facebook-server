@@ -6,6 +6,7 @@ using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetById;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;

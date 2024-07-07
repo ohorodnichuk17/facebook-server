@@ -1,54 +1,40 @@
-using Facebook.Server.Http;
 using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Facebook.Server.Controllers;
 
 [ApiController]
 [Authorize]
-public class ApiController : ControllerBase
+public abstract class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<Error> errors)
     {
-        if (errors.Count is 0)
-        {
-            return Problem();
-        }
+        HttpContext.Items["errors"] = errors;
 
-        if (errors.All(error => error.Type == ErrorType.Validation))
-        {
-            return ValidationProblem(errors);
-        }
+        var firstError = errors.FirstOrDefault();
 
-        HttpContext.Items[HttpContextItemKeys.Errors] = errors;
-
-        return Problem(errors[0]);
-    }
-    
-    private IActionResult Problem(Error error)
-    {
-        var statusCode = error.Type switch
+        var statusCode = firstError.Type switch
         {
             ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
             ErrorType.NotFound => StatusCodes.Status404NotFound,
-            _ => StatusCodes.Status500InternalServerError
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError,
         };
-        
-        return Problem(statusCode: statusCode, title: error.Description);
-    }
 
-    private IActionResult ValidationProblem(List<Error> errors)
-    {
-        var modelStateDictionary = new ModelStateDictionary();
-
-        foreach (var error in errors)
+        var problemDetails = new ProblemDetails
         {
-            modelStateDictionary.AddModelError(error.Code, error.Description);
-        }
+            Status = statusCode,
+            Title = "Error",
+            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+            Detail = "Multiple errors occurred", 
+        };
 
-        return ValidationProblem(modelStateDictionary);
+        problemDetails.Extensions["errors"] = errors;
+
+        return new ObjectResult(problemDetails)
+        {
+            StatusCode = statusCode,
+        };
     }
 }

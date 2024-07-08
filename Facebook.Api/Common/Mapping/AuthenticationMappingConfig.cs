@@ -9,6 +9,7 @@ using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
+using Facebook.Contracts.Authentication.ResendConfirmEmail;
 using Mapster;
 using Microsoft.AspNetCore.Identity.Data;
 using LoginRequest = Facebook.Contracts.Authentication.Login.LoginRequest;
@@ -27,7 +28,7 @@ public class AuthenticationMappingConfig : IRegister
 
         config.NewConfig<ConfirmEmailRequest, ConfirmEmailCommand>();
 
-        config.NewConfig<(ConfirmEmailRequest request, string BaseUrl), ResendConfirmEmailCommand>()
+        config.NewConfig<(ResendConfirmEmailRequest request, string BaseUrl), ResendConfirmEmailCommand>()
             .Map(dest => dest.BaseUrl, src => src.BaseUrl)
             .Map(dest => dest, src => src.request);
 

@@ -1,7 +1,6 @@
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.Services;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +26,7 @@ public class ResendConfirmEmailCommandHandler : IRequestHandler<ResendConfirmEma
     
     public async Task<ErrorOr<string>> Handle(ResendConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var userOrError = await _userRepository.GetUserByIdAsync(request.UserId.ToString());
+        var userOrError = await _userRepository.GetByEmailAsync(request.Email);
         if (userOrError.IsError)
         {
             return userOrError.Errors;

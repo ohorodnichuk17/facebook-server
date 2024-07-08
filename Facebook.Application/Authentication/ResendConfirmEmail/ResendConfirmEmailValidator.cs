@@ -6,9 +6,6 @@ public class ResendConfirmEmailValidator : AbstractValidator<ResendConfirmEmailC
 {
     public ResendConfirmEmailValidator()
     {
-        RuleFor(r => r.UserId).NotEmpty().WithMessage("Field must not be empty");
-
-        RuleFor(r => r.ValidEmailToken).NotEmpty().WithMessage("Field must not be empty")
-            .MaximumLength(4096).MinimumLength(256);
+        RuleFor(r => r.Email).NotEmpty().WithMessage("Field must not be empty");
     }
 }

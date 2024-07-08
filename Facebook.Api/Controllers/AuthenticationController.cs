@@ -8,6 +8,7 @@ using Facebook.Application.Authentication.ResetPassword;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
+using Facebook.Contracts.Authentication.ResendConfirmEmail;
 using Facebook.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
@@ -63,8 +64,20 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
     }
 
    
+    // [HttpGet("resend-confirmation-email")]
+    // public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery]ConfirmEmailRequest request)
+    // {
+    //     var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
+    //     var resendConfirmationResult = await mediatr.Send(mapper
+    //         .Map<ResendConfirmEmailCommand>((request, baseUrl)));
+    //
+    //     return resendConfirmationResult.Match(
+    //         success => Ok("Confirmation email resent successfully"),
+    //         errors => Problem(errors));
+    // }
+    
     [HttpGet("resend-confirmation-email")]
-    public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery]ConfirmEmailRequest request)
+    public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery] ResendConfirmEmailRequest request)
     {
         var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
         var resendConfirmationResult = await mediatr.Send(mapper

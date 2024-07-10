@@ -1,8 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.User;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Post;
 using MediatR;
@@ -35,6 +33,7 @@ public class CreatePostCommandHandler(
             IsArchive = request.IsArchive,
             UserId = request.UserId,
             CreatedAt = DateTime.Now,
+            FeelingId = request.FeelingId,
         };
 
         var postResult = await unitOfWork.Post.CreateAsync(post);

@@ -8,6 +8,7 @@ namespace Facebook.Application.Common.Interfaces.User.IRepository;
 public interface IUserRepository
 {
    Task<ErrorOr<List<UserEntity>>> GetAllUsersAsync();
+   Task<ErrorOr<UserEntity>> GetUserByIdAsync(Guid userId);
    Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId);
    Task<ErrorOr<UserEntity>> CreateUserAsync(UserEntity user, string password);
    Task<ErrorOr<Unit>> DeleteUserAsync(string userId);

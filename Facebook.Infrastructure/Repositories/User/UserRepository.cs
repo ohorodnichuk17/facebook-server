@@ -26,24 +26,41 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
       }
    }
 
-   public async Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId)
-   {
-      if (userId == null)
-      {
-         throw new ArgumentNullException(nameof(userId), "userId cannot be null");
-      }
+    public async Task<ErrorOr<UserEntity>> GetUserByIdAsync(Guid userId)
+    {
+        if (userId == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(userId), "userId cannot be null");
+        }
 
-      var user = await userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId.ToString());
 
-      if (user == null)
-      {
-         return Error.NotFound();
-      }
+        if (user == null)
+        {
+            return Error.NotFound();
+        }
 
-      return user;
-   }
+        return user;
+    }
 
-   public async Task<ErrorOr<UserEntity>> GetByEmailAsync(string email)
+    public async Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId)
+    {
+        if (userId == null)
+        {
+            throw new ArgumentNullException(nameof(userId), "userId cannot be null");
+        }
+
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Error.NotFound();
+        }
+
+        return user;
+    }
+
+    public async Task<ErrorOr<UserEntity>> GetByEmailAsync(string email)
    {
       var user = await userManager.FindByEmailAsync(email);
 

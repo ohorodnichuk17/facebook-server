@@ -23,7 +23,7 @@ public class AddReactionCommandHandler(
     public async Task<ErrorOr<Unit>> Handle(AddReactionCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
-        var post = await unitOfWork.Post.GetByIdAsync(request.PostId.ToString());
+        var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError)
         {

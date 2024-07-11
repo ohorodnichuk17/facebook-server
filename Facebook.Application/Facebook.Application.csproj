@@ -14,6 +14,12 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Comment\Query\GetById\" />
+      <Folder Include="Like\Query\GetById\" />
+      <Folder Include="Reaction\Query\GetById\" />
+    </ItemGroup>
+
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>

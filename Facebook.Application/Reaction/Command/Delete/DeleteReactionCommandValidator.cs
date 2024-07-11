@@ -11,10 +11,8 @@ public class DeleteReactionCommandValidator : AbstractValidator<DeleteReactionCo
 {
     public DeleteReactionCommandValidator()
     {
-        RuleFor(r => r.UserId)
-           .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
+        RuleFor(r => r.Id)
+           .NotEmpty().WithMessage("Id must not be empty").When(r => r.Id != Guid.Empty);
 
-        RuleFor(r => r.PostId)
-           .NotEmpty().WithMessage("UserId must not be empty").When(r => r.PostId != Guid.Empty);
     }
 }

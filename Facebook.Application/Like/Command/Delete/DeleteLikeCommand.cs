@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Facebook.Application.Reaction.Command.Delete;
+namespace Facebook.Application.Like.Command.Delete;
 
-public record DeleteReactionCommand(
-    Guid Id
+public record DeleteLikeCommand(
+    Guid Id    
 ) : IRequest<ErrorOr<bool>>;

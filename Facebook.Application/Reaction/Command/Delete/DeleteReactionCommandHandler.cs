@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Domain.TypeExtensions;
 using MediatR;
@@ -12,13 +13,13 @@ using System.Threading.Tasks;
 namespace Facebook.Application.Reaction.Command.Delete;
 
 public class DeleteReactionCommandHandler(
-    IReactionRepository reactionRepository) : IRequestHandler<DeleteReactionCommand, ErrorOr<bool>>
+    IUnitOfWork unitOfWork) : IRequestHandler<DeleteReactionCommand, ErrorOr<bool>>
 {
     public async Task<ErrorOr<bool>> Handle(DeleteReactionCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var reaction = await reactionRepository.DeleteReactionAsync(request.PostId, request.UserId);
+            var reaction = await unitOfWork.Reaction.DeleteAsync(request.Id);
             if (reaction.IsSuccess())
             {
                 return true;

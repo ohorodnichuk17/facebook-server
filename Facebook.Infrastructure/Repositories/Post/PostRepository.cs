@@ -1,8 +1,10 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
+using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Facebook.Infrastructure.Repositories.Post;
 
@@ -35,5 +37,21 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
         {
             return Error.Failure(ex.Message); 
         }
+    }
+    public async Task<ErrorOr<PostEntity>> GetPostByIdAsync(Guid requestPostId)
+    {
+        if (requestPostId == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(requestPostId), "Post id cannot be null");
+        }
+
+        var post = await context.Posts.FindAsync(requestPostId);
+
+        if (post == null)
+        {
+            return Error.NotFound();
+        }
+
+        return post;
     }
 }

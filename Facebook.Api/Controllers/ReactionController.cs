@@ -1,7 +1,7 @@
 ﻿using Facebook.Application.Reaction.Command.Add;
 using Facebook.Application.Reaction.Command.Delete;
+using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Reaction.Add;
-using Facebook.Contracts.Reaction.Delete;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,9 +11,10 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/reaction")]
 [ApiController]
+[AllowAnonymous]
 public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
 {
-    [HttpPost("add-reaction")]
+    [HttpPost("add")]
     public async Task<IActionResult> AddReactionAsync([FromForm] AddReactionRequest request)
     {
         var command = mapper.Map<AddReactionCommand>(request);
@@ -23,8 +24,8 @@ public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
         success => Ok(success),
         errors => Problem(errors));
     }
-    [HttpDelete("delete-reaction")]
-    public async Task<IActionResult> DeleteReactionAsync([FromForm] DeleteReactionRequest request)
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteReactionAsync([FromForm] DeleteRequest request)
     {
         var command = mapper.Map<DeleteReactionCommand>(request);
         var deleteResult = await mediatr.Send(command);

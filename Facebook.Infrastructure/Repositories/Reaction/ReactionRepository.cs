@@ -2,6 +2,7 @@
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
+using Facebook.Infrastructure.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Reaction;
@@ -9,23 +10,23 @@ namespace Facebook.Infrastructure.Repositories.Reaction;
 public class ReactionRepository(FacebookDbContext context)
     : Repository<ReactionEntity>(context), IReactionRepository
 {
-    public async Task<ErrorOr<bool>> DeleteReactionAsync(Guid postId, Guid userId)
+    public async Task<ErrorOr<IEnumerable<ReactionEntity>>> GetReactionsByPostIdAsync(Guid postId)
     {
-        try
+        var reaction = await context.Reactions.Where(reaction => reaction.PostId == postId).ToListAsync();
+        if (!reaction.Any())
         {
-            var reaction = await context.Reactions.SingleOrDefaultAsync(u => u.UserId == userId && u.PostId == postId);
-            if (reaction == null)
-            {
-                return Error.Failure("Error");
-            }
+            return Error.NotFound();
+        }
+        return reaction;
+    }
 
-            context.Reactions.Remove(reaction);
-            await context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception ex)
+    public async Task<ErrorOr<IEnumerable<ReactionEntity>>> GetReactionsByUserIdAsync(Guid userId)
+    {
+        var reaction = await context.Reactions.Where(reaction => reaction.UserId == userId).ToListAsync();
+        if (!reaction.Any())
         {
-            return Error.Failure(ex.Message);
+            return Error.NotFound();
         }
+        return reaction;
     }
 }

@@ -11,7 +11,6 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/reaction")]
 [ApiController]
-[AllowAnonymous]
 public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("add")]

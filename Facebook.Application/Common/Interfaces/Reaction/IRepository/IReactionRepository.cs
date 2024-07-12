@@ -6,5 +6,6 @@ namespace Facebook.Application.Common.Interfaces.Reaction.IRepository;
 
 public interface IReactionRepository : IRepository<ReactionEntity>
 {
-    Task<ErrorOr<bool>> DeleteReactionAsync(Guid postId, Guid userId);
+    Task<ErrorOr<IEnumerable<ReactionEntity>>> GetReactionsByPostIdAsync(Guid postId);
+    Task<ErrorOr<IEnumerable<ReactionEntity>>> GetReactionsByUserIdAsync(Guid userId);
 }

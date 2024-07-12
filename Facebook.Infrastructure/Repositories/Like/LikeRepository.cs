@@ -17,7 +17,7 @@ namespace Facebook.Infrastructure.Repositories.Like;
 
 public class LikeRepository(FacebookDbContext context) : Repository<LikeEntity>(context), ILikeRepository
 {
-    public async Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikeByPostIdAsync(Guid postId)
+    public async Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByPostIdAsync(Guid postId)
     {
         var like = await context.Likes.Where(like => like.PostId == postId).ToListAsync();
         if (!like.Any())
@@ -27,7 +27,7 @@ public class LikeRepository(FacebookDbContext context) : Repository<LikeEntity>(
         return like;
     }
 
-    public async Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikeByUserIdAsync(Guid userId)
+    public async Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByUserIdAsync(Guid userId)
     {
         var like = await context.Likes.Where(like => like.UserId == userId).ToListAsync();
         if (!like.Any())

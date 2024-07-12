@@ -19,6 +19,6 @@ public class AddCommentCommandValidator : AbstractValidator<AddCommentCommand>
                 .NotEmpty()
                 .WithMessage("Post id is required.");
         RuleFor(r => r.Message)
-            .MaximumLength(250).WithMessage("Message must not exceed 250 characters.");
+            .NotEmpty().MaximumLength(250).WithMessage("Message must not exceed 250 characters.");
     }
 }

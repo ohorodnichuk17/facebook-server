@@ -12,6 +12,6 @@ namespace Facebook.Application.Common.Interfaces.Comment.IRepository;
 
 public interface ICommentRepository : IRepository<CommentEntity>
 {
-    Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentByPostIdAsync(Guid postId);
-    Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentByUserIdAsync(Guid userId);
+    Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId);
+    Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByUserIdAsync(Guid userId);
 }

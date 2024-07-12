@@ -11,7 +11,6 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/like")]
 [ApiController]
-[AllowAnonymous]
 public class LikeController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("add")]

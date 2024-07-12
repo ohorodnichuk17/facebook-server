@@ -2,6 +2,9 @@ using Facebook.Application.Post.Command.Create;
 using Facebook.Application.Post.Command.Delete;
 using Facebook.Application.Post.Query.GetAll;
 using Facebook.Application.Post.Query.GetById;
+using Facebook.Application.Post.Query.GetCommentByPostId;
+using Facebook.Application.Post.Query.GetLikeByPostId;
+using Facebook.Application.Post.Query.GetReactionByPostId;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Post.Create;
 using Facebook.Domain.TypeExtensions;
@@ -54,13 +57,97 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             return StatusCode(500, "An error occurred while fetching posts.");
         }
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         try
         {
             var query = new GetPostByIdQuery(id);
+            var postResult = await mediatr.Send(query);
+
+            if (postResult.IsSuccess())
+            {
+                var post = postResult.Value;
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                return Ok(post);
+            }
+            else
+            {
+                return StatusCode(500, postResult.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting post.");
+        }
+    }
+
+    [HttpGet("getLikesBy/{postId}")]
+    public async Task<IActionResult> GetLikesByPostId(Guid postId)
+    {
+        try
+        {
+            var query = new GetLikesByPostIdQuery(postId);
+            var postResult = await mediatr.Send(query);
+
+            if (postResult.IsSuccess())
+            {
+                var post = postResult.Value;
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                return Ok(post);
+            }
+            else
+            {
+                return StatusCode(500, postResult.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting post.");
+        }
+    }
+
+    [HttpGet("getCommentsBy/{postId}")]
+    public async Task<IActionResult> GetCommentsByPostId(Guid postId)
+    {
+        try
+        {
+            var query = new GetCommentsByPostIdQuery(postId);
+            var postResult = await mediatr.Send(query);
+
+            if (postResult.IsSuccess())
+            {
+                var post = postResult.Value;
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                return Ok(post);
+            }
+            else
+            {
+                return StatusCode(500, postResult.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting post.");
+        }
+    }
+
+    [HttpGet("getReactionsBy/{postId}")]
+    public async Task<IActionResult> GetReactionsByPostId(Guid postId)
+    {
+        try
+        {
+            var query = new GetReactionsByPostIdQuery(postId);
             var postResult = await mediatr.Send(query);
 
             if (postResult.IsSuccess())

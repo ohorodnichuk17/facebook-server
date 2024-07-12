@@ -14,7 +14,7 @@ namespace Facebook.Infrastructure.Repositories.Comment;
 
 public class CommentRepository(FacebookDbContext context) : Repository<CommentEntity>(context), ICommentRepository
 {
-    public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentByPostIdAsync(Guid postId)
+    public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId)
     {
         var comment = await context.Comments.Where(comment => comment.PostId == postId).ToListAsync();
         if (!comment.Any())
@@ -24,7 +24,7 @@ public class CommentRepository(FacebookDbContext context) : Repository<CommentEn
         return comment;
     }
 
-    public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentByUserIdAsync(Guid userId)
+    public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByUserIdAsync(Guid userId)
     {
         var comment = await context.Comments.Where(comment => comment.UserId == userId).ToListAsync();
         if (!comment.Any())

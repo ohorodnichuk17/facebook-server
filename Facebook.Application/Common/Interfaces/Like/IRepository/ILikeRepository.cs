@@ -12,6 +12,6 @@ namespace Facebook.Application.Common.Interfaces.Like.IRepository;
 
 public interface ILikeRepository : IRepository<LikeEntity>
 {
-    Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikeByPostIdAsync(Guid postId);
-    Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikeByUserIdAsync(Guid userId);
+    Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByPostIdAsync(Guid postId);
+    Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByUserIdAsync(Guid userId);
 }

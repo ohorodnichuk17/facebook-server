@@ -1,7 +1,7 @@
-using MediatR;
 using ErrorOr;
 using Facebook.Application.Services;
 using Facebook.Domain.User;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Facebook.Application.Authentication.ResetPassword
@@ -24,7 +24,6 @@ namespace Facebook.Application.Authentication.ResetPassword
             {
                 return Error.Validation("User with this email doesn't exist");
             }
-
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, resetToken, request.Password);
             if (!result.Succeeded)

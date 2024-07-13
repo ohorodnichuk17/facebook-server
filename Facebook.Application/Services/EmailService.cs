@@ -1,8 +1,6 @@
-using System.Net;
-using System.Text;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Net;
 
 namespace Facebook.Application.Services;
 
@@ -31,7 +29,7 @@ public class EmailService(ISmtpService smtpService)
 
         return Result.Success;
     }
-    
+
     public async Task<ErrorOr<Success>> SendResetPasswordEmailAsync(
         string email, string token, string baseUrl, string userName, bool isReset = true)
     {
@@ -53,23 +51,48 @@ public class EmailService(ISmtpService smtpService)
             .Replace("{{ url }}", url);
 
         string emailSubject = isReset ? "Reset password" : "Forgot password";
-    
+
         await smtpService.SendEmailAsync(email, emailSubject, emailBody);
 
         return Result.Success;
     }
 
+    public async Task<ErrorOr<Success>> SendForgotPasswordEmailAsync(
+        string email, string token, string baseUrl, string userName)
+    {
+        string url = $"{baseUrl}set-new-password?email={email}&" +
+                     $"token={WebUtility.UrlEncode(token)}";
+
+        WebUtility.UrlEncode(token);
+        string emailTemplate = "./EmailTemplates/forgot-password.html";
+
+        string emailBody = string.Empty;
+
+        using (StreamReader reader = new(emailTemplate))
+        {
+            emailBody = await reader.ReadToEndAsync();
+        }
+
+        emailBody = emailBody.Replace("{{ name }}", userName)
+            .Replace("{{ url }}", url);
+
+        string emailSubject = "Forgot password";
+
+        await smtpService.SendEmailAsync(email, emailSubject, emailBody);
+
+        return Result.Success;
+    }
 
     public async Task<ErrorOr<Success>> SendChangeEmailEmailAsync(
-        string email, string token, string baseUrl, 
+        string email, string token, string baseUrl,
         string userName, string userId)
     {
         // string url = $"{baseUrl}api/authentication/confirm-email?userId={userId}&" +
         //              $"validEmailToken={WebUtility.UrlEncode(token)}";
-        string url = $"{baseUrl}api/authentication/change-email?userId={userId}&" + 
-                     $"email={email}&" + 
+        string url = $"{baseUrl}api/authentication/change-email?userId={userId}&" +
+                     $"email={email}&" +
                      $"token={WebUtility.UrlEncode(token)}";
-        
+
         string emailBody = string.Empty;
 
         using (StreamReader reader = new("./EmailTemplates/email-change.html"))

@@ -52,7 +52,7 @@ public class UserProfileRepository(
    }
 
    public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
-       string firstName, string lastName, string avatar)
+      string? firstName, string? lastName, string? avatar)
    {
       var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
       var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
@@ -67,9 +67,21 @@ public class UserProfileRepository(
       existProfile.IsBlocked = userProfile.IsBlocked;
       existProfile.Region = userProfile.Region;
       existProfile.Country = userProfile.Country;
-      user.FirstName = firstName;
-      user.LastName = lastName;
-      user.Avatar = avatar;
+
+      if (!string.IsNullOrEmpty(firstName))
+      {
+         user.FirstName = firstName;
+      }
+
+      if (!string.IsNullOrEmpty(lastName))
+      {
+         user.LastName = lastName;
+      }
+
+      if (!string.IsNullOrEmpty(avatar))
+      {
+         user.Avatar = avatar;
+      }
 
       context.UsersProfiles.Update(existProfile);
       context.Users.Update(user);
@@ -77,6 +89,7 @@ public class UserProfileRepository(
 
       return existProfile;
    }
+
    
    public async Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId)
    {

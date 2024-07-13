@@ -4,7 +4,6 @@ namespace Facebook.Domain.Post;
 
 public class ReactionEntity
 {
-
     public Guid Id { get; set; }
     public string TypeCode { get; set; }
     private DateTime _createdAt;

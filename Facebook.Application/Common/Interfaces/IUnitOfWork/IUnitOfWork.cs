@@ -1,3 +1,4 @@
+using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.Like.IRepository;
@@ -17,4 +18,6 @@ public interface IUnitOfWork
     IPostRepository Post { get; }
     ILikeRepository Like { get; }
     ICommentRepository Comment { get; }
+    IChatRepository Chat { get; }
+    IMessageRepository Message { get; }
 }

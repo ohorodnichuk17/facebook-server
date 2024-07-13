@@ -4,6 +4,7 @@ using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Facebook.Domain.Chat;
 
 namespace Facebook.Infrastructure.Common.Persistence;
 
@@ -17,12 +18,14 @@ public class FacebookDbContext
     public DbSet<PostEntity> Posts { get; set; }
     public DbSet<ImagesEntity> Images { get; set; }
     public DbSet<UserProfileEntity> UsersProfiles { get; set; }
-
+    public DbSet<FriendRequestEntity> FriendRequests { get; set; }
+    public DbSet<FeelingEntity> Feelings { get; set; }
     public DbSet<ReactionEntity> Reactions { get; set; }
     public DbSet<LikeEntity> Likes { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
-    public DbSet<FriendRequestEntity> FriendRequests { get; set; }
-    public DbSet<FeelingEntity> Feelings { get; set; }
+    public DbSet<MessageEntity> Messages { get; set; }
+    public DbSet<ChatEntity> Chats { get; set; }
+    public DbSet<UserChatEntity> UserChats{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -101,5 +104,28 @@ public class FacebookDbContext
             .WithMany()
             .HasForeignKey(p => p.FeelingId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<UserChatEntity>()
+            .HasKey(uc => new { uc.UserId, uc.ChatId });
+
+        builder.Entity<UserChatEntity>()
+            .HasOne(uc => uc.User)
+            .WithMany(u => u.UserChats)
+            .HasForeignKey(uc => uc.UserId);
+
+        builder.Entity<UserChatEntity>()
+            .HasOne(uc => uc.Chat)
+            .WithMany(c => c.UserChats)
+            .HasForeignKey(uc => uc.ChatId);
+
+        builder.Entity<MessageEntity>()
+            .HasOne(m => m.Chat)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ChatId);
+
+        builder.Entity<MessageEntity>()
+            .HasOne(m => m.User)
+            .WithMany(u => u.Messages)
+            .HasForeignKey(m => m.UserId);
     }
 }

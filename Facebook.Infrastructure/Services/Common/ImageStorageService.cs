@@ -195,6 +195,8 @@ public class ImageStorageService : IImageStorageService
         {
             var postFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "posts");
             var storyFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "stories");
+            var avatarFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "avatars");
+            var coverPhotoFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "images", "coverPhotos");
 
             var postFilePath = Path.Combine(postFolderPath, imageName);
             if (File.Exists(postFilePath))
@@ -207,6 +209,22 @@ public class ImageStorageService : IImageStorageService
             if (File.Exists(storyFilePath))
             {
                 File.Delete(storyFilePath);
+                return true;
+            }
+            
+            
+            var avatarFilePath = Path.Combine(avatarFolderPath, imageName);
+            if (File.Exists(avatarFilePath))
+            {
+                File.Delete(avatarFilePath);
+                return true;
+            }
+            
+            
+            var coverphotoFilePath = Path.Combine(coverPhotoFolderPath, imageName);
+            if (File.Exists(coverphotoFilePath))
+            {
+                File.Delete(coverphotoFilePath);
                 return true;
             }
             return false;

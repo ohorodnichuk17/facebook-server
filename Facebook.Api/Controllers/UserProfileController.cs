@@ -1,12 +1,14 @@
-﻿using Facebook.Application.UserProfile.Command.Delete;
+﻿using Facebook.Application.UserProfile.Command.DeleteAvatar;
+using Facebook.Application.UserProfile.Command.DeleteCoverPhoto;
+using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
 using Facebook.Contracts.DeleteRequest;
+using Facebook.Contracts.UserProfile.Delete;
 using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetById;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -43,6 +45,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
             authResult => Ok(editResult.Value),
             errors => Problem(errors));
     }
+    
     [HttpDelete("delete-profile")]
     public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteRequest request)
     {
@@ -53,6 +56,30 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
         deleteRes => Ok(),
         errors => Problem(errors));
     }
+    
+    [HttpDelete("delete-avatar")]
+    public async Task<IActionResult> DeleteAvatarAsync([FromForm] DeleteAvatarCoverPhotoRequest request)
+    {
+        var command = mapper.Map<DeleteAvatarCommand>(request);
+        var deleteResult = await mediatr.Send(command);
+
+        return deleteResult.Match(
+            deleteRes => Ok(),
+            errors => Problem(errors));
+    }
+    
+        
+    [HttpDelete("delete-cover-photo")]
+    public async Task<IActionResult> DeleteCoverPhotoAsync([FromForm] DeleteAvatarCoverPhotoRequest request)
+    {
+        var command = mapper.Map<DeleteCoverPhotoCommand>(request);
+        var deleteResult = await mediatr.Send(command);
+
+        return deleteResult.Match(
+            deleteRes => Ok(),
+            errors => Problem(errors));
+    }
+    
     [HttpGet("get-profile-by-id")]
     public async Task<IActionResult> GetUserProfileByIdAsync([FromQuery] GetUserProfileByIdRequest request)
     {

@@ -1,11 +1,10 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.TypeExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Facebook.Application.UserProfile.Command.Delete;
+namespace Facebook.Application.UserProfile.Command.DeleteUser;
 
 public class DeleteUserCommandHandler(
     IUnitOfWork unitOfWork,

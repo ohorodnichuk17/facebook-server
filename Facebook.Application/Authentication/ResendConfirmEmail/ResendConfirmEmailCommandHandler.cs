@@ -7,35 +7,30 @@ using Microsoft.Extensions.Configuration;
 
 namespace Facebook.Application.Authentication.ResendConfirmEmail;
 
-public class ResendConfirmEmailCommandHandler : IRequestHandler<ResendConfirmEmailCommand, ErrorOr<string>>
+public class ResendConfirmEmailCommandHandler(
+    IUserAuthenticationService userAuthenticationService,
+    IJwtGenerator jwtGenerator,
+    IUserRepository userRepository,
+    EmailService emailService,
+    IConfiguration configuration)
+    : IRequestHandler<ResendConfirmEmailCommand, ErrorOr<string>>
 {
-    private readonly IUserAuthenticationService _userAuthenticationService;
-    private IJwtGenerator _jwtGenerator;
-    private readonly IUserRepository _userRepository;
-    private readonly EmailService _emailService;
-    private readonly IConfiguration _configuration;
+    private IJwtGenerator _jwtGenerator = jwtGenerator;
+    private readonly EmailService _emailService = emailService;
+    private readonly IConfiguration _configuration = configuration;
 
-    public ResendConfirmEmailCommandHandler(IUserAuthenticationService userAuthenticationService, IJwtGenerator jwtGenerator, IUserRepository userRepository, EmailService emailService, IConfiguration configuration)
-    {
-        _userAuthenticationService = userAuthenticationService;
-        _jwtGenerator = jwtGenerator;
-        _userRepository = userRepository;
-        _emailService = emailService;
-        _configuration = configuration;
-    }
-    
     public async Task<ErrorOr<string>> Handle(ResendConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var userOrError = await _userRepository.GetByEmailAsync(request.Email);
+        var userOrError = await userRepository.GetByEmailAsync(request.Email);
         if (userOrError.IsError)
         {
             return userOrError.Errors;
         }
 
         var user = userOrError.Value;
-        var emailToken = await _userAuthenticationService.GenerateEmailConfirmationTokenAsync(user);
+        var emailToken = await userAuthenticationService.GenerateEmailConfirmationTokenAsync(user);
 
-        var emailResult = await _userAuthenticationService.ResendEmailConfirmationAsync(user, emailToken, request.BaseUrl);
+        var emailResult = await userAuthenticationService.ResendEmailConfirmationAsync(user, emailToken, request.BaseUrl);
         if (!emailResult)
         {
             return Error.Failure("Failed to resend confirmation email.");

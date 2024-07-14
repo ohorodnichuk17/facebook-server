@@ -7,23 +7,18 @@ using Facebook.Domain.User;
 
 namespace Facebook.Application.Authentication.ChangeEmail;
 
-public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, ErrorOr<UserEntity>>
+public class ChangeEmailCommandHandler(
+    IUserAuthenticationService userAuthenticationService,
+    IUserRepository userRepository,
+    EmailService emailService)
+    : IRequestHandler<ChangeEmailCommand, ErrorOr<UserEntity>>
 {
-    private readonly IUserAuthenticationService _userAuthenticationService;
-    private readonly IUserRepository _userRepository;
-    private readonly EmailService _emailService;
-
-    public ChangeEmailCommandHandler(IUserAuthenticationService userAuthenticationService, IUserRepository userRepository, EmailService emailService)
-    {
-        _userAuthenticationService = userAuthenticationService;
-        _userRepository = userRepository;
-        _emailService = emailService;
-    }
+    private readonly IUserAuthenticationService _userAuthenticationService = userAuthenticationService;
 
     public async Task<ErrorOr<UserEntity>> Handle(ChangeEmailCommand request,
         CancellationToken cancellationToken)
     {
-        var userResult = await _userRepository.GetUserByIdAsync(request.UserId);
+        var userResult = await userRepository.GetUserByIdAsync(request.UserId);
 
         if (userResult.IsError)
         {
@@ -33,7 +28,7 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Err
         var user = userResult.Value;
         user.Email = request.Email; 
 
-        var changeEmailResult = await _emailService
+        var changeEmailResult = await emailService
             .SendChangeEmailEmailAsync(request.Email, request.Token, request.BaseUrl, user.UserName, request.UserId);
 
         if (changeEmailResult.IsError)
@@ -41,7 +36,7 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Err
             return changeEmailResult.Errors;
         }
 
-        var resultOfUserToUpdate = await _userRepository.SaveUserAsync(user);
+        var resultOfUserToUpdate = await userRepository.SaveUserAsync(user);
 
         return resultOfUserToUpdate;
     }

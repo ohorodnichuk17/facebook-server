@@ -25,7 +25,17 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
          return Error.Failure(ex.Message);
       }
    }
+   
+   public async Task<ErrorOr<Unit>> UpdateAsync(UserEntity userEntity)
+   {
+      var updateResult = await userManager.UpdateAsync(userEntity);
 
+      if (!updateResult.Succeeded)
+         return Error.Unexpected("Error updating user");
+
+      return Unit.Value;
+   }
+   
     public async Task<ErrorOr<UserEntity>> GetUserByIdAsync(Guid userId)
     {
         if (userId == Guid.Empty)

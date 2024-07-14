@@ -1,4 +1,4 @@
-﻿using Facebook.Application.UserProfile.Command.Delete;
+﻿using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
 using Facebook.Contracts.DeleteRequest;

@@ -89,7 +89,28 @@ public class UserProfileRepository(
 
       return existProfile;
    }
+   
+   public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile)
+   {
+      var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
+      var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
+      if (existProfile == null || user == null)
+      {
+         return Error.Failure("Profile not found!");
+      }
 
+      existProfile.Biography = userProfile.Biography;
+      existProfile.CoverPhoto = userProfile.CoverPhoto;
+      existProfile.IsProfilePublic = userProfile.IsProfilePublic;
+      existProfile.IsBlocked = userProfile.IsBlocked;
+      existProfile.Region = userProfile.Region;
+      existProfile.Country = userProfile.Country;
+
+      context.UsersProfiles.Update(existProfile);
+      await context.SaveChangesAsync();
+
+      return existProfile;
+   }
    
    public async Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId)
    {

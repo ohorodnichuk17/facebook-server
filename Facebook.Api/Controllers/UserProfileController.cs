@@ -25,14 +25,14 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
 
         if (request.CoverPhoto != null && request.CoverPhoto.Length != 0)
         {
-            using MemoryStream memoryStream = new MemoryStream();
+            using MemoryStream memoryStream = new();
             await request.CoverPhoto.CopyToAsync(memoryStream);
 
             coverPhoto = memoryStream.ToArray();
         }
         if (request.Avatar != null && request.Avatar.Length != 0)
         {
-            using MemoryStream memoryStream = new MemoryStream();
+            using MemoryStream memoryStream = new();
             await request.Avatar.CopyToAsync(memoryStream);
 
             avatar = memoryStream.ToArray();

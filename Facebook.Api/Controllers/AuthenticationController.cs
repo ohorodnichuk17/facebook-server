@@ -36,7 +36,7 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
         byte[] image = null;
         if (request.Avatar != null && request.Avatar.Length > 0)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
                 await request.Avatar.CopyToAsync(memoryStream);
                 image = memoryStream.ToArray();

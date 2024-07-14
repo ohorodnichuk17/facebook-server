@@ -26,7 +26,7 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
         byte[] image = null;
         if (request.Image != null && request.Image.Length > 0)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
                 await request.Image.CopyToAsync(memoryStream);
                 image = memoryStream.ToArray();
@@ -47,7 +47,7 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
             return Problem(ex.Message);
         }
     }
-    
+
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {

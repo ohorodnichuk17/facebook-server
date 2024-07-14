@@ -45,7 +45,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
             authResult => Ok(editResult.Value),
             errors => Problem(errors));
     }
-    
+
     [HttpDelete("delete-profile")]
     public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteRequest request)
     {
@@ -56,9 +56,9 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
         deleteRes => Ok(),
         errors => Problem(errors));
     }
-    
+
     [HttpDelete("delete-avatar")]
-    public async Task<IActionResult> DeleteAvatarAsync([FromForm] DeleteAvatarCoverPhotoRequest request)
+    public async Task<IActionResult> DeleteAvatarAsync([FromQuery] DeleteAvatarCoverPhotoRequest request)
     {
         var command = mapper.Map<DeleteAvatarCommand>(request);
         var deleteResult = await mediatr.Send(command);
@@ -67,10 +67,10 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
             deleteRes => Ok(),
             errors => Problem(errors));
     }
-    
-        
+
+
     [HttpDelete("delete-cover-photo")]
-    public async Task<IActionResult> DeleteCoverPhotoAsync([FromForm] DeleteAvatarCoverPhotoRequest request)
+    public async Task<IActionResult> DeleteCoverPhotoAsync([FromQuery] DeleteAvatarCoverPhotoRequest request)
     {
         var command = mapper.Map<DeleteCoverPhotoCommand>(request);
         var deleteResult = await mediatr.Send(command);
@@ -79,7 +79,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
             deleteRes => Ok(),
             errors => Problem(errors));
     }
-    
+
     [HttpGet("get-profile-by-id")]
     public async Task<IActionResult> GetUserProfileByIdAsync([FromQuery] GetUserProfileByIdRequest request)
     {

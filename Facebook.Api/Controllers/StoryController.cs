@@ -26,11 +26,9 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
         byte[] image = null;
         if (request.Image != null && request.Image.Length > 0)
         {
-            using (MemoryStream memoryStream = new())
-            {
-                await request.Image.CopyToAsync(memoryStream);
-                image = memoryStream.ToArray();
-            }
+            using MemoryStream memoryStream = new();
+            await request.Image.CopyToAsync(memoryStream);
+            image = memoryStream.ToArray();
         }
 
         try

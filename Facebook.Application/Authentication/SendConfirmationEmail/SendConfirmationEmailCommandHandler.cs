@@ -7,31 +7,22 @@ using MediatR;
 
 namespace Facebook.Application.Authentication.SendConfirmationEmail;
 
-public class SendConfirmationEmailCommandHandler : IRequestHandler<SendConfirmationEmailCommand, ErrorOr<Success>>
+public class SendConfirmationEmailCommandHandler(
+	IUserRepository userRepository,
+	IUserAuthenticationService userAuthenticationService,
+	EmailService emailService)
+	: IRequestHandler<SendConfirmationEmailCommand, ErrorOr<Success>>
 {
-	private readonly IUserRepository _userRepository;
-	private readonly IUserAuthenticationService _userAuthenticationService;
-	private readonly EmailService _emailService;
-
-	public SendConfirmationEmailCommandHandler(IUserRepository userRepository, 
-		IUserAuthenticationService userAuthenticationService, 
-		EmailService emailService) 
-	{
-		_userRepository = userRepository;
-		_userAuthenticationService = userAuthenticationService;
-		_emailService = emailService;
-	}
-
 	public async Task<ErrorOr<Success>> Handle(SendConfirmationEmailCommand request, CancellationToken cancellationToken)
 	{
-		var errorOrUser = await _userRepository.GetByEmailAsync(request.Email);
+		var errorOrUser = await userRepository.GetByEmailAsync(request.Email);
 
 		if (errorOrUser.IsError)
 			return Error.Validation("User with such email doesn't exist");
 
 		var user = errorOrUser.Value;
 
-		var token = await _userAuthenticationService.GenerateEmailConfirmationTokenAsync(user);
+		var token = await userAuthenticationService.GenerateEmailConfirmationTokenAsync(user);
 
 		string? userName;
 
@@ -55,7 +46,7 @@ public class SendConfirmationEmailCommandHandler : IRequestHandler<SendConfirmat
 			userName = user.FirstName + " " + user.LastName;
 		}
 
-		var sendEmailResult = await _emailService.SendEmailConfirmationEmailAsync(
+		var sendEmailResult = await emailService.SendEmailConfirmationEmailAsync(
 			user.Id, user.Email!, token, request.BaseUrl, userName!);
 
 		return sendEmailResult;

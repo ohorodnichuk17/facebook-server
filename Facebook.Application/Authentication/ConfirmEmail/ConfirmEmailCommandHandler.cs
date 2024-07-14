@@ -6,45 +6,38 @@ using MediatR;
 
 namespace Facebook.Application.Authentication.ConfirmEmail;
 
-public class ConfirmEmailCommandHandler :
-	IRequestHandler<ConfirmEmailCommand, ErrorOr<string>>
+public class ConfirmEmailCommandHandler(
+	IUserAuthenticationService userAuthenticationService,
+	IJwtGenerator jwtGenerator,
+	IUserRepository userRepository)
+	:
+		IRequestHandler<ConfirmEmailCommand, ErrorOr<string>>
 {
-	private readonly IUserAuthenticationService _userAuthenticationService;
-	private IJwtGenerator _jwtGenerator;
-	private readonly IUserRepository _userRepository;
-
-	public ConfirmEmailCommandHandler(IUserAuthenticationService userAuthenticationService, IJwtGenerator jwtGenerator, IUserRepository userRepository)
-	{
-		_userAuthenticationService = userAuthenticationService;
-		_jwtGenerator = jwtGenerator;
-		_userRepository = userRepository;
-	}
-
 	public async Task<ErrorOr<string>> Handle(
 		ConfirmEmailCommand request, CancellationToken cancellationToken)
 	{
-		var errorOrSuccess = await _userAuthenticationService
+		var errorOrSuccess = await userAuthenticationService
 			.ConfirmEmailAsync(request.UserId, request.ValidEmailToken);
 		if (errorOrSuccess.IsError)
 		{
 			return errorOrSuccess.Errors;
 		}
 
-		var userOrError = await _userRepository.GetUserByIdAsync(request.UserId.ToString());
+		var userOrError = await userRepository.GetUserByIdAsync(request.UserId.ToString());
 		if (userOrError.IsError)
 		{
 			return userOrError.Errors;
 		}
 
 		var user = userOrError.Value;
-		var roleOrError = await _userRepository.FindRolesByUserIdAsync(user);
+		var roleOrError = await userRepository.FindRolesByUserIdAsync(user);
 		if (roleOrError.IsError)
 		{
 			return roleOrError.Errors;
 		}
 
 		var role = roleOrError.Value.First();
-		var token =  await _jwtGenerator.GenerateJwtTokenAsync(user, role);
+		var token =  await jwtGenerator.GenerateJwtTokenAsync(user, role);
 
 		return token;
 	}

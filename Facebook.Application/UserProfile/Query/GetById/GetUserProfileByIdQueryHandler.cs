@@ -13,7 +13,7 @@ public class GetUserProfileByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         try
         {
-            var getUserProfile = await unitOfWork.UserProfile.GetByIdAsync(request.UserId.ToString());
+            var getUserProfile = await unitOfWork.UserProfile.GetUserProfileByIdAsync(request.UserId.ToString());
 
             if (getUserProfile.IsError)
             {

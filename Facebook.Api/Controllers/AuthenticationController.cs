@@ -62,19 +62,6 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
             errors => Problem(errors));
     }
 
-
-    // [HttpGet("resend-confirmation-email")]
-    // public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery]ConfirmEmailRequest request)
-    // {
-    //     var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
-    //     var resendConfirmationResult = await mediatr.Send(mapper
-    //         .Map<ResendConfirmEmailCommand>((request, baseUrl)));
-    //
-    //     return resendConfirmationResult.Match(
-    //         success => Ok("Confirmation email resent successfully"),
-    //         errors => Problem(errors));
-    // }
-
     [HttpGet("resend-confirmation-email")]
     public async Task<IActionResult> ResendConfirmationEmailAsync([FromQuery] ResendConfirmEmailRequest request)
     {

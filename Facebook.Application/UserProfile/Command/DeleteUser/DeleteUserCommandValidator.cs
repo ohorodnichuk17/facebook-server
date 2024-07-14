@@ -1,11 +1,6 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Application.UserProfile.Command.Delete;
+namespace Facebook.Application.UserProfile.Command.DeleteUser;
 
 public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
 {

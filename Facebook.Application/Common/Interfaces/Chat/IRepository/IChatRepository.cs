@@ -1,4 +1,6 @@
-﻿using Facebook.Domain.Chat;
+﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.IRepository;
+using Facebook.Domain.Chat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.Common.Interfaces.Chat.IRepository;
 
-public interface IChatRepository
+public interface IChatRepository : IRepository<ChatEntity>
 {
-    Task<IEnumerable<ChatEntity>> GetByUserIdAsync(Guid userId);
+    Task<ErrorOr<IEnumerable<ChatEntity>>> GetByUserIdAsync(Guid userId);
+    Task<ErrorOr<ChatEntity>> GetChatByUsersIdAsync(Guid senderId, Guid receiverId);
 }

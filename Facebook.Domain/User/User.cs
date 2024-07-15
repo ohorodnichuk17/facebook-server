@@ -26,8 +26,9 @@ public class UserEntity : IdentityUser<Guid>
 
     public ICollection<StoryEntity> Stories { get; set; } = new List<StoryEntity>();
     public ICollection<PostEntity> Posts { get; set; } = new List<PostEntity>();
-    public ICollection<UserChatEntity> UserChats { get; set; } = new List<UserChatEntity>();
     public ICollection<MessageEntity> Messages { get; set; } = new List<MessageEntity>();
+    public ICollection<ChatEntity> Chats { get; set; } = new List<ChatEntity>();
+    public ICollection<ChatUserEntity> UserChats { get; set; } = new List<ChatUserEntity>();
     public ICollection<FriendRequestEntity> SentFriendRequests { get; set; } = new List<FriendRequestEntity>();
     public ICollection<FriendRequestEntity> ReceivedFriendRequests { get; set; } = new List<FriendRequestEntity>();
 }

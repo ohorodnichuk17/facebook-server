@@ -29,6 +29,18 @@ public static class DependencyInjection
 
         services.AddMappings();
 
+        // Add SignalR services
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder => builder.AllowAnyOrigin()
+                                  .AllowAnyMethod()
+                                  .AllowAnyHeader());
+        });
+
+        services.AddSignalR();
+
         //	services.AddRequestValidation();
 
         return services;

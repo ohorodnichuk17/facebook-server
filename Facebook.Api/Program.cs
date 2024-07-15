@@ -3,6 +3,7 @@ using Facebook.Infrastructure;
 using Facebook.Infrastructure.Common.Initializers;
 using Facebook.Server;
 using Facebook.Server.Common;
+using Facebook.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
+app.UseRouting();
+app.MapHub<ChatHub>("/chatHub");
 
 UserAndRolesInitializer.SeedData(app);
 

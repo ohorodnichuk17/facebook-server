@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Facebook.Domain.Chat;
 
-public class UserChatEntity
+public class ChatUserEntity
 {
     public Guid UserId { get; set; }
     public UserEntity User { get; set; }

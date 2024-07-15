@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Facebook.Domain.Chat;
+using System.Reflection.Emit;
 
 namespace Facebook.Infrastructure.Common.Persistence;
 
@@ -25,7 +26,7 @@ public class FacebookDbContext
     public DbSet<CommentEntity> Comments { get; set; }
     public DbSet<MessageEntity> Messages { get; set; }
     public DbSet<ChatEntity> Chats { get; set; }
-    public DbSet<UserChatEntity> UserChats{ get; set; }
+    public DbSet<ChatUserEntity> ChatUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -105,27 +106,29 @@ public class FacebookDbContext
             .HasForeignKey(p => p.FeelingId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<UserChatEntity>()
-            .HasKey(uc => new { uc.UserId, uc.ChatId });
+        builder.Entity<ChatUserEntity>()
+                .HasKey(cu => new { cu.ChatId, cu.UserId });
 
-        builder.Entity<UserChatEntity>()
-            .HasOne(uc => uc.User)
+        builder.Entity<ChatUserEntity>()
+            .HasOne(cu => cu.Chat)
+            .WithMany(c => c.ChatUsers)
+            .HasForeignKey(cu => cu.ChatId);
+
+        builder.Entity<ChatUserEntity>()
+            .HasOne(cu => cu.User)
             .WithMany(u => u.UserChats)
-            .HasForeignKey(uc => uc.UserId);
-
-        builder.Entity<UserChatEntity>()
-            .HasOne(uc => uc.Chat)
-            .WithMany(c => c.UserChats)
-            .HasForeignKey(uc => uc.ChatId);
-
-        builder.Entity<MessageEntity>()
-            .HasOne(m => m.Chat)
-            .WithMany(c => c.Messages)
-            .HasForeignKey(m => m.ChatId);
+            .HasForeignKey(cu => cu.UserId);
 
         builder.Entity<MessageEntity>()
             .HasOne(m => m.User)
             .WithMany(u => u.Messages)
-            .HasForeignKey(m => m.UserId);
+            .HasForeignKey(m => m.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<MessageEntity>()
+            .HasOne(m => m.Chat)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

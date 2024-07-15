@@ -47,9 +47,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("AllowAll");
-app.UseRouting();
-app.MapHub<ChatHub>("/chatHub");
+//app.UseCors("AllowAll");
+//app.UseRouting();
+//app.MapHub<ChatHub>("/chatHub");
 
 UserAndRolesInitializer.SeedData(app);
 

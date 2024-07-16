@@ -31,7 +31,7 @@ public class Repository<T> : IRepository<T>
         }
     }
 
-    public async Task<ErrorOr<T>> GetByIdAsync(string id)
+    public async Task<ErrorOr<T>> GetByIdAsync(Guid id)
     {
         try
         {

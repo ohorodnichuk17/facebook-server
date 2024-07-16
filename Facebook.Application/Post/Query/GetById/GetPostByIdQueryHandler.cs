@@ -13,7 +13,7 @@ public class GetPostByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         try
         {
-            var result = await unitOfWork.Post.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Post.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

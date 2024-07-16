@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.DTO_s;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
@@ -16,149 +14,153 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
 
 [Route("api/friends")]
 [ApiController]
 [AllowAnonymous]
-public class FriendsController(ISender mediatr, IMapper mapper, 
+public class FriendsController(ISender mediatr, IMapper mapper,
    IConfiguration configuration, IUserRepository userRepository) : ApiController
 {
-   [HttpPost("accept-friend-request")]
-   public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
-   {
-      var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
-    
-      return result.Match(
-         success => Ok(success),
-         error => 
-         {
-            Console.Error.WriteLine($"Error in AcceptFriendRequest: {error}");
-            return Problem(error.First().Description);
-         });
-   }
-   
-   [HttpPost("send-friend-request")]
-   public async Task<IActionResult> SendFriendRequest(FriendRequest request)
-   {
-      var result = await mediatr.Send(mapper.Map<SendFriendRequestCommand>(request));
-      
-      return result.Match(
-         success => Ok(success),
-         error => Problem(error));
-   }
-   
-   [HttpPost("reject-friend-request")]
-   public async Task<IActionResult> RejectFriendRequest(FriendRequest request)
-   {
-      var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
-    
-      return result.Match(
-         success => Ok(success),
-         error => 
-         {
-            Console.Error.WriteLine($"Error in RejectFriendRequest: {error}");
-            return Problem(error.First().Description);
-         });
-   }
-   
-   [HttpPost("remove-friend")]
-   public async Task<IActionResult> RemoveFriend(FriendRequest request)
-   {
-      var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
-      
-      return result.Match(
+    [HttpPost("accept-friend-request")]
+    public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
+    {
+        var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
+
+        return result.Match(
+           success => Ok(success),
+           error =>
+           {
+               Console.Error.WriteLine($"Error in AcceptFriendRequest: {error}");
+               return Problem(error.First().Description);
+           });
+    }
+
+    [HttpPost("send-friend-request")]
+    public async Task<IActionResult> SendFriendRequest(FriendRequest request)
+    {
+        var baseUrl = Request.Headers["Referer"].ToString();
+        var command = mapper.Map<SendFriendRequestCommand>((request, baseUrl));
+        var result = await mediatr.Send(command);
+
+        return result.Match(
          success => Ok(success),
          error => Problem(error));
-   }
+    }
 
-   [HttpGet("get-all-friends")]
-   public async Task<IActionResult> GetAllFriends([FromQuery] Guid userId)
-   {
-      try
-      {
-         var query = new GetAllFriendsQuery(userId);
-         var friends = await mediatr.Send(query);
+    [HttpPost("reject-friend-request")]
+    public async Task<IActionResult> RejectFriendRequest(FriendRequest request)
+    {
+        var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
 
-         return Ok(friends.Value);
-      }
-      catch (Exception ex)
-      {
-         return StatusCode(500, "An error occurred while fetching friends.");
-      }
-   }
+        return result.Match(
+           success => Ok(success),
+           error =>
+           {
+               Console.Error.WriteLine($"Error in RejectFriendRequest: {error}");
+               return Problem(error.First().Description);
+           });
+    }
 
-   [HttpGet("get-friend-by-id")]
-   public async Task<IActionResult> GetFriendById([FromQuery] Guid userId, Guid friendId)
-   {
-      try
-      {
-         var query = new GetFriendByIdQuery(userId, friendId);
-         var result = await mediatr.Send(query);
+    [HttpPost("remove-friend")]
+    public async Task<IActionResult> RemoveFriend(FriendRequest request)
+    {
+        var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
 
-         if (result.IsSuccess())
-         {
-            var friend = result.Value;
-            if (friend == null)
+        return result.Match(
+           success => Ok(success),
+           error => Problem(error));
+    }
+
+    [HttpGet("get-all-friends")]
+    public async Task<IActionResult> GetAllFriends([FromQuery] Guid userId)
+    {
+        try
+        {
+            var query = new GetAllFriendsQuery(userId);
+            var friends = await mediatr.Send(query);
+
+            return Ok(friends.Value);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching friends.");
+        }
+    }
+
+    [HttpGet("get-friend-by-id")]
+    public async Task<IActionResult> GetFriendById([FromQuery] Guid userId, Guid friendId)
+    {
+        try
+        {
+            var query = new GetFriendByIdQuery(userId, friendId);
+            var result = await mediatr.Send(query);
+
+            if (result.IsSuccess())
             {
-               return NotFound();
+                var friend = result.Value;
+                if (friend == null)
+                {
+                    return NotFound();
+                }
+
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                var json = JsonSerializer.Serialize(friend, options);
+
+                return Ok(json);
             }
-
-            var options = new JsonSerializerOptions
+            else
             {
-               ReferenceHandler = ReferenceHandler.Preserve,
-               WriteIndented = true
-            };
+                return StatusCode(500, result.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting friend.");
+        }
+    }
 
-            var json = JsonSerializer.Serialize(friend, options);
+    [HttpPost("search-friends-by-first-and-last-names")]
+    public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
+    {
+        var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
 
-            return Ok(json);
-         }
-         else
-         {
-            return StatusCode(500, result.IsError);
-         }
-      }
-      catch (Exception ex)
-      {
-         return StatusCode(500, "An error occurred while getting friend.");
-      }
-   }
-   
-   [HttpPost("search-friends-by-first-and-last-names")]
-   public async Task<IActionResult> SearchFriendsByFirstAndLastNames(SearchUsersByFirstAndLastNamesRequest request)
-   {
-      var result = await mediatr.Send(mapper.Map<SearchByFirstAndLastNamesQuery>(request));
+        if (result.IsError)
+        {
+            return BadRequest(result.Errors);
+        }
 
-      if (result.IsError)
-      {
-         return BadRequest(result.Errors);
-      }
+        var users = result.Value;
 
-      var users = result.Value; 
+        var response = users.Select(u => new UserDto
+        {
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Avatar = u.Avatar,
+            Birthday = u.Birthday,
+            Gender = u.Gender,
+            Stories = u.Stories,
+            Posts = u.Posts,
+            IsProfilePublic = u.IsProfilePublic
+        }).ToList();
 
-      var response = users.Select(u => new UserDto
-      {
-         FirstName = u.FirstName,
-         LastName = u.LastName,
-         Avatar = u.Avatar,
-         Birthday = u.Birthday,
-         Gender = u.Gender,
-         Stories = u.Stories,
-         Posts = u.Posts,
-         IsProfilePublic = u.IsProfilePublic
-      }).ToList();
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve,
+            WriteIndented = true
+        };
 
-      var options = new JsonSerializerOptions
-      {
-         ReferenceHandler = ReferenceHandler.Preserve,
-         WriteIndented = true
-      };
+        var json = JsonSerializer.Serialize(response, options);
 
-      var json = JsonSerializer.Serialize(response, options);
-
-      return Ok(json);
-   }
+        return Ok(json);
+    }
 
 }

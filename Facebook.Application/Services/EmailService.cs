@@ -108,4 +108,26 @@ public class EmailService(ISmtpService smtpService)
 
         return Result.Success;
     }
+
+    public async Task<ErrorOr<Success>> SendFriendRequestNotificationEmailAsync(
+        string email, string baseUrl,
+        string userName, Guid friendId)
+    {
+        string url = $"{baseUrl}friends/request?friendId={friendId}";
+
+        string emailBody = string.Empty;
+
+        using (StreamReader reader = new("./EmailTemplates/send-friend-request-notification.html"))
+        {
+            emailBody = reader.ReadToEnd();
+        }
+
+        emailBody = emailBody.Replace("{{ username }}", userName);
+
+        emailBody = emailBody.Replace("{{ url }}", url);
+
+        await smtpService.SendEmailAsync(email, "Friend Request Notification", emailBody);
+
+        return Result.Success;
+    }
 }

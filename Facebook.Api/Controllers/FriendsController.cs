@@ -26,7 +26,7 @@ public class FriendsController(ISender mediatr, IMapper mapper,
    IConfiguration configuration, IUserRepository userRepository) : ApiController
 {
    [HttpPost("accept-friend-request")]
-   public async Task<IActionResult> AcceptFriendRequest(FriendRequest request)
+   public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
    {
       var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
     

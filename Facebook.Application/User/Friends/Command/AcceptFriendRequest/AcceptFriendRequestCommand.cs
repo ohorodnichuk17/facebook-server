@@ -5,5 +5,5 @@ namespace Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 
 public record AcceptFriendRequestCommand(
     Guid UserId,
-    Guid FriendRequestId
+    Guid FriendId
 ) : IRequest<ErrorOr<Unit>>;

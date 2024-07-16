@@ -9,8 +9,8 @@ public class AcceptFriendRequestCommandValidator : AbstractValidator<AcceptFrien
         RuleFor(r => r.UserId)
             .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
 
-        RuleFor(r => r.FriendRequestId)
-            .NotEmpty().WithMessage("FriendRequestId must not be empty").When(r => r.UserId != Guid.Empty);
+        RuleFor(r => r.FriendId)
+            .NotEmpty().WithMessage("FriendId must not be empty").When(r => r.UserId != Guid.Empty);
 
     }
 }

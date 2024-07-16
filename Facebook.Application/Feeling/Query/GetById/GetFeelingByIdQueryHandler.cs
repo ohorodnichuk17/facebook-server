@@ -13,7 +13,7 @@ public class GetFeelingByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         try
         {
-            var result = await unitOfWork.Feeling.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Feeling.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

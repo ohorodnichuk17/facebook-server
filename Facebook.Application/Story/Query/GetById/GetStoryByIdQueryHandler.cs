@@ -14,7 +14,7 @@ public class GetStoryByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         try
         {
-            var result = await unitOfWork.Story.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Story.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

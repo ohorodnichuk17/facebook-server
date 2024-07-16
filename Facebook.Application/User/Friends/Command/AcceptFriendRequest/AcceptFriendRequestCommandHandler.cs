@@ -12,13 +12,13 @@ public class AcceptFriendRequestCommandHandler(
         try
         {
             var result = await userRepository
-                .AcceptFriendRequestAsync(request.UserId.ToString(), request.FriendRequestId.ToString());
-            
+                .AcceptFriendRequestAsync(request.UserId.ToString(), request.FriendId.ToString());
+
             if (result.IsError)
             {
                 return result.Errors;
             }
-            
+
             return result;
         }
         catch (Exception ex)

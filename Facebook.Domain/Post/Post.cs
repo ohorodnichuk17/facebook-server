@@ -1,5 +1,3 @@
-using Facebook.Domain.User;
-
 namespace Facebook.Domain.Post;
 
 public class PostEntity
@@ -10,7 +8,8 @@ public class PostEntity
     public List<string>? Tags { get; set; }
     public string? Location { get; set; }
     public ICollection<ImagesEntity>? Images { get; set; }
-
+    public Guid? ActionId { get; set; }
+    public ActionEntity? Action { get; set; }
     public ICollection<ReactionEntity>? Reactions { get; set; }
     public ICollection<LikeEntity>? Likes { get; set; }
     public ICollection<CommentEntity>? Comments { get; set; }

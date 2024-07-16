@@ -1,3 +1,4 @@
+using Facebook.Application.Common.Interfaces.Action.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.Like.IRepository;
@@ -16,5 +17,7 @@ public interface IUnitOfWork
     IUserProfileRepository UserProfile { get; }
     IPostRepository Post { get; }
     ILikeRepository Like { get; }
+    IActionRepository Action { get; }
+    ISubActionRepository SubAction { get; }
     ICommentRepository Comment { get; }
 }

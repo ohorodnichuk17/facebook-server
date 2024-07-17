@@ -16,7 +16,7 @@ public class GetReactionByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandl
     {
         try
         {
-            var result = await unitOfWork.Reaction.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Reaction.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

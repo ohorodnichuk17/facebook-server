@@ -18,10 +18,11 @@ builder.Services
 //builder.Logging.SetMinimumLevel(LogLevel.Trace);
 //builder.Host.UseNLog();
 
-
 var app = builder.Build();
+
 app.UseSwagger();
 app.UseSwaggerUI();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -41,15 +42,15 @@ app.UseCors(options =>
         .AllowCredentials()
         .AllowAnyMethod());
 
+app.UseRouting();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-//app.UseCors("AllowAll");
-//app.UseRouting();
-//app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/chatHub");
 
 UserAndRolesInitializer.SeedData(app);
 

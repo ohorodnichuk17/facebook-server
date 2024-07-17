@@ -16,7 +16,7 @@ public class GetCommentByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
     {
         try
         {
-            var result = await unitOfWork.Comment.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Comment.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

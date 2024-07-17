@@ -1,14 +1,12 @@
 ﻿using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Microsoft.AspNetCore.SignalR;
 using Facebook.Domain.Chat;
-using LanguageExt.Pipes;
-using System.Text.RegularExpressions;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.User;
-using Facebook.Infrastructure.Repositories.Chat;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using ErrorOr;
-using LanguageExt;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Facebook.Server.Hubs;
 
@@ -33,8 +31,9 @@ public class ChatHub : Hub
             return;
         }
 
-        var chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
-        if (chat.Value == null)
+        var chatResult = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
+        ChatEntity chat;
+        if (chatResult.IsError)
         {
             chat = new ChatEntity
             {
@@ -46,7 +45,13 @@ public class ChatHub : Hub
                     new ChatUserEntity { UserId = toUser.Value.Id }
                 }
             };
-            await _unitOfWork.Chat.CreateAsync(chat.Value);
+            await _unitOfWork.Chat.CreateAsync(chat);
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
+        }
+        else
+        {
+            chat = chatResult.Value;
         }
 
         var message = new MessageEntity
@@ -54,22 +59,25 @@ public class ChatHub : Hub
             Id = Guid.NewGuid(),
             Content = messageContent,
             UserId = fromUser.Value.Id,
-            ChatId = chat.Value.Id,
+            ChatId = chat.Id,
             CreatedAt = DateTime.UtcNow
         };
 
         await _unitOfWork.Message.CreateAsync(message);
 
-        await Clients.All.SendAsync("ReceiveMessage", fromUserEmail, messageContent);
+        var chatUsers = chat.ChatUsers;
+        foreach (var chatUser in chatUsers)
+        {
+            var user = await _userRepository.GetUserByIdAsync(chatUser.UserId);
+            var connectionId = GetUserConnectionId(user.Value.Email);
+            await Groups.AddToGroupAsync(connectionId, chat.Id.ToString());
+        }
+
+        await Clients.Group(chat.Id.ToString()).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
     }
 
-    public async Task JoinChat(Guid chatId)
+    private string GetUserConnectionId(string email)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
-    }
-
-    public async Task LeaveChat(Guid chatId)
-    {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId.ToString());
+        return string.Empty;
     }
 }

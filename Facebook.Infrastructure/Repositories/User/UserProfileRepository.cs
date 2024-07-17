@@ -173,4 +173,50 @@ public class UserProfileRepository(
             return Error.Failure(ex.Message);
         }
     }
+
+    public async Task<ErrorOr<Unit>> BlockUserAsync(Guid userId)
+    {
+        try
+        {
+            var userToBlock = await context.UsersProfiles.FindAsync(userId);
+
+            if (userToBlock == null)
+            {
+                return Error.Failure("User not found");
+            }
+
+            userToBlock.IsBlocked = true;
+
+            await context.SaveChangesAsync();
+
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<Unit>> UnblockUserAsync(Guid userId)
+    {
+        try
+        {
+            var userToUnBlock = await context.UsersProfiles.FindAsync(userId);
+
+            if (userToUnBlock == null)
+            {
+                return Error.Failure("User not found");
+            }
+
+            userToUnBlock.IsBlocked = false;
+
+            await context.SaveChangesAsync();
+
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
 }

@@ -16,7 +16,7 @@ public class GetLikeByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
     {
         try
         {
-            var result = await unitOfWork.Like.GetByIdAsync(request.Id.ToString());
+            var result = await unitOfWork.Like.GetByIdAsync(request.Id);
 
             if (result.IsError)
             {

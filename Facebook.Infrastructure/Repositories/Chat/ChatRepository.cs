@@ -19,9 +19,13 @@ public class ChatRepository(FacebookDbContext context) : Repository<ChatEntity>(
 {
     public async Task<ErrorOr<ChatEntity>> GetChatByUsersIdAsync(Guid senderId, Guid receiverId)
     {
-        return await context.Chats
-                .Include(c => c.Users)
-                .FirstOrDefaultAsync(c => c.Users.Any(u => u.Id == senderId) && c.Users.Any(u => u.Id == receiverId));
+        var chat = await context.Chats
+        .Include(c => c.ChatUsers)
+        .SingleOrDefaultAsync(c =>
+            c.ChatUsers.Any(u => u.UserId == senderId) &&
+            c.ChatUsers.Any(u => u.UserId == receiverId));
+
+        return chat == null ? Error.NotFound() : chat;
     }
 
     public async Task<ErrorOr<IEnumerable<ChatEntity>>> GetByUserIdAsync(Guid userId)

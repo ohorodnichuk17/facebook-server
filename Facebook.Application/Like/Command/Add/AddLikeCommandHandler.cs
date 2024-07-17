@@ -1,18 +1,17 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
 using MediatR;
 
 namespace Facebook.Application.Like.Command.Add;
 
-public class AddLikeCommandHandler(IUnitOfWork unitOfWork, IPostRepository postRepository)
+public class AddLikeCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<AddLikeCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(AddLikeCommand request, CancellationToken cancellationToken)
     {
         var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
-        var post = await postRepository.GetPostByIdAsync(request.PostId);
+        var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError)
         {

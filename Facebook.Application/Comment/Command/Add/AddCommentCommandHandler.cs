@@ -1,18 +1,17 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
 using MediatR;
 
 namespace Facebook.Application.Comment.Command.Add;
 
-public class AddCommentCommandHandler(IUnitOfWork unitOfWork, IPostRepository postRepository)
+public class AddCommentCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<AddCommentCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
     {
         var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
-        var post = await postRepository.GetPostByIdAsync(request.PostId);
+        var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError || post.IsError)
         {

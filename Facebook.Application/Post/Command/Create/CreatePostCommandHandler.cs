@@ -2,13 +2,15 @@ using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
+using MapsterMapper;
 using MediatR;
 
 namespace Facebook.Application.Post.Command.Create;
 
 public class CreatePostCommandHandler(
         IUnitOfWork unitOfWork,
-        IImageStorageService imageStorageService) : IRequestHandler<CreatePostCommand, ErrorOr<Unit>>
+        IImageStorageService imageStorageService,
+        IMapper mapper) : IRequestHandler<CreatePostCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
@@ -21,18 +23,7 @@ public class CreatePostCommandHandler(
 
         var userResult = user.Value;
 
-        var post = new PostEntity
-        {
-            Id = Guid.NewGuid(),
-            Title = request.Title,
-            Content = request.Content,
-            Tags = request.Tags,
-            Location = request.Location,
-            IsArchive = request.IsArchive,
-            UserId = request.UserId,
-            CreatedAt = DateTime.Now,
-            FeelingId = request.FeelingId,
-        };
+        var post = mapper.Map<PostEntity>(request);
 
         var postResult = await unitOfWork.Post.CreateAsync(post);
 

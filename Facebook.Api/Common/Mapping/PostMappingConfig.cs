@@ -1,5 +1,6 @@
 ﻿using Facebook.Application.Post.Command.Create;
 using Facebook.Contracts.Post.Create;
+using Facebook.Domain.Post;
 using Mapster;
 
 namespace Facebook.Server.Common.Mapping
@@ -18,6 +19,11 @@ namespace Facebook.Server.Common.Mapping
                             Priority = index
                         }).ToList()
                         : new List<ImageWithPriority>());
+
+            config.NewConfig<CreatePostCommand, PostEntity>()
+                .Map(desc => desc.Id, src => Guid.NewGuid())
+                .Map(dest => dest.CreatedAt, src => DateTime.Now)
+                .Ignore(nameof(CreatePostCommand.Images));
         }
     }
 

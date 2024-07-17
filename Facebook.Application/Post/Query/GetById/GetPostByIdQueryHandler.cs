@@ -1,8 +1,7 @@
-using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
+using MediatR;
 
 namespace Facebook.Application.Post.Query.GetById;
 
@@ -19,10 +18,8 @@ public class GetPostByIdQueryHandler(IUnitOfWork unitOfWork)
             {
                 return Error.Failure(result.Errors.ToString() ?? string.Empty);
             }
-            else
-            {
-                return result;
-            }
+
+            return result;
         }
         catch (Exception ex)
         {

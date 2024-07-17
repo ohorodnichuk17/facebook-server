@@ -1,26 +1,20 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
+using MapsterMapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Application.SubAction.Command.Add;
 
-public class AddSubActionCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddSubActionCommand, ErrorOr<Guid>>
+public class AddSubActionCommandHandler(
+    IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<AddSubActionCommand, ErrorOr<Guid>>
 {
     public async Task<ErrorOr<Guid>> Handle(AddSubActionCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var subAction = new SubActionEntity
-            {
-                Name = request.Name,
-                ActionId = request.ActionId,
-            };
+            var subAction = mapper.Map<SubActionEntity>(request);
 
             var result = await unitOfWork.SubAction.CreateAsync(subAction);
 

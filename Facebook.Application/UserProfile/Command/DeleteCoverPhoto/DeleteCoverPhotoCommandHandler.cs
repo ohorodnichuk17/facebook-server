@@ -1,13 +1,12 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using MediatR;
 
 namespace Facebook.Application.UserProfile.Command.DeleteCoverPhoto;
 
-public class DeleteCoverPhotoCommandHandler(IUserRepository repository, IUnitOfWork unitOfWork,
-    IImageStorageService imageStorageService) 
+public class DeleteCoverPhotoCommandHandler(IUnitOfWork unitOfWork,
+    IImageStorageService imageStorageService)
     : IRequestHandler<DeleteCoverPhotoCommand, ErrorOr<bool>>
 {
     public async Task<ErrorOr<bool>> Handle(DeleteCoverPhotoCommand request, CancellationToken cancellationToken)

@@ -1,16 +1,16 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using MediatR;
 
 namespace Facebook.Application.UserProfile.Command.DeleteAvatar;
 
-public class DeleteAvatarCommandHandler(IUserRepository repository, IImageStorageService imageStorageService)
+public class DeleteAvatarCommandHandler(IUnitOfWork unitOfWork, IImageStorageService imageStorageService)
     : IRequestHandler<DeleteAvatarCommand, ErrorOr<bool>>
 {
     public async Task<ErrorOr<bool>> Handle(DeleteAvatarCommand request, CancellationToken cancellationToken)
     {
-        var userResult = await repository.GetUserByIdAsync(request.UserId);
+        var userResult = await unitOfWork.User.GetUserByIdAsync(request.UserId);
 
         if (userResult.IsError)
         {
@@ -28,11 +28,11 @@ public class DeleteAvatarCommandHandler(IUserRepository repository, IImageStorag
             }
 
             user.Avatar = null;
-            await repository.UpdateAsync(user);
+            await unitOfWork.User.UpdateAsync(user);
 
             return true;
         }
-        
+
         return Error.Failure("User has no avatar to delete.");
     }
 }

@@ -1,4 +1,3 @@
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.DTO_s;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
@@ -23,7 +22,7 @@ namespace Facebook.Server.Controllers;
 [ApiController]
 [AllowAnonymous]
 public class FriendsController(ISender mediatr, IMapper mapper,
-   IConfiguration configuration, IUserRepository userRepository) : ApiController
+   IConfiguration configuration) : ApiController
 {
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)

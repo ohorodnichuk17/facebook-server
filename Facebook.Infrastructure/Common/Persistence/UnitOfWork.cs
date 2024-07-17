@@ -24,6 +24,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private FacebookDbContext _context;
     private UserManager<UserEntity> _userManager;
+    public IUserRepository User { get; private set; }
     public IReactionRepository Reaction { get; private set; }
     public IFeelingRepository Feeling { get; private set; }
     public IStoryRepository Story { get; private set; }
@@ -38,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         _userManager = userManager;
+        User = new UserRepository(_userManager, _context);
         Reaction = new ReactionRepository(_context);
         Comment = new CommentRepository(_context);
         Like = new LikeRepository(_context);

@@ -4,6 +4,7 @@ using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
@@ -15,7 +16,7 @@ namespace Facebook.Application.Authentication.Register;
 
 public class RegisterCommandHandler(
     IAdminRepository adminRepository,
-    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     IUserProfileRepository userProfileRepository,
     ISender mediatr,
     ILogger<RegisterCommandHandler> logger,
@@ -31,7 +32,7 @@ public class RegisterCommandHandler(
         {
             logger.LogInformation("Starting user registration process...");
 
-            var errorOrUser = await userRepository.GetByEmailAsync(command.Email);
+            var errorOrUser = await unitOfWork.User.GetByEmailAsync(command.Email);
 
             if (errorOrUser.IsSuccess())
             {
@@ -69,7 +70,7 @@ public class RegisterCommandHandler(
                 user.Avatar = imageName;
             }
 
-            var avatarResult = await userRepository.SaveUserAsync(user);
+            var avatarResult = await unitOfWork.User.SaveUserAsync(user);
             if (avatarResult.IsError)
             {
                 return avatarResult.Errors;

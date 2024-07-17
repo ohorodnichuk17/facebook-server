@@ -14,6 +14,7 @@ public interface IUnitOfWork
     IReactionRepository Reaction { get; }
     IFeelingRepository Feeling { get; }
     IStoryRepository Story { get; }
+    IUserRepository User { get; }
     IUserProfileRepository UserProfile { get; }
     IPostRepository Post { get; }
     ILikeRepository Like { get; }

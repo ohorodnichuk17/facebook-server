@@ -1,6 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Services;
 using Facebook.Domain.User;
 using MediatR;
@@ -8,14 +8,14 @@ using MediatR;
 namespace Facebook.Application.Authentication.ForgotPassword;
 
 public class ForgotPasswordQueryHandler(
-    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     IUserAuthenticationService userAuthenticationService,
     EmailService emailService)
         : IRequestHandler<ForgotPasswordQuery, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(ForgotPasswordQuery request, CancellationToken cancellationToken)
     {
-        var errorOrUser = await userRepository.GetByEmailAsync(request.Email);
+        var errorOrUser = await unitOfWork.User.GetByEmailAsync(request.Email);
         if (errorOrUser.IsError)
         {
             return Error.Validation("User with this email doesn't exist");

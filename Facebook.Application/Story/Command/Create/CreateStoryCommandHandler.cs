@@ -1,9 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
-using Facebook.Application.Common.Interfaces.User;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Story;
 using MediatR;
 
@@ -11,12 +8,11 @@ namespace Facebook.Application.Story.Command.Create;
 
 public class CreateStoryCommandHandler(
     IUnitOfWork unitOfWork,
-    IImageStorageService imageStorageService,
-    IUserRepository userRepository) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
+    IImageStorageService imageStorageService) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
+        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
 
         if (user.IsError)
         {

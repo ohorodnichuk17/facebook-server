@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
 using MediatR;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 namespace Facebook.Application.UserProfile.Command.Edit;
 
 public class UserEditProfileCommandHandler(
-    IUserRepository userRepository,
     IUnitOfWork unitOfWork,
     ILogger<UserEditProfileCommandHandler> logger,
     IImageStorageService imageStorageService)
@@ -25,7 +23,7 @@ public class UserEditProfileCommandHandler(
             logger.LogInformation("Starting update user profile process...");
 
             var getProf = await unitOfWork.UserProfile.GetUserProfileByIdAsync(request.UserId);
-            var getU = await userRepository.GetUserByIdAsync(request.UserId.ToString());
+            var getU = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
             if (!getProf.IsSuccess() || !getU.IsSuccess())
             {
                 return Error.NotFound();

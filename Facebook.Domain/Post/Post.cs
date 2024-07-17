@@ -13,7 +13,7 @@ public class PostEntity
     public ICollection<ReactionEntity>? Reactions { get; set; }
     public ICollection<LikeEntity>? Likes { get; set; }
     public ICollection<CommentEntity>? Comments { get; set; }
-    public bool IsArchive { get; set; } = false;
+    public bool? IsArchive { get; set; } = false;
 
     private DateTime _createdAt;
     public DateTime CreatedAt

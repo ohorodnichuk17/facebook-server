@@ -1,11 +1,12 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
+using MapsterMapper;
 using MediatR;
 
 namespace Facebook.Application.Comment.Command.Add;
 
-public class AddCommentCommandHandler(IUnitOfWork unitOfWork)
+public class AddCommentCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     : IRequestHandler<AddCommentCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
@@ -18,22 +19,16 @@ public class AddCommentCommandHandler(IUnitOfWork unitOfWork)
             return Error.NotFound();
         }
 
-        var commentEntity = new CommentEntity
-        {
-            Message = request.Message,
-            UserId = request.UserId,
-            PostId = request.PostId,
-            CreatedAt = DateTime.Now,
-        };
+        var comment = mapper.Map<CommentEntity>(request);
 
-        var commentResult = await unitOfWork.Comment.CreateAsync(commentEntity);
+        var commentResult = await unitOfWork.Comment.CreateAsync(comment);
 
         if (commentResult.IsError)
         {
             return commentResult.Errors;
         }
 
-        var res = await unitOfWork.Comment.SaveAsync(commentEntity);
+        var res = await unitOfWork.Comment.SaveAsync(comment);
 
         if (res.IsError)
         {

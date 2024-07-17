@@ -32,8 +32,8 @@ public class UnitOfWork : IUnitOfWork
     public IPostRepository Post { get; private set; }
     public ILikeRepository Like { get; private set; }
     public ICommentRepository Comment { get; private set; }
-    public IActionRepository Action { get; set; }
-    public ISubActionRepository SubAction { get; set; }
+    public IActionRepository Action { get; private set; }
+    public ISubActionRepository SubAction { get; private set; }
 
     public UnitOfWork(FacebookDbContext context, UserManager<UserEntity> userManager)
     {

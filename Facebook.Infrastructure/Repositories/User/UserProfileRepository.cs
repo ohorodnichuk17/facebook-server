@@ -66,6 +66,7 @@ public class UserProfileRepository(
         existProfile.IsProfilePublic = userProfile.IsProfilePublic;
         existProfile.IsBlocked = userProfile.IsBlocked;
         existProfile.Region = userProfile.Region;
+        existProfile.Pronouns = userProfile.Pronouns;
         existProfile.Country = userProfile.Country;
 
         if (!string.IsNullOrEmpty(firstName))

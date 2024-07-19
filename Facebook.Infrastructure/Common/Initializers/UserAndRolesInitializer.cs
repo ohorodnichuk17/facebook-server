@@ -11,21 +11,17 @@ namespace Facebook.Infrastructure.Common.Initializers;
 
 public static class UserAndRolesInitializer
 {
-    public async static void SeedData(this IApplicationBuilder app)
+    public static async void SeedData(this IApplicationBuilder app)
     {
         using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
             var service = scope.ServiceProvider;
 
             var context = service.GetRequiredService<FacebookDbContext>();
+            await context.Database.MigrateAsync();
 
-            context.Database.Migrate();
-
-            var userManager = scope.ServiceProvider
-                .GetRequiredService<UserManager<UserEntity>>();
-
-            var roleManager = scope.ServiceProvider
-                .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var userManager = service.GetRequiredService<UserManager<UserEntity>>();
+            var roleManager = service.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
             if (!context.Roles.Any())
             {
@@ -40,12 +36,14 @@ public static class UserAndRolesInitializer
                     FirstName = "Admin",
                     LastName = "Admin",
                     Email = "admin@gmail.com",
-                    // PasswordHash = "Admin123*",
+                    UserName = "admin@gmail.com",
                     EmailConfirmed = true,
                     Birthday = DateTime.Today,
                     Gender = "Male",
                 };
-                var result = userManager.CreateAsync(user, "Admin123*").Result;
+
+                var result = await userManager.CreateAsync(user, "Admin123*");
+
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, Roles.Admin);
@@ -54,52 +52,19 @@ public static class UserAndRolesInitializer
 
             if (!context.Feelings.Any())
             {
-                var feelings = new List<FeelingEntity>() {
-                    new()
-                    {
-                         Name="Angry",
-                         Emoji="Angry"
-                    },new()
-                    {
-                         Name="Happy",
-                         Emoji="Happy"
-                    },new()
-                    {
-                         Name="In Love",
-                         Emoji="In Love"
-                    },new()
-                    {
-                         Name="Laughing",
-                         Emoji="Laughing"
-                    },new()
-                    {
-                         Name="Sad",
-                         Emoji="Sad"
-                    },new()
-                    {
-                         Name="Shocked",
-                         Emoji="Shocked"
-                    },new()
-                    {
-                         Name="Sick",
-                         Emoji="Sick"
-                    },new()
-                    {
-                         Name="Smiling",
-                         Emoji="Smiling"
-                    },new()
-                    {
-                         Name="Starstruck",
-                         Emoji="Starstruck"
-                    },new()
-                    {
-                         Name="Suprized",
-                         Emoji="Suprized"
-                    },new()
-                    {
-                         Name="Wink",
-                         Emoji="Wink"
-                    },
+                var feelings = new List<FeelingEntity>
+                {
+                    new() { Name = "Angry", Emoji = "Angry" },
+                    new() { Name = "Happy", Emoji = "Happy" },
+                    new() { Name = "In Love", Emoji = "In Love" },
+                    new() { Name = "Laughing", Emoji = "Laughing" },
+                    new() { Name = "Sad", Emoji = "Sad" },
+                    new() { Name = "Shocked", Emoji = "Shocked" },
+                    new() { Name = "Sick", Emoji = "Sick" },
+                    new() { Name = "Smiling", Emoji = "Smiling" },
+                    new() { Name = "Starstruck", Emoji = "Starstruck" },
+                    new() { Name = "Suprized", Emoji = "Suprized" },
+                    new() { Name = "Wink", Emoji = "Wink" },
                 };
 
                 context.Feelings.AddRange(feelings);

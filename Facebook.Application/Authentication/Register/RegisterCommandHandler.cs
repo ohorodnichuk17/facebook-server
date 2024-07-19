@@ -2,6 +2,7 @@ using ErrorOr;
 using Facebook.Application.Authentication.Common;
 using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
+using Facebook.Application.Common.Interfaces.Admin.IService;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
@@ -21,7 +22,8 @@ public class RegisterCommandHandler(
     ISender mediatr,
     ILogger<RegisterCommandHandler> logger,
     IJwtGenerator jwtGenerator,
-    IImageStorageService imageStorageService)
+    IImageStorageService imageStorageService,
+    ICurrentUserService currentUserService)
     :
         IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
@@ -50,7 +52,13 @@ public class RegisterCommandHandler(
                 Gender = command.Gender,
             };
 
+            var currentUserRole = currentUserService.GetCurrentUserRole();
             var role = Roles.User;
+
+            if (currentUserRole == Roles.Admin && command.Role != null)
+            {
+                role = command.Role == Roles.Admin ? Roles.Admin : Roles.User;
+            }
 
             var userResult = await adminRepository.CreateAsync(user, command.Password, role);
             var userProfileResult = await userProfileRepository.UserCreateProfileAsync(user.Id);
@@ -96,6 +104,4 @@ public class RegisterCommandHandler(
             throw;
         }
     }
-
-
 }

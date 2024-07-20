@@ -35,14 +35,14 @@ public static class UserAndRolesInitializer
                 {
                     FirstName = "Admin",
                     LastName = "Admin",
-                    Email = "admin@gmail.com",
-                    UserName = "admin@gmail.com",
+                    Email = "isgrassisgreen@gmail.com",
+                    UserName = "isgrassisgreen@gmail.com",
                     EmailConfirmed = true,
                     Birthday = DateTime.Today,
                     Gender = "Male",
                 };
 
-                var result = await userManager.CreateAsync(user, "Admin123*");
+                var result = await userManager.CreateAsync(user, "bAazxcQ94@?");
 
                 if (result.Succeeded)
                 {

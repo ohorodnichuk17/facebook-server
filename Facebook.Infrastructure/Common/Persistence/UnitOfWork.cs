@@ -1,4 +1,5 @@
 using Facebook.Application.Common.Interfaces.Action.IRepository;
+using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
@@ -9,6 +10,7 @@ using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Repositories.Action;
+using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Comment;
 using Facebook.Infrastructure.Repositories.Feeling;
 using Facebook.Infrastructure.Repositories.Like;
@@ -24,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private FacebookDbContext _context;
     private UserManager<UserEntity> _userManager;
+    public IAdminRepository Admin { get; private set; }
     public IUserRepository User { get; private set; }
     public IReactionRepository Reaction { get; private set; }
     public IFeelingRepository Feeling { get; private set; }
@@ -39,6 +42,7 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         _userManager = userManager;
+        Admin = new AdminRepository(_userManager, _context);
         User = new UserRepository(_userManager, _context);
         Reaction = new ReactionRepository(_context);
         Comment = new CommentRepository(_context);

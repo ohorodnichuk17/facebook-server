@@ -1,4 +1,5 @@
 using Facebook.Application.Common.Interfaces.Action.IRepository;
+using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.Like.IRepository;
@@ -11,6 +12,7 @@ namespace Facebook.Application.Common.Interfaces.IUnitOfWork;
 
 public interface IUnitOfWork
 {
+    IAdminRepository Admin { get; }
     IReactionRepository Reaction { get; }
     IFeelingRepository Feeling { get; }
     IStoryRepository Story { get; }

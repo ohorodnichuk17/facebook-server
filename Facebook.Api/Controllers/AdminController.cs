@@ -1,4 +1,6 @@
-﻿using Facebook.Application.UserProfile.Command.DeleteUser;
+﻿using Facebook.Application.Admin.Query.GetUserByEmail;
+using Facebook.Application.UserProfile.Command.DeleteUser;
+using Facebook.Contracts.Admin.GetUserByEmail;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Constants.Roles;
 using MapsterMapper;
@@ -22,6 +24,17 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
 
         return deleteResult.Match(
             deleteRes => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpGet("get-user-by-email")]
+    public async Task<IActionResult> GetUserByEmailAsync([FromQuery] GetUserByEmailRequest request)
+    {
+        var query = mapper.Map<GetUserByEmailQuery>(request);
+        var result = await mediatr.Send(query);
+
+        return result.Match(
+            user => Ok(user),
             errors => Problem(errors));
     }
 }

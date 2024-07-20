@@ -28,11 +28,19 @@ public class ChatRepository(FacebookDbContext context) : Repository<ChatEntity>(
         return chat == null ? Error.NotFound() : chat;
     }
 
-    public async Task<ErrorOr<IEnumerable<ChatEntity>>> GetByUserIdAsync(Guid userId)
+    public async Task<ErrorOr<IEnumerable<ChatEntity>>> GetChatsByUserIdAsync(Guid userId)
     {
-        return await context.Chats
-            .Include(c => c.Users)
-            .Where(c => c.Users.Any(uc => uc.Id == userId))
+        var user = await context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return Error.NotFound();
+        }
+
+        var chats = await context.Chats
+            .Include(c => c.ChatUsers)
+            .Where(c => c.ChatUsers.Any(cu => cu.UserId == userId))
             .ToListAsync();
+
+        return chats;
     }
 }

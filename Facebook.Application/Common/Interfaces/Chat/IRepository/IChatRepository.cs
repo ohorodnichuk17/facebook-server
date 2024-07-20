@@ -11,6 +11,6 @@ namespace Facebook.Application.Common.Interfaces.Chat.IRepository;
 
 public interface IChatRepository : IRepository<ChatEntity>
 {
-    Task<ErrorOr<IEnumerable<ChatEntity>>> GetByUserIdAsync(Guid userId);
+    Task<ErrorOr<IEnumerable<ChatEntity>>> GetChatsByUserIdAsync(Guid userId);
     Task<ErrorOr<ChatEntity>> GetChatByUsersIdAsync(Guid senderId, Guid receiverId);
 }

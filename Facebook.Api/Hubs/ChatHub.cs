@@ -26,14 +26,13 @@ public class ChatHub : Hub
         var fromUser = await _userRepository.GetByEmailAsync(fromUserEmail);
         var toUser = await _userRepository.GetByEmailAsync(toUserEmail);
 
-        if (toUser.IsError)
+        if (fromUser.IsError || toUser.IsError)
         {
-            return;
+            return; // Log error or notify client
         }
 
-        var chatResult = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
-        ChatEntity chat;
-        if (chatResult.IsError)
+        var chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
+        if (chat.IsError)
         {
             chat = new ChatEntity
             {
@@ -45,13 +44,8 @@ public class ChatHub : Hub
                     new ChatUserEntity { UserId = toUser.Value.Id }
                 }
             };
-            await _unitOfWork.Chat.CreateAsync(chat);
-
-            await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
-        }
-        else
-        {
-            chat = chatResult.Value;
+            await _unitOfWork.Chat.CreateAsync(chat.Value);
+            chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
         }
 
         var message = new MessageEntity
@@ -59,25 +53,55 @@ public class ChatHub : Hub
             Id = Guid.NewGuid(),
             Content = messageContent,
             UserId = fromUser.Value.Id,
-            ChatId = chat.Id,
+            ChatId = chat.Value.Id,
             CreatedAt = DateTime.UtcNow
         };
 
         await _unitOfWork.Message.CreateAsync(message);
 
-        var chatUsers = chat.ChatUsers;
-        foreach (var chatUser in chatUsers)
+        await Clients.Group(chat.Value.Id.ToString()).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        var email = Context.GetHttpContext().Request.Query["email"];
+        var user = await _userRepository.GetByEmailAsync(email.ToString());
+
+        if (!user.IsError)
         {
-            var user = await _userRepository.GetUserByIdAsync(chatUser.UserId);
-            var connectionId = GetUserConnectionId(user.Value.Email);
-            await Groups.AddToGroupAsync(connectionId, chat.Id.ToString());
+            var chatsResult = await _unitOfWork.Chat.GetChatsByUserIdAsync(user.Value.Id);
+            if (!chatsResult.IsError)
+            {
+                foreach (var chat in chatsResult.Value)
+                {
+                    await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
+
+                    var messages = await _unitOfWork.Message.GetMessagesByChatIdAsync(chat.Id);
+                    await Clients.Caller.SendAsync("LoadMessages", chat.Id.ToString(), messages);
+                }
+            }
         }
 
-        await Clients.Group(chat.Id.ToString()).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
+        await base.OnConnectedAsync();
     }
 
-    private string GetUserConnectionId(string email)
-    {
-        return string.Empty;
-    }
+    //public async Task<IEnumerable<MessageEntity>> GetMessages(string fromUserEmail, string toUserEmail)
+    //{
+    //    var fromUser = await _userRepository.GetByEmailAsync(fromUserEmail);
+    //    var toUser = await _userRepository.GetByEmailAsync(toUserEmail);
+
+    //    if (fromUser.IsError || toUser.IsError)
+    //    {
+    //        return new List<MessageEntity>(); // Return an empty list if either user is not found
+    //    }
+
+    //    var chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
+    //    if (chat.IsError || chat.Value == null)
+    //    {
+    //        return new List<MessageEntity>(); // Return an empty list if the chat is not found
+    //    }
+
+    //    var messages = await _unitOfWork.Message.GetMessagesByChatIdAsync(chat.Value.Id);
+    //    return messages.Value;
+    //}
 }

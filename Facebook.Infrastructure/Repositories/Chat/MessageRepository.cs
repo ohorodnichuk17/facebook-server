@@ -18,6 +18,7 @@ public class MessageRepository(FacebookDbContext context) : Repository<MessageEn
     {
         return await context.Messages
                 .Where(m => m.ChatId == chatId)
+                .OrderBy(m => m.CreatedAt)
                 .ToListAsync();
     }
 }

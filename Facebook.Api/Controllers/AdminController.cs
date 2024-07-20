@@ -1,4 +1,6 @@
-﻿using Facebook.Application.Admin.Query.GetUserByEmail;
+﻿using Facebook.Application.Admin.Query.GetAllUsers;
+using Facebook.Application.Admin.Query.GetUserByEmail;
+using Facebook.Application.Admin.Query.GetUserById;
 using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Contracts.Admin.GetUserByEmail;
 using Facebook.Contracts.DeleteRequest;
@@ -36,5 +38,39 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
         return result.Match(
             user => Ok(user),
             errors => Problem(errors));
+    }
+
+    [HttpGet("get-user-by-id")]
+    public async Task<IActionResult> GetByIdAsync(Guid id)
+    {
+        try
+        {
+            var query = new GetUserByIdQuery(id);
+            var result = await mediatr.Send(query);
+
+            return result.Match(
+            user => Ok(user),
+            errors => Problem(errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting user.");
+        }
+    }
+
+    [HttpGet("get-all-users")]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var query = new GetAllUsersQuery();
+            var users = await mediatr.Send(query);
+
+            return Ok(users.Value);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching users.");
+        }
     }
 }

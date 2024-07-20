@@ -48,5 +48,6 @@ app.MapControllers();
 
 UserAndRolesInitializer.SeedData(app);
 ActionsSeeder.SeedData(app);
+FeelingsSeeder.SeedData(app);
 
 app.Run();

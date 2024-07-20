@@ -1,34 +1,44 @@
-﻿using Facebook.Application.Message.Command.Delete;
-using Facebook.Application.Message.Query.GetMessagesById;
+﻿using Facebook.Application.Chat.Command.Delete;
+using Facebook.Application.Chat.Query.GetChatsByUserId;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Facebook.Server.Controllers;
 
-[Route("api/message")]
+[Route("api/chat")]
 [ApiController]
-public class MessageController(ISender mediatr, IMapper mapper) : ApiController
+public class ChatController(ISender mediatr, IMapper mapper) : ApiController
 {
-    [HttpGet("{chatId}")]
-    public async Task<IActionResult> GetById([FromQuery] Guid chatId)
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetById(Guid userId)
     {
         try
         {
-            var query = new GetMessagesByIdQuery(chatId);
+            var query = new GetChatsByUserIdQuery(userId);
             var res = await mediatr.Send(query);
 
             if (res.IsSuccess())
             {
-                var messages = res.Value;
-                if (messages == null)
+                var chats = res.Value;
+                if (chats == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(messages);
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                var json = JsonSerializer.Serialize(chats, options);
+
+                return Ok(json);
             }
             else
             {
@@ -43,11 +53,12 @@ public class MessageController(ISender mediatr, IMapper mapper) : ApiController
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {
-        var command = mapper.Map<DeleteMessageByIdCommand>(request);
+        var command = mapper.Map<DeleteChatByIdCommand>(request);
         var result = await mediatr.Send(command);
 
         return result.Match(
             success => Ok(success),
             error => Problem(error));
     }
+
 }

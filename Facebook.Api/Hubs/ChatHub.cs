@@ -28,7 +28,7 @@ public class ChatHub : Hub
 
         if (fromUser.IsError || toUser.IsError)
         {
-            return; // Log error or notify client
+            return; 
         }
 
         var chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
@@ -84,24 +84,4 @@ public class ChatHub : Hub
 
         await base.OnConnectedAsync();
     }
-
-    //public async Task<IEnumerable<MessageEntity>> GetMessages(string fromUserEmail, string toUserEmail)
-    //{
-    //    var fromUser = await _userRepository.GetByEmailAsync(fromUserEmail);
-    //    var toUser = await _userRepository.GetByEmailAsync(toUserEmail);
-
-    //    if (fromUser.IsError || toUser.IsError)
-    //    {
-    //        return new List<MessageEntity>(); // Return an empty list if either user is not found
-    //    }
-
-    //    var chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
-    //    if (chat.IsError || chat.Value == null)
-    //    {
-    //        return new List<MessageEntity>(); // Return an empty list if the chat is not found
-    //    }
-
-    //    var messages = await _unitOfWork.Message.GetMessagesByChatIdAsync(chat.Value.Id);
-    //    return messages.Value;
-    //}
 }

@@ -5,7 +5,6 @@ using Facebook.Infrastructure.Common.Persistence;
 using Facebook.Infrastructure.Repositories.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Admin;
 
@@ -41,35 +40,6 @@ public class AdminRepository(UserManager<UserEntity> userManager, FacebookDbCont
         return user;
     }
 
-    public async Task<ErrorOr<Unit>> DeleteUserAsync(string userId)
-    {
-        try
-        {
-            var userToDelete = await userManager.FindByIdAsync(userId);
-            if (userToDelete == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            var deleteResult = await userManager.DeleteAsync(userToDelete);
-            if (!deleteResult.Succeeded)
-            {
-                foreach (var error in deleteResult.Errors)
-                {
-                    Console.WriteLine($"Error deleting user: {error.Description}");
-                }
-                return Error.Failure("Error deleting user");
-            }
-
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return Error.Failure("An error occurred while deleting the user");
-        }
-    }
-
     public async Task<ErrorOr<UserEntity>> GetUserByEmailAsync(string email)
     {
         try
@@ -85,38 +55,6 @@ public class AdminRepository(UserManager<UserEntity> userManager, FacebookDbCont
         {
             Console.WriteLine(e);
             return Error.Failure("An error occurred while retrieving the user");
-        }
-    }
-
-    public new async Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId)
-    {
-        try
-        {
-            var user = await userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return Error.Failure("User not found");
-            }
-            return user;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return Error.Failure("An error occurred while retrieving the user");
-        }
-    }
-
-    public new async Task<ErrorOr<List<UserEntity>>> GetAllUsersAsync()
-    {
-        try
-        {
-            var users = await userManager.Users.ToListAsync();
-            return users;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return Error.Failure("An error occurred while retrieving the users");
         }
     }
 

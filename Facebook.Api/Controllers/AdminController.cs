@@ -1,9 +1,12 @@
-﻿using Facebook.Application.Admin.Command.BlockUser;
+﻿using Facebook.Application.Admin.Command.BanUser;
+using Facebook.Application.Admin.Command.BlockUser;
+using Facebook.Application.Admin.Command.UnBanUser;
 using Facebook.Application.Admin.Command.UnBlockUser;
 using Facebook.Application.Admin.Query.GetAllUsers;
 using Facebook.Application.Admin.Query.GetUserByEmail;
 using Facebook.Application.Admin.Query.GetUserById;
 using Facebook.Application.UserProfile.Command.DeleteUser;
+using Facebook.Contracts.Admin.Base;
 using Facebook.Contracts.Admin.BlockAndUnblockUser;
 using Facebook.Contracts.Admin.GetUserByEmail;
 using Facebook.Contracts.DeleteRequest;
@@ -92,6 +95,28 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
     public async Task<IActionResult> UnBlockUserAsync([FromBody] BlockAndUnblockUserRequest request)
     {
         var command = new UnBlockUserCommand(request.UserId);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpPost("ban-user")]
+    public async Task<IActionResult> BanUserAsync([FromBody] BaseAdminRequest request)
+    {
+        var command = new BanUserCommand(request.Id);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpPost("unban-user")]
+    public async Task<IActionResult> UnBanUserAsync([FromBody] BaseAdminRequest request)
+    {
+        var command = new UnBanUserCommand(request.Id);
         var result = await mediatr.Send(command);
 
         return result.Match(

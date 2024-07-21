@@ -1,7 +1,10 @@
-﻿using Facebook.Application.Admin.Query.GetAllUsers;
+﻿using Facebook.Application.Admin.Command.BlockUser;
+using Facebook.Application.Admin.Command.UnBlockUser;
+using Facebook.Application.Admin.Query.GetAllUsers;
 using Facebook.Application.Admin.Query.GetUserByEmail;
 using Facebook.Application.Admin.Query.GetUserById;
 using Facebook.Application.UserProfile.Command.DeleteUser;
+using Facebook.Contracts.Admin.BlockAndUnblockUser;
 using Facebook.Contracts.Admin.GetUserByEmail;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Constants.Roles;
@@ -72,5 +75,27 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
         {
             return StatusCode(500, "An error occurred while fetching users.");
         }
+    }
+
+    [HttpPost("block-user")]
+    public async Task<IActionResult> BlockUserAsync([FromBody] BlockAndUnblockUserRequest request)
+    {
+        var command = new BlockUserCommand(request.UserId);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpPost("unblock-user")]
+    public async Task<IActionResult> UnBlockUserAsync([FromBody] BlockAndUnblockUserRequest request)
+    {
+        var command = new UnBlockUserCommand(request.UserId);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
     }
 }

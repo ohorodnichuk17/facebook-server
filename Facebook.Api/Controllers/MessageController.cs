@@ -13,7 +13,7 @@ namespace Facebook.Server.Controllers;
 public class MessageController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpGet("{chatId}")]
-    public async Task<IActionResult> GetById([FromQuery] Guid chatId)
+    public async Task<IActionResult> GetById(Guid chatId)
     {
         try
         {

@@ -27,4 +27,6 @@ public record CreatePostRequest
     [Required(ErrorMessage = "{PropertyName} must be specified")]
     public bool IsArchive { get; init; }
     public Guid? FeelingId { get; init; }
+    public Guid? ActionId { get; init; }
+    public Guid? SubActionId { get; init; }
 }

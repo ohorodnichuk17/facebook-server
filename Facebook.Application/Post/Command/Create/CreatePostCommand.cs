@@ -15,5 +15,7 @@ public record CreatePostCommand(
     List<ImageWithPriority> Images,
     bool IsArchive,
     Guid UserId,
-    Guid? FeelingId
+    Guid? FeelingId,
+    Guid? ActionId,
+    Guid? SubActionId
     ) : IRequest<ErrorOr<Unit>>;

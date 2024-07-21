@@ -10,6 +10,8 @@ public class PostEntity
     public ICollection<ImagesEntity>? Images { get; set; }
     public Guid? ActionId { get; set; }
     public ActionEntity? Action { get; set; }
+    public Guid? SubActionId { get; set; }
+    public SubActionEntity? SubAction { get; set; }
     public ICollection<ReactionEntity>? Reactions { get; set; }
     public ICollection<LikeEntity>? Likes { get; set; }
     public ICollection<CommentEntity>? Comments { get; set; }

@@ -1,3 +1,4 @@
+using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.Action.IRepository;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
@@ -9,6 +10,7 @@ using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.User;
+using Facebook.Infrastructure.Repositories.Chat;
 using Facebook.Infrastructure.Repositories.Action;
 using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Comment;
@@ -35,6 +37,8 @@ public class UnitOfWork : IUnitOfWork
     public IPostRepository Post { get; private set; }
     public ILikeRepository Like { get; private set; }
     public ICommentRepository Comment { get; private set; }
+    public IChatRepository Chat { get; private set; }
+    public IMessageRepository Message { get; private set; }
     public IActionRepository Action { get; private set; }
     public ISubActionRepository SubAction { get; private set; }
 
@@ -51,6 +55,8 @@ public class UnitOfWork : IUnitOfWork
         Story = new StoryRepository(_context);
         UserProfile = new UserProfileRepository(_context, _userManager);
         Post = new PostRepository(_context);
+        Chat = new ChatRepository(_context);
+        Message = new MessageRepository(_context);
         Action = new ActionRepository(_context);
         SubAction = new SubActionRepository(_context);
     }

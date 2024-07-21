@@ -1,6 +1,7 @@
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Admin.IService;
 using Facebook.Application.Common.Interfaces.Authentication;
+using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
@@ -15,6 +16,7 @@ using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
 using Facebook.Infrastructure.Repositories.Admin;
+using Facebook.Infrastructure.Repositories.Chat;
 using Facebook.Infrastructure.Repositories.Comment;
 using Facebook.Infrastructure.Repositories.Feeling;
 using Facebook.Infrastructure.Repositories.Like;
@@ -101,6 +103,22 @@ public static class DependencyInjection
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ILikeRepository, LikeRepository>();
         services.AddScoped<IFeelingRepository, FeelingRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        return services;
+    }
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IStoryRepository, StoryRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<IReactionRepository, ReactionRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<ILikeRepository, LikeRepository>();
+        services.AddScoped<IFeelingRepository, FeelingRepository>();
+        services.AddScoped<IChatRepository, ChatRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }

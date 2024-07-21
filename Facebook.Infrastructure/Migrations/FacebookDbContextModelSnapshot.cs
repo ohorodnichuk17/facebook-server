@@ -23,6 +23,79 @@ namespace Facebook.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ChatEntityUserEntity", b =>
+                {
+                    b.Property<Guid>("ChatsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ChatsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ChatEntityUserEntity");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Chat.ChatEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Chat.ChatUserEntity", b =>
+                {
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ChatId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatUsers");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Chat.MessageEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Facebook.Domain.Post.ActionEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -534,6 +607,59 @@ namespace Facebook.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ChatEntityUserEntity", b =>
+                {
+                    b.HasOne("Facebook.Domain.Chat.ChatEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ChatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Facebook.Domain.User.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Chat.ChatUserEntity", b =>
+                {
+                    b.HasOne("Facebook.Domain.Chat.ChatEntity", "Chat")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Facebook.Domain.User.UserEntity", "User")
+                        .WithMany("UserChats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Chat.MessageEntity", b =>
+                {
+                    b.HasOne("Facebook.Domain.Chat.ChatEntity", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Facebook.Domain.User.UserEntity", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Facebook.Domain.Post.CommentEntity", b =>
                 {
                     b.HasOne("Facebook.Domain.Post.PostEntity", "PostEntity")
@@ -731,6 +857,13 @@ namespace Facebook.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Facebook.Domain.Chat.ChatEntity", b =>
+                {
+                    b.Navigation("ChatUsers");
+
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("Facebook.Domain.Post.ActionEntity", b =>
                 {
                     b.Navigation("SubActions");
@@ -749,6 +882,8 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.User.UserEntity", b =>
                 {
+                    b.Navigation("Messages");
+
                     b.Navigation("Posts");
 
                     b.Navigation("ReceivedFriendRequests");
@@ -756,6 +891,8 @@ namespace Facebook.Infrastructure.Migrations
                     b.Navigation("SentFriendRequests");
 
                     b.Navigation("Stories");
+
+                    b.Navigation("UserChats");
                 });
 #pragma warning restore 612, 618
         }

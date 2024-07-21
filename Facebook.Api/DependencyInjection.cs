@@ -29,6 +29,10 @@ public static class DependencyInjection
 
         services.AddMappings();
 
+        // Add SignalR services
+
+        services.AddSignalR();
+
         //	services.AddRequestValidation();
 
         return services;

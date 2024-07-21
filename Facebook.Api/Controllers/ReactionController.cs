@@ -1,7 +1,10 @@
 ﻿using Facebook.Application.Reaction.Command.Add;
 using Facebook.Application.Reaction.Command.Delete;
+using Facebook.Application.Reaction.Query.GetAll;
+using Facebook.Application.Reaction.Query.GetById;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Reaction.Add;
+using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +26,7 @@ public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
         success => Ok(success),
         errors => Problem(errors));
     }
+
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteReactionAsync([FromForm] DeleteRequest request)
     {
@@ -32,5 +36,49 @@ public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
         return deleteResult.Match(
         deleteRes => Ok(),
         errors => Problem(errors));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        try
+        {
+            var query = new GetReactionByIdQuery(id);
+            var res = await mediatr.Send(query);
+
+            if (res.IsSuccess())
+            {
+                var reaction = res.Value;
+                if (reaction == null)
+                {
+                    return NotFound();
+                }
+                return Ok(reaction);
+            }
+            else
+            {
+                return StatusCode(500, res.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting reaction.");
+        }
+    }
+
+    [HttpGet("getAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var query = new GetAllReactionsQuery();
+            var reaction = await mediatr.Send(query);
+
+            return Ok(reaction.Value);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching reactions.");
+        }
     }
 }

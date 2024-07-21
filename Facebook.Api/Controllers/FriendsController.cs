@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+using Facebook.Application.Common.Interfaces.User.IRepository;
+using System.Text.Json.Serialization;
+using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Application.DTO_s;
 using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
@@ -17,12 +21,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
-
-[Route("api/friends")]
-[ApiController]
-[AllowAnonymous]
 public class FriendsController(ISender mediatr, IMapper mapper,
    IConfiguration configuration) : ApiController
+[ApiController]
+[AllowAnonymous]
+public class FriendsController(ISender mediatr, IMapper mapper, 
+   IConfiguration configuration, IUserRepository userRepository) : ApiController
 {
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)

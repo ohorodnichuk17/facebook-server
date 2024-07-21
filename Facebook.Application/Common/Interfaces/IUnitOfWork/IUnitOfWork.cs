@@ -1,3 +1,4 @@
+using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.Action.IRepository;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
@@ -23,4 +24,6 @@ public interface IUnitOfWork
     IActionRepository Action { get; }
     ISubActionRepository SubAction { get; }
     ICommentRepository Comment { get; }
+    IChatRepository Chat { get; }
+    IMessageRepository Message { get; }
 }

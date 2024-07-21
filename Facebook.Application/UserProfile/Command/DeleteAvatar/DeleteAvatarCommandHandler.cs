@@ -32,7 +32,7 @@ public class DeleteAvatarCommandHandler(IUnitOfWork unitOfWork, IImageStorageSer
 
             return true;
         }
-
+        
         return Error.Failure("User has no avatar to delete.");
     }
 }

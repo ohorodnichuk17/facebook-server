@@ -1,11 +1,10 @@
+using Facebook.Domain.Chat;
 using Facebook.Domain.Post;
 using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Facebook.Domain.Chat;
-using System.Reflection.Emit;
 
 namespace Facebook.Infrastructure.Common.Persistence;
 
@@ -24,8 +23,6 @@ public class FacebookDbContext
     public DbSet<ReactionEntity> Reactions { get; set; }
     public DbSet<LikeEntity> Likes { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
-    public DbSet<FriendRequestEntity> FriendRequests { get; set; }
-    public DbSet<FeelingEntity> Feelings { get; set; }
     public DbSet<ActionEntity> Actions { get; set; }
     public DbSet<SubActionEntity> SubActions { get; set; }
     public DbSet<MessageEntity> Messages { get; set; }

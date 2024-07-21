@@ -5,6 +5,9 @@ using Facebook.Application.Admin.Command.UnBlockUser;
 using Facebook.Application.Admin.Query.GetAllUsers;
 using Facebook.Application.Admin.Query.GetUserByEmail;
 using Facebook.Application.Admin.Query.GetUserById;
+using Facebook.Application.Comment.Command.Delete;
+using Facebook.Application.Post.Command.Delete;
+using Facebook.Application.Story.Command.Delete;
 using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Contracts.Admin.Base;
 using Facebook.Contracts.Admin.BlockAndUnblockUser;
@@ -117,6 +120,39 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
     public async Task<IActionResult> UnBanUserAsync([FromBody] BaseAdminRequest request)
     {
         var command = new UnBanUserCommand(request.Id);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpDelete("delete-post")]
+    public async Task<IActionResult> DeletePostAsync([FromBody] BaseAdminRequest request)
+    {
+        var command = new DeletePostCommand(request.Id);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpDelete("delete-comment")]
+    public async Task<IActionResult> DeleteCommentAsync([FromBody] BaseAdminRequest request)
+    {
+        var command = new DeleteCommentCommand(request.Id);
+        var result = await mediatr.Send(command);
+
+        return result.Match(
+            success => Ok(),
+            errors => Problem(errors));
+    }
+
+    [HttpDelete("delete-story")]
+    public async Task<IActionResult> DeleteStoryAsync([FromBody] BaseAdminRequest request)
+    {
+        var command = new DeleteStoryCommand(request.Id);
         var result = await mediatr.Send(command);
 
         return result.Match(

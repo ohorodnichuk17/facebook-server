@@ -1,15 +1,9 @@
 ﻿using ErrorOr;
-using Facebook.Domain.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Application.Reaction.Command.Add;
 
-public record AddReactionCommand (
+public record AddReactionCommand(
     string TypeCode,
     Guid PostId,
     Guid UserId

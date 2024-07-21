@@ -1,28 +1,17 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.Reaction.IRepository;
-using Facebook.Application.Common.Interfaces.User.IRepository;
-using Facebook.Application.Story.Command.Create;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Facebook.Application.Common.Interfaces.IUnitOfWork;
 
 namespace Facebook.Application.Reaction.Command.Add;
 
 public class AddReactionCommandHandler(
-    IUnitOfWork unitOfWork,
-    IUserRepository userRepository)
+    IUnitOfWork unitOfWork)
     : IRequestHandler<AddReactionCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(AddReactionCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
+        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
         var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError)

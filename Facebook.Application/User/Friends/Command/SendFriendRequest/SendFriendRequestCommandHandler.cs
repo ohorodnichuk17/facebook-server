@@ -1,5 +1,5 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Services;
 using Facebook.Domain.User;
 using MediatR;
@@ -7,14 +7,14 @@ using MediatR;
 namespace Facebook.Application.User.Friends.Command.SendFriendRequest;
 
 public class SendFriendRequestCommandHandler(
-    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     EmailService emailService) : IRequestHandler<SendFriendRequestCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await userRepository
+            var result = await unitOfWork.User
                 .SendFriendRequestAsync(request.UserId.ToString(), request.FriendId.ToString());
 
             if (result.IsError)
@@ -22,7 +22,7 @@ public class SendFriendRequestCommandHandler(
                 return result.Errors;
             }
 
-            var findFriendResult = await userRepository.GetUserByIdAsync(request.FriendId);
+            var findFriendResult = await unitOfWork.User.GetUserByIdAsync(request.FriendId);
 
             if (findFriendResult.IsError)
             {

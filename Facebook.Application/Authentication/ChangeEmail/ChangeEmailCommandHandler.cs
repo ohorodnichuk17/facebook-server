@@ -1,15 +1,15 @@
-using Facebook.Application.Common.Interfaces.Authentication;
-using MediatR;
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.Authentication;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Services;
 using Facebook.Domain.User;
+using MediatR;
 
 namespace Facebook.Application.Authentication.ChangeEmail;
 
 public class ChangeEmailCommandHandler(
     IUserAuthenticationService userAuthenticationService,
-    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     EmailService emailService)
     : IRequestHandler<ChangeEmailCommand, ErrorOr<UserEntity>>
 {
@@ -18,7 +18,7 @@ public class ChangeEmailCommandHandler(
     public async Task<ErrorOr<UserEntity>> Handle(ChangeEmailCommand request,
         CancellationToken cancellationToken)
     {
-        var userResult = await userRepository.GetUserByIdAsync(request.UserId);
+        var userResult = await unitOfWork.User.GetUserByIdAsync(request.UserId);
 
         if (userResult.IsError)
         {
@@ -26,7 +26,7 @@ public class ChangeEmailCommandHandler(
         }
 
         var user = userResult.Value;
-        user.Email = request.Email; 
+        user.Email = request.Email;
 
         var changeEmailResult = await emailService
             .SendChangeEmailEmailAsync(request.Email, request.Token, request.BaseUrl, user.UserName, request.UserId);
@@ -36,7 +36,7 @@ public class ChangeEmailCommandHandler(
             return changeEmailResult.Errors;
         }
 
-        var resultOfUserToUpdate = await userRepository.SaveUserAsync(user);
+        var resultOfUserToUpdate = await unitOfWork.User.SaveUserAsync(user);
 
         return resultOfUserToUpdate;
     }

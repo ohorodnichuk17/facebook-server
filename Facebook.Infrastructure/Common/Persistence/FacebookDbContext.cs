@@ -1,8 +1,8 @@
 using Facebook.Domain.Post;
 using Facebook.Domain.Story;
 using Facebook.Domain.User;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Facebook.Domain.Chat;
 using System.Reflection.Emit;
@@ -24,6 +24,10 @@ public class FacebookDbContext
     public DbSet<ReactionEntity> Reactions { get; set; }
     public DbSet<LikeEntity> Likes { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
+    public DbSet<FriendRequestEntity> FriendRequests { get; set; }
+    public DbSet<FeelingEntity> Feelings { get; set; }
+    public DbSet<ActionEntity> Actions { get; set; }
+    public DbSet<SubActionEntity> SubActions { get; set; }
     public DbSet<MessageEntity> Messages { get; set; }
     public DbSet<ChatEntity> Chats { get; set; }
     public DbSet<ChatUserEntity> ChatUsers { get; set; }
@@ -62,7 +66,7 @@ public class FacebookDbContext
 
         builder.Entity<LikeEntity>()
             .HasOne(l => l.UserEntity)
-            .WithMany()  
+            .WithMany()
             .HasForeignKey(l => l.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -74,7 +78,7 @@ public class FacebookDbContext
 
         builder.Entity<CommentEntity>()
             .HasOne(c => c.UserEntity)
-            .WithMany()  
+            .WithMany()
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -101,9 +105,9 @@ public class FacebookDbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<PostEntity>()
-            .HasOne(p => p.Feeling)
+            .HasOne(p => p.Action)
             .WithMany()
-            .HasForeignKey(p => p.FeelingId)
+            .HasForeignKey(p => p.ActionId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<ChatUserEntity>()
@@ -129,6 +133,18 @@ public class FacebookDbContext
             .HasOne(m => m.Chat)
             .WithMany(c => c.Messages)
             .HasForeignKey(m => m.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ActionEntity>()
+            .HasMany(s => s.SubActions)
+            .WithOne(a => a.Action)
+            .HasForeignKey(a => a.ActionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<SubActionEntity>()
+            .HasOne(s => s.Action)
+            .WithMany(a => a.SubActions)
+            .HasForeignKey(a => a.ActionId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

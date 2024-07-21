@@ -53,5 +53,7 @@ app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 
 UserAndRolesInitializer.SeedData(app);
+ActionsSeeder.SeedData(app);
+FeelingsSeeder.SeedData(app);
 
 app.Run();

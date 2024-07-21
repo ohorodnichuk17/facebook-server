@@ -1,4 +1,6 @@
 using Facebook.Application.Common.Interfaces.Chat.IRepository;
+using Facebook.Application.Common.Interfaces.Action.IRepository;
+using Facebook.Application.Common.Interfaces.Admin.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
@@ -8,6 +10,8 @@ using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.User;
+using Facebook.Infrastructure.Repositories.Action;
+using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Chat;
 using Facebook.Infrastructure.Repositories.Comment;
 using Facebook.Infrastructure.Repositories.Feeling;
@@ -24,6 +28,8 @@ public class UnitOfWork : IUnitOfWork
 {
     private FacebookDbContext _context;
     private UserManager<UserEntity> _userManager;
+    public IAdminRepository Admin { get; private set; }
+    public IUserRepository User { get; private set; }
     public IReactionRepository Reaction { get; private set; }
     public IFeelingRepository Feeling { get; private set; }
     public IStoryRepository Story { get; private set; }
@@ -33,11 +39,15 @@ public class UnitOfWork : IUnitOfWork
     public ICommentRepository Comment { get; private set; }
     public IChatRepository Chat { get; private set; }
     public IMessageRepository Message { get; private set; }
+    public IActionRepository Action { get; private set; }
+    public ISubActionRepository SubAction { get; private set; }
 
     public UnitOfWork(FacebookDbContext context, UserManager<UserEntity> userManager)
     {
         _context = context;
         _userManager = userManager;
+        Admin = new AdminRepository(_userManager, _context);
+        User = new UserRepository(_userManager, _context);
         Reaction = new ReactionRepository(_context);
         Comment = new CommentRepository(_context);
         Like = new LikeRepository(_context);
@@ -45,6 +55,8 @@ public class UnitOfWork : IUnitOfWork
         Story = new StoryRepository(_context);
         UserProfile = new UserProfileRepository(_context, _userManager);
         Post = new PostRepository(_context);
+        Action = new ActionRepository(_context);
+        SubAction = new SubActionRepository(_context);
         Chat = new ChatRepository(_context);
         Message = new MessageRepository(_context);
     }

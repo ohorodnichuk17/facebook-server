@@ -1,6 +1,5 @@
-using System.Text;
-using Facebook.Application.Common.Interfaces.Admin;
 using Facebook.Application.Common.Interfaces.Admin.IRepository;
+using Facebook.Application.Common.Interfaces.Admin.IService;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
@@ -12,10 +11,10 @@ using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Repositories;
 using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Chat;
 using Facebook.Infrastructure.Repositories.Comment;
@@ -25,23 +24,33 @@ using Facebook.Infrastructure.Repositories.Post;
 using Facebook.Infrastructure.Repositories.Reaction;
 using Facebook.Infrastructure.Repositories.Story;
 using Facebook.Infrastructure.Repositories.User;
-using Facebook.Infrastructure.Services;
+using Facebook.Infrastructure.Services.Admin;
 using Facebook.Infrastructure.Services.Common;
 using Facebook.Infrastructure.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 namespace Facebook.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static IServiceCollection AddInfrastructure(
+       this IServiceCollection services,
+       ConfigurationManager configuration)
+    {
+        services
+           .AddPersistence(configuration)
+           .AddAppIdentity()
+           .AddRepositories()
+           .AddInfrastructureServices()
+           .AddAuth(configuration);
     public static IServiceCollection AddInfrastructure(
        this IServiceCollection services,
        ConfigurationManager configuration)
@@ -105,6 +114,20 @@ public static class DependencyInjection
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ILikeRepository, LikeRepository>();
         services.AddScoped<IFeelingRepository, FeelingRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        return services;
+    }
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IStoryRepository, StoryRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<IReactionRepository, ReactionRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<ILikeRepository, LikeRepository>();
+        services.AddScoped<IFeelingRepository, FeelingRepository>();
         services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -125,6 +148,11 @@ public static class DependencyInjection
         services.AddScoped<IImageStorageService, ImageStorageService>();
         services.AddTransient<ImageStorageService>();
 
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddTransient<CurrentUserService>();
+
+        return services;
+    }
         return services;
     }
 
@@ -134,6 +162,33 @@ public static class DependencyInjection
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
+        services.AddSingleton(Options.Create(jwtSettings));
+        services.AddSingleton<IJwtGenerator, JwtGenerator>();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Admin));
+        });
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(cfg =>
+        {
+            cfg.RequireHttpsMetadata = false;
+            cfg.SaveToken = true;
+            cfg.TokenValidationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
         services.AddSingleton(Options.Create(jwtSettings));
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
 

@@ -13,7 +13,9 @@ public record CreatePostCommand(
     List<string>? Tags,
     string? Location,
     List<ImageWithPriority> Images,
-    bool IsArchive,
+    bool? IsArchive,
     Guid UserId,
-    Guid? FeelingId
+    Guid? FeelingId,
+    Guid? ActionId,
+    Guid? SubActionId
     ) : IRequest<ErrorOr<Unit>>;

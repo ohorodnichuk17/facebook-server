@@ -24,7 +24,9 @@ public record CreatePostRequest
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public required Guid UserId { get; init; }
 
-    [Required(ErrorMessage = "{PropertyName} must be specified")]
-    public bool IsArchive { get; init; }
+    public bool? IsArchive { get; init; } = false;
+    
     public Guid? FeelingId { get; init; }
+    public Guid? ActionId { get; init; }
+    public Guid? SubActionId { get; init; }
 }

@@ -1,46 +1,34 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Post;
+using MapsterMapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Application.Comment.Command.Add;
 
-public class AddCommentCommandHandler(IUnitOfWork unitOfWork, IUserRepository userRepository, IPostRepository postRepository)
+public class AddCommentCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     : IRequestHandler<AddCommentCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByIdAsync(request.UserId.ToString());
-        var post = await postRepository.GetPostByIdAsync(request.PostId);
+        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
+        var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError || post.IsError)
         {
             return Error.NotFound();
         }
 
-        var commentEntity = new CommentEntity
-        {
-            Message = request.Message,
-            UserId = request.UserId,
-            PostId = request.PostId,
-            CreatedAt = DateTime.Now,
-        };
+        var comment = mapper.Map<CommentEntity>(request);
 
-        var commentResult = await unitOfWork.Comment.CreateAsync(commentEntity);
+        var commentResult = await unitOfWork.Comment.CreateAsync(comment);
 
         if (commentResult.IsError)
         {
             return commentResult.Errors;
         }
 
-        var res = await unitOfWork.Comment.SaveAsync(commentEntity);
+        var res = await unitOfWork.Comment.SaveAsync(comment);
 
         if (res.IsError)
         {

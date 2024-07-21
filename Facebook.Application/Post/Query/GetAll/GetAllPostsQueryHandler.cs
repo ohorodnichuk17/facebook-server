@@ -1,10 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
-using Facebook.Application.Story.Query.GetAll;
 using Facebook.Domain.Post;
-using Facebook.Domain.Story;
 using MediatR;
 
 namespace Facebook.Application.Post.Query.GetAll;
@@ -22,10 +18,8 @@ public class GetAllPostsQueryHandler(IUnitOfWork unitOfWork)
             {
                 return Error.Failure(result.Errors.ToString() ?? string.Empty);
             }
-            else
-            {
-                return result;
-            }
+
+            return result;
         }
         catch (Exception ex)
         {

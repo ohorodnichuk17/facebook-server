@@ -25,9 +25,5 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
         RuleFor(r => r.Images)
             .Must(images => images == null || images.All(image => image.Image != null))
             .WithMessage("Images collection must not contain null items.");
-
-
-        RuleFor(r => r.IsArchive)
-            .NotNull().WithMessage("IsArchive must not be null");
     }
 }

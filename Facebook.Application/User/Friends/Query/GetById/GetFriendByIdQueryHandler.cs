@@ -1,18 +1,18 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.User;
 using MediatR;
 
 namespace Facebook.Application.User.Friends.Query.GetById;
 
-public class GetFriendByIdQueryHandler(IUserRepository userRepository)
+public class GetFriendByIdQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetFriendByIdQuery, ErrorOr<UserEntity>>
 {
     public async Task<ErrorOr<UserEntity>> Handle(GetFriendByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var friend = await userRepository
+            var friend = await unitOfWork.User
                 .GetFriendByIdAsync(request.UserId.ToString(), request.FriendId.ToString());
 
             if (friend.IsError)

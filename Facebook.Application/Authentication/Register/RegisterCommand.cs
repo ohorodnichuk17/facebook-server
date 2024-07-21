@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Facebook.Application.Authentication.Register;
 
-public record  RegisterCommand(
+public record RegisterCommand(
     string FirstName,
     string LastName,
     string Email,
@@ -13,5 +13,5 @@ public record  RegisterCommand(
     DateTime Birthday,
     string Gender,
     byte[]? Avatar,
-    string BaseUrl
-    ) : IRequest<ErrorOr<AuthenticationResult>>;
+    string? Role,
+    string BaseUrl) : IRequest<ErrorOr<AuthenticationResult>>;

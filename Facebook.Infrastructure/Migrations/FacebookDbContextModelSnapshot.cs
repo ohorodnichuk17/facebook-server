@@ -23,6 +23,25 @@ namespace Facebook.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Facebook.Domain.Post.ActionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Emoji")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Actions");
+                });
+
             modelBuilder.Entity("ChatEntityUserEntity", b =>
                 {
                     b.Property<Guid>("ChatsId")
@@ -196,6 +215,9 @@ namespace Facebook.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ActionId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
@@ -205,11 +227,14 @@ namespace Facebook.Infrastructure.Migrations
                     b.Property<Guid?>("FeelingId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsArchive")
+                    b.Property<bool?>("IsArchive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Location")
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("SubActionId")
+                        .HasColumnType("uuid");
 
                     b.Property<List<string>>("Tags")
                         .HasColumnType("text[]");
@@ -222,7 +247,11 @@ namespace Facebook.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActionId");
+
                     b.HasIndex("FeelingId");
+
+                    b.HasIndex("SubActionId");
 
                     b.HasIndex("UserId");
 
@@ -255,6 +284,26 @@ namespace Facebook.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reactions");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Post.SubActionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ActionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActionId");
+
+                    b.ToTable("SubActions");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
@@ -662,10 +711,18 @@ namespace Facebook.Infrastructure.Migrations
 
             modelBuilder.Entity("Facebook.Domain.Post.PostEntity", b =>
                 {
+                    b.HasOne("Facebook.Domain.Post.ActionEntity", "Action")
+                        .WithMany()
+                        .HasForeignKey("ActionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Facebook.Domain.Post.FeelingEntity", "Feeling")
                         .WithMany()
-                        .HasForeignKey("FeelingId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("FeelingId");
+
+                    b.HasOne("Facebook.Domain.Post.SubActionEntity", "SubAction")
+                        .WithMany()
+                        .HasForeignKey("SubActionId");
 
                     b.HasOne("Facebook.Domain.User.UserEntity", null)
                         .WithMany("Posts")
@@ -673,7 +730,11 @@ namespace Facebook.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Action");
+
                     b.Navigation("Feeling");
+
+                    b.Navigation("SubAction");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Post.ReactionEntity", b =>
@@ -693,6 +754,17 @@ namespace Facebook.Infrastructure.Migrations
                     b.Navigation("PostEntity");
 
                     b.Navigation("UserEntity");
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Post.SubActionEntity", b =>
+                {
+                    b.HasOne("Facebook.Domain.Post.ActionEntity", "Action")
+                        .WithMany("SubActions")
+                        .HasForeignKey("ActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Action");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Story.StoryEntity", b =>
@@ -783,6 +855,11 @@ namespace Facebook.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Facebook.Domain.Post.ActionEntity", b =>
+                {
+                    b.Navigation("SubActions");
                 });
 
             modelBuilder.Entity("Facebook.Domain.Chat.ChatEntity", b =>

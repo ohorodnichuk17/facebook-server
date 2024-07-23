@@ -373,5 +373,28 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         }
     }
 
+    public async Task<ErrorOr<List<UserEntity>>> GetAllFriendRequestsAsync(string userId)
+    {
+        try
+        {
+            var friendRequests = await context.FriendRequests.Where(fr => fr.ReceiverId.ToString() == userId).ToListAsync();
 
+            if (friendRequests is null)
+            {
+                return Error.Failure("Friend request not found");
+            }
+
+            var senderIds = friendRequests.Select(fr => fr.SenderId).ToList();
+
+            var users = await context.Users
+                .Where(user => senderIds.Contains(user.Id))
+                .ToListAsync();
+
+            return users;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.ToString());
+        }
+    }
 }

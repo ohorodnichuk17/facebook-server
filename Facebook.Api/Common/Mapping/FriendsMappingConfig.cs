@@ -2,6 +2,7 @@ using Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
+using Facebook.Application.User.Friends.Query.GetAllFriendRequests;
 using Facebook.Contracts.Friends;
 using Mapster;
 
@@ -27,5 +28,7 @@ public class FriendsMappingConfig : IRegister
         config.NewConfig<FriendRequest, RemoveFriendCommand>()
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.FriendId, src => src.FriendId);
+
+        config.NewConfig<GetAllFriendRequestsRequest, GetAllFriendRequestsQuery>();
     }
 }

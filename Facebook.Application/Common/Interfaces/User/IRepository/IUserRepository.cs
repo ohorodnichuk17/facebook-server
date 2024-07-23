@@ -18,6 +18,7 @@ public interface IUserRepository
     Task<ErrorOr<List<UserDto>>> SearchUsersByFirstNameAndLastNameAsync(string firstName, string lastName);
     Task<ErrorOr<UserEntity>> GetByEmailAsync(string email);
     Task<List<UserEntity>> GetAllFriendsAsync(string userId);
+    Task<ErrorOr<List<UserEntity>>> GetAllFriendRequestsAsync(string userId);
     Task<ErrorOr<Unit>> SendFriendRequestAsync(string userId, string friendId);
     Task<ErrorOr<Unit>> AcceptFriendRequestAsync(string userId, string friendId);
     Task<ErrorOr<Unit>> RejectFriendRequestAsync(string userId, string friendRequestId);

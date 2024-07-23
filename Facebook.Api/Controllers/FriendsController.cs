@@ -4,6 +4,7 @@ using Facebook.Application.User.Friends.Command.RejectFriendRequest;
 using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
 using Facebook.Application.User.Friends.Query.GetAll;
+using Facebook.Application.User.Friends.Query.GetAllFriendRequests;
 using Facebook.Application.User.Friends.Query.GetById;
 using Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
@@ -169,6 +170,18 @@ public class FriendsController(
     public async Task<IActionResult> GetFriendsRecommendations()
     {
         var query = new GetFriendsRecommendationsQuery();
+        var result = await mediatr.Send(query);
+
+        return result.Match(
+           success => Ok(success),
+           error => Problem(error));
+    }
+
+    [HttpGet("requests")]
+    public async Task<IActionResult> GetAllFriendRequests([FromQuery] GetAllFriendRequestsRequest request)
+    {
+
+        var query = mapper.Map<GetAllFriendRequestsQuery>(request);
         var result = await mediatr.Send(query);
 
         return result.Match(

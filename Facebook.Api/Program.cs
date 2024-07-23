@@ -18,6 +18,16 @@ builder.Services
 //builder.Logging.SetMinimumLevel(LogLevel.Trace);
 //builder.Host.UseNLog();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("StaticFilesCorsPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -34,22 +44,16 @@ else
     app.UseHsts();
 }
 
-app.UseCustomStaticFiles();
+app.UseCors("StaticFilesCorsPolicy");
 
-app.UseCors(options =>
-    options.SetIsOriginAllowed(origin => true)
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .AllowAnyMethod());
+app.UseCustomStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapHub<ChatHub>("/chatHub");
 
 UserAndRolesInitializer.SeedData(app);

@@ -5,6 +5,7 @@ using Facebook.Application.User.Friends.Command.RemoveFriend;
 using Facebook.Application.User.Friends.Command.SendFriendRequest;
 using Facebook.Application.User.Friends.Query.GetAll;
 using Facebook.Application.User.Friends.Query.GetById;
+using Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends;
 using Facebook.Contracts.Friends.SearchUsersByFirstAndLastNamesRequest;
@@ -21,8 +22,10 @@ namespace Facebook.Server.Controllers;
 [Route("api/friends")]
 [ApiController]
 [AllowAnonymous]
-public class FriendsController(ISender mediatr, IMapper mapper,
-   IConfiguration configuration) : ApiController
+public class FriendsController(
+    ISender mediatr,
+    IMapper mapper,
+    IConfiguration configuration) : ApiController
 {
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
@@ -162,4 +165,14 @@ public class FriendsController(ISender mediatr, IMapper mapper,
         return Ok(json);
     }
 
+    [HttpGet("recommendations")]
+    public async Task<IActionResult> GetFriendsRecommendations()
+    {
+        var query = new GetFriendsRecommendationsQuery();
+        var result = await mediatr.Send(query);
+
+        return result.Match(
+           success => Ok(success),
+           error => Problem(error));
+    }
 }

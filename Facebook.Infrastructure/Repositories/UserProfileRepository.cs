@@ -120,7 +120,9 @@ public class UserProfileRepository(
             return Error.Failure("Invalid userId");
         }
 
-        var user = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
+        var user = await context.UsersProfiles
+                .Include(up => up.UserEntity)
+                .SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
 
         if (user == null)
         {

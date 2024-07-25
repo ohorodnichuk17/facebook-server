@@ -33,4 +33,28 @@ public class CommentRepository(FacebookDbContext context) : Repository<CommentEn
         }
         return comment;
     }
+
+    public async Task<ErrorOr<MediatR.Unit>> UpdateCommentAsync(CommentEntity comment)
+    {
+        try
+        {
+            var commentExist = await context.Comments.FindAsync(comment.Id);
+
+            if (commentExist == null)
+            {
+                return Error.Failure("Comment not found");
+            }
+
+            commentExist.Message = comment.Message;
+
+            context.Comments.Update(commentExist);
+            await context.SaveChangesAsync();
+
+            return MediatR.Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.Chat;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,4 +13,5 @@ namespace Facebook.Application.Common.Interfaces.Chat.IRepository;
 public interface IMessageRepository : IRepository<MessageEntity>
 {
     Task<ErrorOr<IEnumerable<MessageEntity>>> GetMessagesByChatIdAsync(Guid chatId);
+    Task<ErrorOr<Unit>> UpdateMessageAsync(MessageEntity message);
 }

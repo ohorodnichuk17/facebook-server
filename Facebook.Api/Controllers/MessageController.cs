@@ -1,6 +1,8 @@
 ﻿using Facebook.Application.Message.Command.Delete;
+using Facebook.Application.Message.Command.Edit;
 using Facebook.Application.Message.Query.GetMessagesById;
 using Facebook.Contracts.DeleteRequest;
+using Facebook.Contracts.Message.Edit;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
@@ -49,5 +51,15 @@ public class MessageController(ISender mediatr, IMapper mapper) : ApiController
         return result.Match(
             success => Ok(success),
             error => Problem(error));
+    }
+    [HttpPut("edit")]
+    public async Task<IActionResult> EditAsync([FromForm] EditMessageRequest request)
+    {
+        var editResult = await mediatr.Send(
+            mapper.Map<EditMessageCommand>(request));
+
+        return editResult.Match(
+            authResult => Ok(editResult.Value),
+            errors => Problem(errors));
     }
 }

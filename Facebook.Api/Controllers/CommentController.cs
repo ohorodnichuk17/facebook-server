@@ -1,13 +1,14 @@
 ﻿using Facebook.Application.Comment.Command.Add;
 using Facebook.Application.Comment.Command.Delete;
+using Facebook.Application.Comment.Command.Edit;
 using Facebook.Application.Comment.Query.GetAll;
 using Facebook.Application.Post.Query.GetCommentByPostId;
 using Facebook.Contracts.Comment.Create;
+using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -25,6 +26,17 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
         return addResult.Match(
         success => Ok(success),
         errors => Problem(errors));
+    }
+
+    [HttpPut("edit")]
+    public async Task<IActionResult> EditAsync([FromForm] EditCommentRequest request)
+    {
+        var editResult = await mediatr.Send(
+            mapper.Map<EditCommentCommand>(request));
+
+        return editResult.Match(
+            authResult => Ok(editResult.Value),
+            errors => Problem(errors));
     }
 
     [HttpDelete("delete")]

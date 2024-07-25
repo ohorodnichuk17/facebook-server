@@ -4,6 +4,7 @@ using Facebook.Domain.Chat;
 using Facebook.Infrastructure.Common.Persistence;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,29 @@ public class MessageRepository(FacebookDbContext context) : Repository<MessageEn
                 .Where(m => m.ChatId == chatId)
                 .OrderBy(m => m.CreatedAt)
                 .ToListAsync();
+    }
+
+    public async Task<ErrorOr<MediatR.Unit>> UpdateMessageAsync(MessageEntity message)
+    {
+        try
+        {
+            var messageExist = await context.Messages.FindAsync(message.Id);
+
+            if (messageExist == null)
+            {
+                return Error.Failure("Message not found");
+            }
+
+            messageExist.Content = message.Content;
+            
+            context.Messages.Update(messageExist);
+            await context.SaveChangesAsync();
+
+            return MediatR.Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
     }
 }

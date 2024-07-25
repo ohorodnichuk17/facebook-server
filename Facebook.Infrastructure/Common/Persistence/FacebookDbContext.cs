@@ -80,9 +80,10 @@ public class FacebookDbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<PostEntity>()
-            .HasOne<UserEntity>()
+            .HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId);
+
 
         builder.Entity<UserProfileEntity>()
             .HasOne(up => up.UserEntity)

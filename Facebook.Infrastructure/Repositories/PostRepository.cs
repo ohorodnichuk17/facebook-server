@@ -1,15 +1,33 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
-using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories.Post;
 
 public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(context), IPostRepository
 {
+    public new async Task<ErrorOr<IEnumerable<PostEntity>>> GetAllAsync()
+    {
+        try
+        {
+            var posts = await dbSet
+                .Include(p => p.Action)
+                .Include(p => p.SubAction)
+                .Include(p => p.Feeling)
+                .Include(p => p.Images)
+                .Include(p => p.User)
+                .ToListAsync();
+
+            return posts;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
     public async Task<ErrorOr<Unit>> UpdatePostAsync(PostEntity post)
     {
         try
@@ -35,7 +53,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
         }
         catch (Exception ex)
         {
-            return Error.Failure(ex.Message); 
+            return Error.Failure(ex.Message);
         }
     }
     public async Task<ErrorOr<PostEntity>> GetPostByIdAsync(Guid requestPostId)

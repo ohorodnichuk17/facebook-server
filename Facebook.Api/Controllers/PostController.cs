@@ -7,7 +7,9 @@ using Facebook.Application.Post.Query.GetLikeByPostId;
 using Facebook.Application.Post.Query.GetReactionByPostId;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Post.Create;
+using Facebook.Domain.Post;
 using Facebook.Domain.TypeExtensions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +43,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             success => Ok(success),
             error => Problem(error));
     }
-    
+
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -50,7 +52,9 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             var query = new GetAllPostsQuery();
             var posts = await mediatr.Send(query);
 
-            return Ok(posts.Value);
+            var mappedPosts = posts.Value.Adapt<List<PostEntity>>();
+
+            return Ok(mappedPosts);
         }
         catch (Exception ex)
         {

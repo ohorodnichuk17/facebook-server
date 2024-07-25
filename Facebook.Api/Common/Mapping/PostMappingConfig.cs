@@ -1,4 +1,5 @@
-﻿using Facebook.Application.Post.Command.Create;
+﻿using Facebook.Application.DTO;
+using Facebook.Application.Post.Command.Create;
 using Facebook.Contracts.Post.Create;
 using Facebook.Domain.Post;
 using Mapster;
@@ -24,6 +25,11 @@ namespace Facebook.Server.Common.Mapping
                 .Map(desc => desc.Id, src => Guid.NewGuid())
                 .Map(dest => dest.CreatedAt, src => DateTime.Now)
                 .Ignore(nameof(CreatePostCommand.Images));
+
+            TypeAdapterConfig<PostEntity, PostEntity>.NewConfig()
+                .Map(dest => dest.User, src => src.User.Adapt<UserForPostDto>())
+                .Map(dest => dest.Images, src => src.Images.Adapt<List<ImageDto>>())
+                .PreserveReference(true);
         }
     }
 

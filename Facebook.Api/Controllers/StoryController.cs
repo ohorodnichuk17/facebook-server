@@ -4,7 +4,9 @@ using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.Story.Query.GetById;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Story.Create;
+using Facebook.Domain.Story;
 using Facebook.Domain.TypeExtensions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -65,7 +67,9 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
             var query = new GetAllStoriesQuery();
             var stories = await mediatr.Send(query);
 
-            return Ok(stories.Value);
+            var mappedStories = stories.Value.Adapt<List<StoryEntity>>();
+
+            return Ok(mappedStories);
         }
         catch (Exception ex)
         {

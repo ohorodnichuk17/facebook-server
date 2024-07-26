@@ -34,7 +34,7 @@ public class FacebookDbContext
         base.OnModelCreating(builder);
 
         builder.Entity<StoryEntity>()
-            .HasOne<UserEntity>()
+            .HasOne(s => s.User)
             .WithMany(u => u.Stories)
             .HasForeignKey(s => s.UserId);
 

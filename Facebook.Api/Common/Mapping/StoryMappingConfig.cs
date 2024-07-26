@@ -1,3 +1,4 @@
+using Facebook.Application.DTO;
 using Facebook.Application.Story.Command.Create;
 using Facebook.Contracts.Story.Create;
 using Facebook.Domain.Story;
@@ -17,5 +18,9 @@ public class StoryMappingConfig : IRegister
         config.NewConfig<CreateStoryCommand, StoryEntity>()
             .Map(dest => dest.CreatedAt, src => DateTime.Now)
             .Ignore(nameof(CreateStoryRequest.Image));
+
+        TypeAdapterConfig<StoryEntity, StoryEntity>.NewConfig()
+                .Map(dest => dest.User, src => src.User.Adapt<UserForPostDto>())
+                .PreserveReference(true);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Facebook.Application.Comment.Command.Add;
+using Facebook.Application.Comment.Command.AddReplyComment;
 using Facebook.Application.Comment.Command.Delete;
 using Facebook.Application.Comment.Command.Edit;
 using Facebook.Application.Comment.Query.GetAll;
 using Facebook.Application.Post.Query.GetCommentByPostId;
+using Facebook.Contracts.Comment.AddReplyComment;
 using Facebook.Contracts.Comment.Create;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
@@ -10,6 +12,10 @@ using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using Facebook.Domain.Post;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Facebook.Server.Controllers;
 
@@ -26,6 +32,23 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
         return addResult.Match(
         success => Ok(success),
         errors => Problem(errors));
+    }
+
+    [HttpPost("add-reply")]
+    public async Task<IActionResult> AddReplyCommentAsync([FromForm] AddReplyCommentRequest request)
+    {
+        var command = mapper.Map<AddReplyCommentCommand>(request);
+        var addResult = await mediatr.Send(command);
+
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve,
+            WriteIndented = true
+        };
+
+        var json = JsonSerializer.Serialize(addResult, options);
+
+        return Ok();
     }
 
     [HttpPut("edit")]
@@ -50,12 +73,12 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
         errors => Problem(errors));
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet("{postId}")]
+    public async Task<IActionResult> GetById(Guid postId)
     {
         try
         {
-            var query = new GetCommentsByPostIdQuery(id);
+            var query = new GetCommentsByPostIdQuery(postId);
             var res = await mediatr.Send(query);
 
             if (res.IsSuccess())

@@ -5,6 +5,7 @@ using Facebook.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Facebook.Infrastructure.Common.Persistence;
 
@@ -144,5 +145,11 @@ public class FacebookDbContext
             .WithMany(a => a.SubActions)
             .HasForeignKey(a => a.ActionId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CommentEntity>()
+            .HasOne(c => c.ParentComment)
+            .WithMany(c => c.ChildComments)
+            .HasForeignKey(c => c.ParentCommentId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

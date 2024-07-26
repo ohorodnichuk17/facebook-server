@@ -2,6 +2,7 @@
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
+using LanguageExt;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,7 @@ namespace Facebook.Infrastructure.Repositories.Comment;
 
 public class CommentRepository(FacebookDbContext context) : Repository<CommentEntity>(context), ICommentRepository
 {
+
     public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId)
     {
         var comment = await context.Comments.Where(comment => comment.PostId == postId).ToListAsync();

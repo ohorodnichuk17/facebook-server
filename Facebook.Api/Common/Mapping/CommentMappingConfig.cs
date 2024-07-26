@@ -1,6 +1,8 @@
 ﻿using Facebook.Application.Comment.Command.Add;
+using Facebook.Application.Comment.Command.AddReplyComment;
 using Facebook.Application.Comment.Command.Delete;
 using Facebook.Application.Comment.Command.Edit;
+using Facebook.Contracts.Comment.AddReplyComment;
 using Facebook.Contracts.Comment.Create;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
@@ -26,5 +28,10 @@ public class CommentMappingConfig : IRegister
         config.NewConfig<EditCommentRequest, EditCommentCommand>()
             .Map(dest => dest.Message, src => src.Message)
             .Map(dest => dest.Id, src => src.Id);
+
+        config.NewConfig<AddReplyCommentRequest, AddReplyCommentCommand>()
+            .Map(dest => dest.PostId, src => src.PostId)
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.ParentId, src => src.ParentId);
     }
 }

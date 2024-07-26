@@ -20,9 +20,12 @@ public class CommentEntity
             _createdAt = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
-
     public PostEntity PostEntity { get; set; }
     public Guid PostId { get; set; }
     public UserEntity UserEntity { get; set; }
     public Guid UserId { get; set; }
+    
+    public CommentEntity ParentComment { get; set; }
+    public Guid? ParentCommentId { get; set; }
+    public ICollection<CommentEntity> ChildComments { get; set; } = new List<CommentEntity>();
 }

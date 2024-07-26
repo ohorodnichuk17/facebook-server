@@ -32,12 +32,12 @@ public class UserEditProfileCommandHandler(
             var userProfile = getProf.Value;
             var user = getU.Value;
 
-            userProfile.Biography = request.Biography;
-            userProfile.Country = request.Country;
-            userProfile.Pronouns = request.Pronouns;
+            userProfile.Biography = request.Biography ?? userProfile.Biography;
+            userProfile.Country = request.Country ?? userProfile.Country;
+            userProfile.Pronouns = request.Pronouns ?? userProfile.Pronouns;
             userProfile.IsBlocked = request.isBlocked ?? userProfile.IsBlocked;
             userProfile.IsProfilePublic = request.IsProfilePublic ?? userProfile.IsProfilePublic;
-            userProfile.Region = request.Region;
+            userProfile.Region = request.Region ?? userProfile.Region;
 
             if (!string.IsNullOrEmpty(request.FirstName))
             {

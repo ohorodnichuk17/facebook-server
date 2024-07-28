@@ -14,7 +14,6 @@ using Facebook.Domain.Common.Errors;
 using Facebook.Domain.User;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -151,18 +150,10 @@ public class AuthenticationController(ISender mediatr,
             changeEmailRes => Ok(changeEmailResult.Value),
             errors => Problem(errors));
     }
-
-    // [HttpPost("logout")]
-    // public async Task<IActionResult> LogoutAsync()
-    // {
-    //     await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-    //     return Ok("Logged out successfully");
-    // }
     
     [HttpPost("logout")]
     public async Task<IActionResult> LogoutAsync([FromBody] Guid userId)
     {
-        // Call the service to log out the user
         var logoutResult = await authenticationService.LogoutUserAsync(userId);
 
         if (logoutResult.IsError)

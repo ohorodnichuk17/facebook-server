@@ -36,12 +36,24 @@ public class UserAuthenticationService(
 
         if (role == null)
             return Error.NotFound("Role of user is not found");
+        
+        user.IsOnline = true;
+        user.LastActive = DateTime.UtcNow;
+        await userManager.UpdateAsync(user);
 
         return role;
     }
 
     public async Task<ErrorOr<Success>> LogoutUserAsync(Guid userId)
     {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user != null)
+        {
+            user.IsOnline = false;
+            user.LastActive = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
+        }
+
         await signInManager.SignOutAsync();
         return Result.Success;
     }

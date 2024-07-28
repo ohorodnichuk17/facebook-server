@@ -19,6 +19,19 @@ public class UserEntity : IdentityUser<Guid>
             _birthday = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
+    
+    public bool IsOnline { get; set; }
+    
+    private DateTime _lastActive;
+
+    public DateTime LastActive
+    {
+        get { return _lastActive; }
+        set
+        {
+            _lastActive = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+    }
 
     public string? Avatar { get; set; }
 

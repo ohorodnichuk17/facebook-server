@@ -5,11 +5,13 @@ using Facebook.Application.Authentication.Login;
 using Facebook.Application.Authentication.Register;
 using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
+using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
 using Facebook.Contracts.Authentication.ResendConfirmEmail;
 using Facebook.Domain.Common.Errors;
+using Facebook.Domain.User;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -25,7 +27,11 @@ namespace Facebook.Server.Controllers;
 [Route("api/authentication")]
 [ApiController]
 [AllowAnonymous]
-public class AuthenticationController(ISender mediatr, IMapper mapper, IConfiguration configuration)
+public class AuthenticationController(ISender mediatr, 
+    IMapper mapper, 
+    IConfiguration configuration,
+    IUserAuthenticationService authenticationService,
+    UserManager<UserEntity> userManager)
     : ApiController
 {
     [HttpPost("register")]
@@ -146,12 +152,45 @@ public class AuthenticationController(ISender mediatr, IMapper mapper, IConfigur
             errors => Problem(errors));
     }
 
+    // [HttpPost("logout")]
+    // public async Task<IActionResult> LogoutAsync()
+    // {
+    //     await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+    //     return Ok("Logged out successfully");
+    // }
+    
     [HttpPost("logout")]
-    public async Task<IActionResult> LogoutAsync()
+    public async Task<IActionResult> LogoutAsync([FromBody] Guid userId)
     {
-        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        // Call the service to log out the user
+        var logoutResult = await authenticationService.LogoutUserAsync(userId);
+
+        if (logoutResult.IsError)
+        {
+            return Problem(logoutResult.Errors);
+        }
+
         return Ok("Logged out successfully");
     }
+    
+    [HttpGet("user-status/{userId}")]
+    public async Task<IActionResult> GetUserStatusAsync(Guid userId)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var status = new
+        {
+            IsOnline = user.IsOnline,
+            LastActive = user.LastActive
+        };
+
+        return Ok(status);
+    }
+
 
     [HttpGet("ping")]
     public IActionResult Ping()

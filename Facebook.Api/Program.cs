@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("StaticFilesCorsPolicy", builder =>
     {
-        builder.WithOrigins("http://localhost:5173")
+        builder.AllowAnyOrigin()
                .AllowAnyHeader()
                .AllowAnyMethod();
     });

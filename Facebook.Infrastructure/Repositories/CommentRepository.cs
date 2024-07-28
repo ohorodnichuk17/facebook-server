@@ -3,13 +3,7 @@ using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 using LanguageExt;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Infrastructure.Repositories.Comment;
 
@@ -18,11 +12,16 @@ public class CommentRepository(FacebookDbContext context) : Repository<CommentEn
 
     public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId)
     {
-        var comment = await context.Comments.Where(comment => comment.PostId == postId).ToListAsync();
+        var comment = await context.Comments
+            .Include(c => c.UserEntity)
+            .Where(comment => comment.PostId == postId)
+            .ToListAsync();
+
         if (!comment.Any())
         {
             return Error.NotFound();
         }
+
         return comment;
     }
 

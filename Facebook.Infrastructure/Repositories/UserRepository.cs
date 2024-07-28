@@ -377,7 +377,9 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
     {
         try
         {
-            var friendRequests = await context.FriendRequests.Where(fr => fr.ReceiverId.ToString() == userId).ToListAsync();
+            var friendRequests = await context.FriendRequests
+                .Where(fr => fr.ReceiverId.ToString() == userId && !fr.IsAccepted)
+                .ToListAsync();
 
             if (friendRequests is null)
             {

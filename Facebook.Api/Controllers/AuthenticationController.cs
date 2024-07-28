@@ -5,6 +5,7 @@ using Facebook.Application.Authentication.Login;
 using Facebook.Application.Authentication.Register;
 using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
+using Facebook.Application.Common.Interfaces.Admin.IService;
 using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
@@ -26,11 +27,12 @@ namespace Facebook.Server.Controllers;
 [Route("api/authentication")]
 [ApiController]
 [AllowAnonymous]
-public class AuthenticationController(ISender mediatr, 
-    IMapper mapper, 
+public class AuthenticationController(ISender mediatr,
+    IMapper mapper,
     IConfiguration configuration,
     IUserAuthenticationService authenticationService,
-    UserManager<UserEntity> userManager)
+    UserManager<UserEntity> userManager,
+    ICurrentUserService currentUserService)
     : ApiController
 {
     [HttpPost("register")]
@@ -150,11 +152,12 @@ public class AuthenticationController(ISender mediatr,
             changeEmailRes => Ok(changeEmailResult.Value),
             errors => Problem(errors));
     }
-    
+
     [HttpPost("logout")]
-    public async Task<IActionResult> LogoutAsync([FromBody] Guid userId)
+    public async Task<IActionResult> LogoutAsync()
     {
-        var logoutResult = await authenticationService.LogoutUserAsync(userId);
+        var currentUserId = currentUserService.GetCurrentUserId();
+        var logoutResult = await authenticationService.LogoutUserAsync(currentUserId);
 
         if (logoutResult.IsError)
         {
@@ -163,7 +166,7 @@ public class AuthenticationController(ISender mediatr,
 
         return Ok("Logged out successfully");
     }
-    
+
     [HttpGet("user-status/{userId}")]
     public async Task<IActionResult> GetUserStatusAsync(Guid userId)
     {

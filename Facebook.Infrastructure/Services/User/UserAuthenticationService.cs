@@ -22,7 +22,7 @@ public class UserAuthenticationService(
     {
         var signinResult = await signInManager.PasswordSignInAsync(user, password,
             isPersistent: true, lockoutOnFailure: true);
-		
+
         if (signinResult.IsNotAllowed)
             return Error.Forbidden("Email is not confirmed");
 
@@ -36,7 +36,7 @@ public class UserAuthenticationService(
 
         if (role == null)
             return Error.NotFound("Role of user is not found");
-        
+
         user.IsOnline = true;
         user.LastActive = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
@@ -44,9 +44,9 @@ public class UserAuthenticationService(
         return role;
     }
 
-    public async Task<ErrorOr<Success>> LogoutUserAsync(Guid userId)
+    public async Task<ErrorOr<Success>> LogoutUserAsync(string userId)
     {
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await userManager.FindByIdAsync(userId);
         if (user != null)
         {
             user.IsOnline = false;
@@ -57,7 +57,7 @@ public class UserAuthenticationService(
         await signInManager.SignOutAsync();
         return Result.Success;
     }
-    
+
     public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
     {
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -71,7 +71,7 @@ public class UserAuthenticationService(
 
         if (user == null)
             return Error.NotFound();
-        
+
         var confirmEmailResult = await userManager.ConfirmEmailAsync(user, token);
 
         if (!confirmEmailResult.Succeeded)
@@ -82,7 +82,7 @@ public class UserAuthenticationService(
 
         return Result.Success;
     }
-    
+
     public async Task<bool> ResendEmailConfirmationAsync(UserEntity user, string emailToken, string baseUrl)
     {
         string? userName = !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName)
@@ -91,10 +91,10 @@ public class UserAuthenticationService(
 
         var emailResult = await emailService.SendEmailConfirmationEmailAsync(user.Id, user.Email!, emailToken, baseUrl, userName!);
 
-        return emailResult.IsSuccess(); 
+        return emailResult.IsSuccess();
     }
 
-    
+
     public async Task<string> GeneratePasswordResetTokenAsync(UserEntity user)
     {
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -129,12 +129,12 @@ public class UserAuthenticationService(
     public async Task<ErrorOr<UserEntity>> ChangeEmailAsync(UserEntity user, string email, string token)
     {
         var changeEmailResult = await userManager.ChangeEmailAsync(user, email, token);
-    
+
         if (!changeEmailResult.Succeeded)
         {
             return Error.Validation(changeEmailResult.Errors.FirstOrDefault()!.Description.ToString());
         }
-    
+
         return user;
     }
 

@@ -1,5 +1,4 @@
 using ErrorOr;
-using Facebook.Domain.Common.Errors;
 using Facebook.Domain.User;
 
 namespace Facebook.Application.Common.Interfaces.Authentication;
@@ -7,7 +6,7 @@ namespace Facebook.Application.Common.Interfaces.Authentication;
 public interface IUserAuthenticationService
 {
     Task<ErrorOr<string>> LoginUserAsync(UserEntity user, string password);
-    Task<ErrorOr<Success>> LogoutUserAsync(Guid userId);
+    Task<ErrorOr<Success>> LogoutUserAsync(string userId);
     Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user);
     Task<ErrorOr<Success>> ConfirmEmailAsync(Guid userId, string token);
     Task<bool> ResendEmailConfirmationAsync(UserEntity user, string emailToken, string baseUrl);

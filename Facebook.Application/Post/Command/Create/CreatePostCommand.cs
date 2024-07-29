@@ -1,4 +1,5 @@
 using ErrorOr;
+using Facebook.Domain.Constants.ContentVisibility;
 using MediatR;
 
 namespace Facebook.Application.Post.Command.Create;
@@ -14,6 +15,8 @@ public record CreatePostCommand(
     string? Location,
     List<ImageWithPriority> Images,
     bool? IsArchive,
+    string Visibility,
+    List<Guid>? ExcludedFriends,
     Guid UserId,
     Guid? FeelingId,
     Guid? ActionId,

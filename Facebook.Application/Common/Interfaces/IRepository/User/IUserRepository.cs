@@ -24,5 +24,6 @@ public interface IUserRepository
     Task<ErrorOr<Unit>> RejectFriendRequestAsync(string userId, string friendRequestId);
     Task<ErrorOr<Unit>> RemoveFriendAsync(string userId, string friendId);
     Task<ErrorOr<UserEntity>> GetFriendByIdAsync(string userId, string friendId);
+    Task<ErrorOr<UserEntity>> GetFriendByIdAsync(Guid userId, Guid friendId);
     Task<ErrorOr<List<string>>> FindRolesByUserIdAsync(UserEntity user);
 }

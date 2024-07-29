@@ -341,8 +341,6 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         }
     }
 
-
-
     public async Task<ErrorOr<UserEntity>> GetFriendByIdAsync(string userId, string friendId)
     {
         try
@@ -373,6 +371,35 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         }
     }
 
+    public async Task<ErrorOr<UserEntity>> GetFriendByIdAsync(Guid userId, Guid friendId)
+    {
+        try
+        {
+            var friendRequest = await context.FriendRequests
+                .Include(fr => fr.Sender)
+                .Include(fr => fr.Receiver)
+                .FirstOrDefaultAsync(fr =>
+                    (fr.SenderId == userId && fr.ReceiverId == friendId) ||
+                    (fr.SenderId == friendId && fr.ReceiverId == userId) &&
+                    fr.IsAccepted);
+
+            if (friendRequest == null)
+            {
+                Console.Error.WriteLine("Friend not found");
+                return Error.Failure("Friend not found");
+            }
+
+            var friend = friendRequest.SenderId == userId ? friendRequest.Receiver : friendRequest.Sender;
+
+            return friend;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error retrieving friend: {ex.Message}");
+            Console.Error.WriteLine(ex.StackTrace);
+            return Error.Failure(ex.Message);
+        }
+    }
     public async Task<ErrorOr<List<UserEntity>>> GetAllFriendRequestsAsync(string userId)
     {
         try

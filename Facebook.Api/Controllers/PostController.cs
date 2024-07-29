@@ -4,6 +4,7 @@ using Facebook.Application.Post.Query.GetAll;
 using Facebook.Application.Post.Query.GetById;
 using Facebook.Application.Post.Query.GetCommentByPostId;
 using Facebook.Application.Post.Query.GetLikeByPostId;
+using Facebook.Application.Post.Query.GetPostAccess;
 using Facebook.Application.Post.Query.GetReactionByPostId;
 using Facebook.Application.Post.Query.SearchPostsByTags;
 using Facebook.Contracts.DeleteRequest;
@@ -61,7 +62,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }
-    }
+    }   
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -195,6 +196,31 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
         catch (Exception ex)
         {
             return StatusCode(500, "An error occurred while fetching posts.");
+        }
+
+    }
+
+    [HttpGet("getPostAccess/{viewerId}/{postId}")]
+    public async Task<IActionResult> CanViewPost(Guid viewerId, Guid postId)
+    {
+        try
+        {
+            var query = new GetPostAccessQuery(viewerId, postId);
+            var postResult = await mediatr.Send(query);
+
+            if (postResult.IsSuccess())
+            {
+                var post = postResult.Value;
+                return Ok(post);
+            }
+            else
+            {
+                return StatusCode(500, postResult.IsError);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while getting post limited information.");
         }
     }
 

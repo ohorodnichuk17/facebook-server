@@ -1,3 +1,4 @@
+using Facebook.Domain.Constants.ContentVisibility;
 using Facebook.Domain.User;
 
 namespace Facebook.Domain.Post;
@@ -30,4 +31,7 @@ public class PostEntity
     public UserEntity User { get; set; }
     public Guid? FeelingId { get; set; }
     public FeelingEntity? Feeling { get; set; }
+
+    public string Visibility { get; set; }
+    public IList<Guid>? ExcludedFriends { get; set; }
 }

@@ -1,3 +1,4 @@
+using Facebook.Domain.Constants.ContentVisibility;
 using FluentValidation;
 
 namespace Facebook.Application.Post.Command.Create;
@@ -25,5 +26,13 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
         RuleFor(r => r.Images)
             .Must(images => images == null || images.All(image => image.Image != null))
             .WithMessage("Images collection must not contain null items.");
+
+        RuleFor(r => r.Visibility)
+            .NotEmpty().WithMessage("Limited post display is required")
+            .When(v => v.Visibility == ContentVisibility.Public
+            || v.Visibility == ContentVisibility.FriendsOnly
+            || v.Visibility == ContentVisibility.Private 
+            || v.Visibility == ContentVisibility.FriendsExcept);
+
     }
 }

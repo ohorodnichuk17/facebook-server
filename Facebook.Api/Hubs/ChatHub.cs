@@ -1,12 +1,11 @@
-﻿using Facebook.Application.Common.Interfaces.Chat.IRepository;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Facebook.Domain.Chat;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.User;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using ErrorOr;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Facebook.Application.Common.Interfaces.IRepository.User;
 
 namespace Facebook.Server.Hubs;
 

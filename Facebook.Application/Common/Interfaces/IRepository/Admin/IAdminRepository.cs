@@ -1,10 +1,9 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.User;
 using Facebook.Domain.User;
 using MediatR;
 
-namespace Facebook.Application.Common.Interfaces.Admin.IRepository;
-// ToDo ДОДАТИ МОЖОЛИВІСТЬ ЗАБОРОНЯТИ ЮЗЕРУ ДІЇ
+namespace Facebook.Application.Common.Interfaces.IRepository.Admin;
 public interface IAdminRepository : IUserRepository
 {
     Task<ErrorOr<UserEntity>> CreateAsync(UserEntity user, string password, string role);

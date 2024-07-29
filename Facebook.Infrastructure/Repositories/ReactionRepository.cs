@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Reaction.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.Reaction;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;

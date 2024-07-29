@@ -1,8 +1,7 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.Post;
 
-namespace Facebook.Application.Common.Interfaces.Reaction.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.Reaction;
 
 public interface IReactionRepository : IRepository<ReactionEntity>
 {

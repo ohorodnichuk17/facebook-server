@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
 using MapsterMapper;

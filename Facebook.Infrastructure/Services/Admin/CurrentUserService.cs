@@ -1,6 +1,6 @@
-﻿using Facebook.Application.Common.Interfaces.Admin.IService;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Facebook.Application.Common.Interfaces.Common;
 
 namespace Facebook.Infrastructure.Services.Admin;
 

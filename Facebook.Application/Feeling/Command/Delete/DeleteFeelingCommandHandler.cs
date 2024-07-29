@@ -1,5 +1,4 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using MediatR;
 

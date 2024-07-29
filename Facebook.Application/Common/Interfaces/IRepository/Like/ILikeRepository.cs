@@ -1,14 +1,7 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.Post;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Application.Common.Interfaces.Like.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.Like;
 
 public interface ILikeRepository : IRepository<LikeEntity>
 {

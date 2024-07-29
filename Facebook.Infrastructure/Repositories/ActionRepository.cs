@@ -1,4 +1,4 @@
-﻿using Facebook.Application.Common.Interfaces.Action.IRepository;
+﻿using Facebook.Application.Common.Interfaces.IRepository.Action;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 

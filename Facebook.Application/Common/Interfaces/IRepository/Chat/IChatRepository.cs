@@ -1,13 +1,7 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.Chat;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Application.Common.Interfaces.Chat.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.Chat;
 
 public interface IChatRepository : IRepository<ChatEntity>
 {

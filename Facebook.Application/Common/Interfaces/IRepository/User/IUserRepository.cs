@@ -3,7 +3,7 @@ using Facebook.Application.DTO_s;
 using Facebook.Domain.User;
 using MediatR;
 
-namespace Facebook.Application.Common.Interfaces.User.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.User;
 
 public interface IUserRepository
 {

@@ -1,7 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using MediatR;
 
 namespace Facebook.Application.UserProfile.Command.DeleteCoverPhoto;

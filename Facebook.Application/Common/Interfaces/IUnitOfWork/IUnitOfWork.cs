@@ -1,13 +1,13 @@
-using Facebook.Application.Common.Interfaces.Action.IRepository;
-using Facebook.Application.Common.Interfaces.Admin.IRepository;
-using Facebook.Application.Common.Interfaces.Chat.IRepository;
-using Facebook.Application.Common.Interfaces.Comment.IRepository;
-using Facebook.Application.Common.Interfaces.Feeling.IRepository;
-using Facebook.Application.Common.Interfaces.Like.IRepository;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.Reaction.IRepository;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.Action;
+using Facebook.Application.Common.Interfaces.IRepository.Admin;
+using Facebook.Application.Common.Interfaces.IRepository.Chat;
+using Facebook.Application.Common.Interfaces.IRepository.Comment;
+using Facebook.Application.Common.Interfaces.IRepository.Feeling;
+using Facebook.Application.Common.Interfaces.IRepository.Like;
+using Facebook.Application.Common.Interfaces.IRepository.Post;
+using Facebook.Application.Common.Interfaces.IRepository.Reaction;
+using Facebook.Application.Common.Interfaces.IRepository.Story;
+using Facebook.Application.Common.Interfaces.IRepository.User;
 
 namespace Facebook.Application.Common.Interfaces.IUnitOfWork;
 

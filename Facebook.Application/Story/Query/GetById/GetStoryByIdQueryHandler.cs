@@ -2,7 +2,6 @@ using Facebook.Domain.Story;
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Domain.TypeExtensions;
 
 namespace Facebook.Application.Story.Query.GetById;

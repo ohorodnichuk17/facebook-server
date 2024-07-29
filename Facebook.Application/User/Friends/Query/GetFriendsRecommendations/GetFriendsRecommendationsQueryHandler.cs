@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Admin.IService;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.User;
 using MediatR;

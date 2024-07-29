@@ -1,4 +1,4 @@
-using Facebook.Application.Common.Interfaces.Feeling.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.Feeling;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 

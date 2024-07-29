@@ -1,5 +1,5 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.User.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.User;
 using Facebook.Application.DTO_s;
 using Facebook.Domain.Post;
 using Facebook.Domain.Story;

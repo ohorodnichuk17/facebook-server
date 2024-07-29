@@ -1,7 +1,6 @@
 using MediatR;
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
 
 namespace Facebook.Application.Story.Command.Delete;
 

@@ -1,5 +1,5 @@
 using ErrorOr;
-using Facebook.Application.Common.Interfaces.Admin.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.Admin;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using MediatR;

@@ -1,4 +1,4 @@
-﻿namespace Facebook.Application.Common.Interfaces.Admin.IService;
+﻿namespace Facebook.Application.Common.Interfaces.Common;
 
 public interface ICurrentUserService
 {

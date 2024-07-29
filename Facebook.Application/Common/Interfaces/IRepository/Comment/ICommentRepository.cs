@@ -1,14 +1,8 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Application.Common.Interfaces.Comment.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.Comment;
 
 public interface ICommentRepository : IRepository<CommentEntity>
 {

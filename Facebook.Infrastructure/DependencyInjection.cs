@@ -1,16 +1,6 @@
-using Facebook.Application.Common.Interfaces.Admin.IRepository;
-using Facebook.Application.Common.Interfaces.Admin.IService;
 using Facebook.Application.Common.Interfaces.Authentication;
-using Facebook.Application.Common.Interfaces.Chat.IRepository;
-using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Application.Common.Interfaces.Feeling.IRepository;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Application.Common.Interfaces.Like.IRepository;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
-using Facebook.Application.Common.Interfaces.Reaction.IRepository;
-using Facebook.Application.Common.Interfaces.Story.IRepository;
-using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
@@ -27,6 +17,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Facebook.Application.Common.Interfaces.IRepository.Admin;
+using Facebook.Application.Common.Interfaces.IRepository.Chat;
+using Facebook.Application.Common.Interfaces.IRepository.Comment;
+using Facebook.Application.Common.Interfaces.IRepository.Feeling;
+using Facebook.Application.Common.Interfaces.IRepository.Like;
+using Facebook.Application.Common.Interfaces.IRepository.Post;
+using Facebook.Application.Common.Interfaces.IRepository.Reaction;
+using Facebook.Application.Common.Interfaces.IRepository.Story;
+using Facebook.Application.Common.Interfaces.IRepository.User;
 using Facebook.Infrastructure.Repositories;
 
 

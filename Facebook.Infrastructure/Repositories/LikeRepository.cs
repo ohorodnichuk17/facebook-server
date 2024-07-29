@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.Like.IRepository;
+using Facebook.Application.Common.Interfaces.IRepository.Like;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;

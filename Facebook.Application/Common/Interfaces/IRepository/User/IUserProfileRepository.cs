@@ -1,9 +1,8 @@
 ﻿using ErrorOr;
-using Facebook.Application.Common.Interfaces.IRepository;
 using Facebook.Domain.User;
 using MediatR;
 
-namespace Facebook.Application.Common.Interfaces.User.IRepository;
+namespace Facebook.Application.Common.Interfaces.IRepository.User;
 
 public interface IUserProfileRepository : IRepository<UserProfileEntity>
 {

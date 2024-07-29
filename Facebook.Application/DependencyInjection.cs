@@ -1,6 +1,7 @@
 using System.Reflection;
 using Facebook.Application.Authentication.SendConfirmationEmail;
 using Facebook.Application.Common.Behaviours;
+using Facebook.Application.Post.Query.SearchPostsByTags;
 using Facebook.Application.Services;
 using FluentValidation;
 using Mapster;
@@ -19,7 +20,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg => cfg
             .RegisterServicesFromAssemblies(AppDomain.CurrentDomain
                 .GetAssemblies()));
-
+        
         services.AddScoped(typeof(IPipelineBehavior<,>), 
             typeof(ValidationBehavior<,>));
 

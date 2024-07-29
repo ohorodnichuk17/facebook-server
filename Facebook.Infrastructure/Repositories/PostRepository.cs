@@ -72,4 +72,25 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
 
         return post;
     }
+
+    public async Task<ErrorOr<List<PostEntity>>> SearchPostsByTags(string tag)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return Error.Failure("No search criteria provided");
+            }
+            
+            var posts = await context.Posts
+                .Where(p => p.Tags.Contains(tag))
+                .ToListAsync();
+            
+            return posts;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
 }

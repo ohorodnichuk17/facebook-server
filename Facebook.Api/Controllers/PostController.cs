@@ -5,6 +5,7 @@ using Facebook.Application.Post.Query.GetById;
 using Facebook.Application.Post.Query.GetCommentByPostId;
 using Facebook.Application.Post.Query.GetLikeByPostId;
 using Facebook.Application.Post.Query.GetReactionByPostId;
+using Facebook.Application.Post.Query.SearchPostsByTags;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Post.Create;
 using Facebook.Domain.Post;
@@ -173,4 +174,26 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             return StatusCode(500, "An error occurred while getting post.");
         }
     }
+    
+    [HttpPost("search-posts-by-tags")]
+    public async Task<IActionResult> SearchPostsByTags(string tag)
+    {
+        try
+        {
+            var query = new SearchPostsByTagsQuery(tag); 
+            var result = await mediatr.Send(query); 
+
+            if (result.IsError)
+            {
+                return BadRequest(result.Errors); 
+            }
+
+            return Ok(result.Value); 
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching posts.");
+        }
+    }
+
 }

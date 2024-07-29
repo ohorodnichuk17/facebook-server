@@ -81,11 +81,16 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
             {
                 return Error.Failure("No search criteria provided");
             }
-            
+
             var posts = await context.Posts
+                .Include(p => p.Action)
+                .Include(p => p.SubAction)
+                .Include(p => p.Feeling)
+                .Include(p => p.Images)
+                .Include(p => p.User)
                 .Where(p => p.Tags.Contains(tag))
                 .ToListAsync();
-            
+
             return posts;
         }
         catch (Exception ex)

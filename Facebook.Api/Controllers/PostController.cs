@@ -174,21 +174,23 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             return StatusCode(500, "An error occurred while getting post.");
         }
     }
-    
+
     [HttpPost("search-posts-by-tags")]
     public async Task<IActionResult> SearchPostsByTags(string tag)
     {
         try
         {
-            var query = new SearchPostsByTagsQuery(tag); 
-            var result = await mediatr.Send(query); 
+            var query = new SearchPostsByTagsQuery(tag);
+            var result = await mediatr.Send(query);
 
             if (result.IsError)
             {
-                return BadRequest(result.Errors); 
+                return BadRequest(result.Errors);
             }
 
-            return Ok(result.Value); 
+            var mappedPosts = result.Value.Adapt<List<PostEntity>>();
+
+            return Ok(mappedPosts);
         }
         catch (Exception ex)
         {

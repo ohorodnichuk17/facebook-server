@@ -10,16 +10,8 @@ using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Application.Common.Interfaces.Story.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.User;
-using Facebook.Infrastructure.Repositories.Action;
-using Facebook.Infrastructure.Repositories.Admin;
+using Facebook.Infrastructure.Repositories;
 using Facebook.Infrastructure.Repositories.Chat;
-using Facebook.Infrastructure.Repositories.Comment;
-using Facebook.Infrastructure.Repositories.Feeling;
-using Facebook.Infrastructure.Repositories.Like;
-using Facebook.Infrastructure.Repositories.Post;
-using Facebook.Infrastructure.Repositories.Reaction;
-using Facebook.Infrastructure.Repositories.Story;
-using Facebook.Infrastructure.Repositories.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace Facebook.Infrastructure.Common.Persistence;

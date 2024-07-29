@@ -3,7 +3,6 @@ using Facebook.Application.Common.Interfaces.Chat.IRepository;
 using Facebook.Application.Common.Interfaces.User.IRepository;
 using Facebook.Domain.Chat;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Repositories.User;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using System;

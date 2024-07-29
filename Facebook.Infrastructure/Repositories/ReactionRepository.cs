@@ -2,10 +2,9 @@
 using Facebook.Application.Common.Interfaces.Reaction.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Migrations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Facebook.Infrastructure.Repositories.Reaction;
+namespace Facebook.Infrastructure.Repositories;
 
 public class ReactionRepository(FacebookDbContext context)
     : Repository<ReactionEntity>(context), IReactionRepository

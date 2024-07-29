@@ -2,10 +2,9 @@
 using Facebook.Application.Common.Interfaces.Comment.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
-using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
-namespace Facebook.Infrastructure.Repositories.Comment;
+namespace Facebook.Infrastructure.Repositories;
 
 public class CommentRepository(FacebookDbContext context) : Repository<CommentEntity>(context), ICommentRepository
 {

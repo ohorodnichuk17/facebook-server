@@ -15,15 +15,7 @@ using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Authentication;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Repositories.Admin;
 using Facebook.Infrastructure.Repositories.Chat;
-using Facebook.Infrastructure.Repositories.Comment;
-using Facebook.Infrastructure.Repositories.Feeling;
-using Facebook.Infrastructure.Repositories.Like;
-using Facebook.Infrastructure.Repositories.Post;
-using Facebook.Infrastructure.Repositories.Reaction;
-using Facebook.Infrastructure.Repositories.Story;
-using Facebook.Infrastructure.Repositories.User;
 using Facebook.Infrastructure.Services.Admin;
 using Facebook.Infrastructure.Services.Common;
 using Facebook.Infrastructure.Services.User;
@@ -35,6 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Facebook.Infrastructure.Repositories;
 
 
 namespace Facebook.Infrastructure;

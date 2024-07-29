@@ -4,7 +4,7 @@ using Facebook.Domain.Story;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Facebook.Infrastructure.Repositories.Story;
+namespace Facebook.Infrastructure.Repositories;
 
 public class StoryRepository(FacebookDbContext context) : Repository<StoryEntity>(context), IStoryRepository
 {

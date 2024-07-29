@@ -5,7 +5,7 @@ using Facebook.Infrastructure.Common.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Facebook.Infrastructure.Repositories.Post;
+namespace Facebook.Infrastructure.Repositories;
 
 public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(context), IPostRepository
 {

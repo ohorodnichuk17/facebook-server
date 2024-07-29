@@ -1,19 +1,10 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.Like.IRepository;
-using Facebook.Application.Common.Interfaces.Post.IRepository;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
-using Facebook.Infrastructure.Migrations;
-using LanguageExt;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Facebook.Infrastructure.Repositories.Like;
+namespace Facebook.Infrastructure.Repositories;
 
 public class LikeRepository(FacebookDbContext context) : Repository<LikeEntity>(context), ILikeRepository
 {

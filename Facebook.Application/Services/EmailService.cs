@@ -1,6 +1,8 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
 using System.Net;
+using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
 
 namespace Facebook.Application.Services;
 

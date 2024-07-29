@@ -29,10 +29,10 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
 
         RuleFor(r => r.Visibility)
             .NotEmpty().WithMessage("Limited post display is required")
-            .When(v => v.Visibility == ContentVisibility.Public
-            || v.Visibility == ContentVisibility.FriendsOnly
-            || v.Visibility == ContentVisibility.Private 
-            || v.Visibility == ContentVisibility.FriendsExcept);
+            .Must(v => v == ContentVisibility.Public
+            || v == ContentVisibility.FriendsOnly
+            || v == ContentVisibility.Private 
+            || v == ContentVisibility.FriendsExcept);
 
     }
 }

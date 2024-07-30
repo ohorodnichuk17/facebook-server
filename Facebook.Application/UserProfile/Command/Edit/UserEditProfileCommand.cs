@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Facebook.Domain.User;
+using Facebook.Application.UserProfile.Common;
 using MediatR;
 
 namespace Facebook.Application.UserProfile.Command.Edit;
@@ -15,4 +15,4 @@ public record UserEditProfileCommand(
     bool? isBlocked,
     string? Country,
     string? Region
-) : IRequest<ErrorOr<UserProfileEntity>>;
+) : IRequest<ErrorOr<EditProfileResult>>;

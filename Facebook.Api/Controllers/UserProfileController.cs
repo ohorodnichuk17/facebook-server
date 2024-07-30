@@ -64,7 +64,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
         var deleteResult = await mediatr.Send(command);
 
         return deleteResult.Match(
-            deleteRes => Ok(),
+            deleteRes => Ok(deleteResult.Value),
             errors => Problem(errors));
     }
 

@@ -1,8 +1,11 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.Authentication;
 using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
+using Facebook.Application.UserProfile.Common;
+using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
-using Facebook.Domain.User;
+using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +14,13 @@ namespace Facebook.Application.UserProfile.Command.Edit;
 public class UserEditProfileCommandHandler(
     IUnitOfWork unitOfWork,
     ILogger<UserEditProfileCommandHandler> logger,
+    IJwtGenerator jwtGenerator,
+    IMapper mapper,
     IImageStorageService imageStorageService)
     :
-        IRequestHandler<UserEditProfileCommand, ErrorOr<UserProfileEntity>>
+        IRequestHandler<UserEditProfileCommand, ErrorOr<EditProfileResult>>
 {
-    public async Task<ErrorOr<UserProfileEntity>> Handle(UserEditProfileCommand request,
+    public async Task<ErrorOr<EditProfileResult>> Handle(UserEditProfileCommand request,
         CancellationToken cancellationToken)
     {
         try
@@ -72,7 +77,13 @@ public class UserEditProfileCommandHandler(
 
             logger.LogInformation("User update profile process completed successfully");
 
-            return editprofileResult;
+            var token = await jwtGenerator.GenerateJwtTokenAsync(user, Roles.User);
+
+            var userProfileValue = editprofileResult.Value;
+
+            var result = mapper.Map<EditProfileResult>((userProfileValue, token));
+
+            return result;
         }
         catch (Exception ex)
         {

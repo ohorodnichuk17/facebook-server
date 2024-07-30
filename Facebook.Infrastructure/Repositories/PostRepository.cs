@@ -2,7 +2,9 @@ using ErrorOr;
 using Facebook.Application.Common.Interfaces.IRepository.Post;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
+using LanguageExt;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories;
@@ -28,7 +30,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
             return Error.Failure(ex.Message);
         }
     }
-    public async Task<ErrorOr<Unit>> UpdatePostAsync(PostEntity post)
+    public async Task<ErrorOr<MediatR.Unit>> UpdatePostAsync(PostEntity post)
     {
         try
         {
@@ -49,7 +51,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
             context.Posts.Update(existingPost);
             await context.SaveChangesAsync();
 
-            return Unit.Value;
+            return MediatR.Unit.Value;
         }
         catch (Exception ex)
         {
@@ -90,6 +92,73 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 .Include(p => p.User)
                 .Where(p => p.Tags.Contains(tag))
                 .ToListAsync();
+
+            return posts;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<IEnumerable<PostEntity>>> GetFriendsPostsAsync(Guid userId)
+    {
+        try
+        {
+            var user = await context.Users.FindAsync(userId);
+            var posts = new List<PostEntity>();
+
+            if (user == null)
+            {
+                return Error.NotFound();
+            }
+
+            var f = await context.FriendRequests
+                .Where(uf => uf.ReceiverId == user.Id && uf.IsAccepted || uf.SenderId == user.Id && uf.IsAccepted)
+                .Select(uf => uf.Id)
+                .ToListAsync();
+
+            if (f == null)
+            {
+                return Error.NotFound();
+            }
+
+            foreach (var item in f)
+            {
+                var friendIds = await context.FriendRequests.FindAsync(item);
+                if (friendIds != null)
+                {
+                    if (friendIds.ReceiverId == userId)
+                    {
+                        var post = await context.Posts
+                            .Include(p => p.Action)
+                            .Include(p => p.SubAction)
+                            .Include(p => p.Feeling)
+                            .Include(p => p.Images)
+                            .Include(p => p.User)
+                            .Where(p => p.UserId == friendIds.SenderId)
+                            .FirstAsync();
+                        posts.Add(post);
+                    }
+                    else if(friendIds.SenderId == userId)
+                    {
+                        var post = await context.Posts
+                            .Include(p => p.Action)
+                            .Include(p => p.SubAction)
+                            .Include(p => p.Feeling)
+                            .Include(p => p.Images)
+                            .Include(p => p.User)
+                            .Where(p => p.UserId == friendIds.ReceiverId)
+                            .FirstAsync();
+                        posts.Add(post);
+                    }
+                }
+            }
+
+            if (posts == null)
+            {
+                return Error.NotFound();
+            }
 
             return posts;
         }

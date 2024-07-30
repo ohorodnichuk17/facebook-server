@@ -3,6 +3,7 @@ using Facebook.Application.Post.Command.Delete;
 using Facebook.Application.Post.Query.GetAll;
 using Facebook.Application.Post.Query.GetById;
 using Facebook.Application.Post.Query.GetCommentByPostId;
+using Facebook.Application.Post.Query.GetFriendsPosts;
 using Facebook.Application.Post.Query.GetLikeByPostId;
 using Facebook.Application.Post.Query.GetPostAccess;
 using Facebook.Application.Post.Query.GetReactionByPostId;
@@ -14,6 +15,7 @@ using Facebook.Domain.TypeExtensions;
 using Mapster;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,6 +23,7 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/post")]
 [ApiController]
+[AllowAnonymous]
 public class PostController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
 {
     [HttpPost("create")]
@@ -62,7 +65,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }
-    }   
+    }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -224,4 +227,21 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
         }
     }
 
+    [HttpGet("getFriendsPosts/{userId}")]
+    public async Task<IActionResult> GetFriendsPosts(Guid userId)
+    {
+        try
+        {
+            var query = new GetFriendsPostsQuery(userId);
+            var posts = await mediatr.Send(query);
+
+            var mappedPosts = posts.Value.Adapt<List<PostEntity>>();
+
+            return Ok(mappedPosts);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching posts.");
+        }
+    }
 }

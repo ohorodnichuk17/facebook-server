@@ -1,5 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IRepository.Post;
+using Facebook.Domain.Constants.ContentVisibility;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 using LanguageExt;
@@ -106,59 +107,37 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
         try
         {
             var user = await context.Users.FindAsync(userId);
-            var posts = new List<PostEntity>();
 
             if (user == null)
             {
                 return Error.NotFound();
             }
 
-            var f = await context.FriendRequests
-                .Where(uf => uf.ReceiverId == user.Id && uf.IsAccepted || uf.SenderId == user.Id && uf.IsAccepted)
-                .Select(uf => uf.Id)
+            var friendIds = await context.FriendRequests
+                .Where(uf => (uf.ReceiverId == user.Id || uf.SenderId == user.Id) && uf.IsAccepted)
+                .Select(uf => uf.ReceiverId == user.Id ? uf.SenderId : uf.ReceiverId)
                 .ToListAsync();
 
-            if (f == null)
+            if (friendIds == null || friendIds.Count == 0)
             {
                 return Error.NotFound();
             }
 
-            foreach (var item in f)
-            {
-                var friendIds = await context.FriendRequests.FindAsync(item);
-                if (friendIds != null)
-                {
-                    if (friendIds.ReceiverId == userId)
-                    {
-                        var post = await context.Posts
-                            .Include(p => p.Action)
-                            .Include(p => p.SubAction)
-                            .Include(p => p.Feeling)
-                            .Include(p => p.Images)
-                            .Include(p => p.User)
-                            .Where(p => p.UserId == friendIds.SenderId)
-                            .FirstAsync();
-                        posts.Add(post);
-                    }
-                    else if(friendIds.SenderId == userId)
-                    {
-                        var post = await context.Posts
-                            .Include(p => p.Action)
-                            .Include(p => p.SubAction)
-                            .Include(p => p.Feeling)
-                            .Include(p => p.Images)
-                            .Include(p => p.User)
-                            .Where(p => p.UserId == friendIds.ReceiverId)
-                            .FirstAsync();
-                        posts.Add(post);
-                    }
-                }
-            }
+            var posts = await context.Posts
+                .Include(p => p.Action)
+                .Include(p => p.SubAction)
+                .Include(p => p.Feeling)
+                .Include(p => p.Images)
+                .Include(p => p.User)
+                .Where(p => friendIds.Contains(p.UserId) && p.Visibility != ContentVisibility.Private)
+                .ToListAsync();
 
-            if (posts == null)
+            if (!posts.Any())
             {
                 return Error.NotFound();
             }
+
+            posts = posts.Where(post => post.ExcludedFriends == null || !post.ExcludedFriends.Contains(user.Id)).ToList();
 
             return posts;
         }
@@ -167,4 +146,5 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
             return Error.Failure(ex.Message);
         }
     }
+
 }

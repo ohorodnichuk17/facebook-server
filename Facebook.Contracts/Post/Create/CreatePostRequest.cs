@@ -26,6 +26,7 @@ public record CreatePostRequest
     
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public required string Visibility { get; init; }
+    public List<Guid>? ExcludedFriends { get; init; }
 
     public bool? IsArchive { get; init; } = false;
     

@@ -12,10 +12,8 @@ using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using Facebook.Domain.Post;
-using Microsoft.AspNetCore.Authorization;
+using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
 
@@ -30,8 +28,8 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
         var addResult = await mediatr.Send(command);
 
         return addResult.Match(
-        success => Ok(success),
-        errors => Problem(errors));
+        success => Ok(addResult.Value),
+        Problem);
     }
 
     [HttpPost("add-reply")]

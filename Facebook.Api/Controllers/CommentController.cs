@@ -82,10 +82,7 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var comment = res.Value;
-                if (comment == null)
-                {
-                    return NotFound();
-                }
+                
                 return Ok(comment);
             }
             else

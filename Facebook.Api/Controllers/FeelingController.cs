@@ -19,11 +19,6 @@ public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration c
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync(AddFeelingRequest request)
     {
-        if (request == null)
-        {
-            return BadRequest("Request cannot be null.");
-        }
-
         try
         {
             var command = mapper.Map<AddFeelingCommand>(request);
@@ -61,10 +56,6 @@ public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration c
             if (res.IsSuccess())
             {
                 var f = res.Value;
-                if (f == null)
-                {
-                    return NotFound();
-                }
                 return Ok(f);
             }
             else

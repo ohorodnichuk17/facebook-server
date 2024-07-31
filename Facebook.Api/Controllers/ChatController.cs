@@ -25,10 +25,6 @@ public class ChatController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var chats = res.Value;
-                if (chats == null)
-                {
-                    return NotFound();
-                }
 
                 var options = new JsonSerializerOptions
                 {
@@ -40,10 +36,7 @@ public class ChatController(ISender mediatr, IMapper mapper) : ApiController
 
                 return Ok(json);
             }
-            else
-            {
                 return StatusCode(500, res.IsError);
-            }
         }
         catch (Exception ex)
         {

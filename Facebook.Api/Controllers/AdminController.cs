@@ -6,14 +6,20 @@ using Facebook.Application.Admin.Query.GetAllUsers;
 using Facebook.Application.Admin.Query.GetUserByEmail;
 using Facebook.Application.Admin.Query.GetUserById;
 using Facebook.Application.Comment.Command.Delete;
+using Facebook.Application.Comment.Query.GetAll;
 using Facebook.Application.Post.Command.Delete;
+using Facebook.Application.Post.Query.GetAll;
 using Facebook.Application.Story.Command.Delete;
+using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Contracts.Admin.Base;
 using Facebook.Contracts.Admin.BlockAndUnblockUser;
 using Facebook.Contracts.Admin.GetUserByEmail;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Constants.Roles;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -158,5 +164,58 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
         return result.Match(
             success => Ok(),
             errors => Problem(errors));
+    }
+    
+    [HttpGet("get-all-posts")]
+    public async Task<IActionResult> GetAllPosts()
+    {
+        try
+        {
+            var query = new GetAllPostsQuery();
+            var posts = await mediatr.Send(query);
+
+            var mappedPosts = posts.Value.Adapt<List<PostEntity>>();
+
+            return Ok(mappedPosts);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching posts.");
+        }
+    }
+    
+    [HttpGet("get-all-stories")]
+    public async Task<IActionResult> GetAllStories()
+    {
+        try
+        {
+            var query = new GetAllStoriesQuery();
+            var stories = await mediatr.Send(query);
+
+            var mappedStories = stories.Value.Adapt<List<StoryEntity>>();
+
+            return Ok(mappedStories);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching stories.");
+        }
+    }
+    
+    
+    [HttpGet("get-all-comments")]
+    public async Task<IActionResult> GetAllComments()
+    {
+        try
+        {
+            var query = new GetAllCommentsQuery();
+            var comment = await mediatr.Send(query);
+
+            return Ok(comment.Value);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching comments.");
+        }
     }
 }

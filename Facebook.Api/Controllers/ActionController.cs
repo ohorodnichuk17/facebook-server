@@ -19,11 +19,6 @@ public class ActionController(ISender mediatr, IMapper mapper) : ApiController
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync(AddActionRequest request)
     {
-        if (request == null)
-        {
-            return BadRequest("Request cannot be null.");
-        }
-
         try
         {
             var command = mapper.Map<AddActionCommand>(request);
@@ -61,16 +56,10 @@ public class ActionController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var action = res.Value;
-                if (action == null)
-                {
-                    return NotFound();
-                }
+                
                 return Ok(action);
             }
-            else
-            {
                 return StatusCode(500, res.IsError);
-            }
         }
         catch (Exception ex)
         {

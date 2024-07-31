@@ -12,9 +12,7 @@ public class FriendsMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<FriendRequest, AcceptFriendRequestCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendId, src => src.FriendId);
+        config.NewConfig<FriendRequest, AcceptFriendRequestCommand>();
 
         config.NewConfig<(FriendRequest request, string BaseUrl), SendFriendRequestCommand>()
             .Map(dest => dest.UserId, src => src.request.UserId)
@@ -25,9 +23,7 @@ public class FriendsMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.FriendRequestId, src => src.FriendId);
 
-        config.NewConfig<FriendRequest, RemoveFriendCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.FriendId, src => src.FriendId);
+        config.NewConfig<FriendRequest, RemoveFriendCommand>();
 
         config.NewConfig<GetAllFriendRequestsRequest, GetAllFriendRequestsQuery>();
     }

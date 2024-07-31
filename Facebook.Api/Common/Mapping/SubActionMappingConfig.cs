@@ -11,9 +11,7 @@ public class SubActionMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AddSubActionRequest, AddSubActionCommand>()
-           .Map(dest => dest.Name, src => src.Name)
-           .Map(dest => dest.ActionId, src => src.ActionId);
+        config.NewConfig<AddSubActionRequest, AddSubActionCommand>();
 
         config.NewConfig<DeleteRequest, DeleteSubActionCommand>()
             .Map(dest => dest.Id, src => src.Id);

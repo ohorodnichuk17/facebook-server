@@ -15,9 +15,7 @@ public class CommentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AddCommentRequest, AddCommentCommand>()
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.PostId, src => src.PostId);
+        config.NewConfig<AddCommentRequest, AddCommentCommand>();
 
         config.NewConfig<DeleteRequest, DeleteCommentCommand>()
             .Map(dest => dest.Id, src => src.Id);
@@ -25,13 +23,8 @@ public class CommentMappingConfig : IRegister
         config.NewConfig<AddCommentCommand, CommentEntity>()
             .Map(dest => dest.CreatedAt, src => DateTime.Now);
 
-        config.NewConfig<EditCommentRequest, EditCommentCommand>()
-            .Map(dest => dest.Message, src => src.Message)
-            .Map(dest => dest.Id, src => src.Id);
+        config.NewConfig<EditCommentRequest, EditCommentCommand>();
 
-        config.NewConfig<AddReplyCommentRequest, AddReplyCommentCommand>()
-            .Map(dest => dest.PostId, src => src.PostId)
-            .Map(dest => dest.UserId, src => src.UserId)
-            .Map(dest => dest.ParentId, src => src.ParentId);
+        config.NewConfig<AddReplyCommentRequest, AddReplyCommentCommand>();
     }
 }

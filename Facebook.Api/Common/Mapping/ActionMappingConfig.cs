@@ -11,13 +11,10 @@ public class ActionMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AddActionRequest, AddActionCommand>()
-           .Map(dest => dest.Name, src => src.Name)
-           .Map(dest => dest.Emoji, src => src.Emoji);
-
-        config.NewConfig<DeleteRequest, DeleteActionCommand>()
-            .Map(dest => dest.Id, src => src.Id);
+        config.NewConfig<AddActionRequest, AddActionCommand>();
 
         config.NewConfig<AddActionCommand, ActionEntity>();
+
+        config.NewConfig<DeleteRequest, DeleteActionCommand>();
     }
 }

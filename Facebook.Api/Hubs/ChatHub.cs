@@ -36,51 +36,60 @@ public class ChatHub : Hub
             chat = new ChatEntity
             {
                 Id = Guid.NewGuid(),
-                Name = toUser.Value.Email,
+                Name = toUser.Value?.Email ?? "Unknown",
                 ChatUsers = new List<ChatUserEntity>
                 {
                     new ChatUserEntity { UserId = fromUser.Value.Id },
-                    new ChatUserEntity { UserId = toUser.Value.Id }
+                    new ChatUserEntity { UserId = toUser.Value?.Id ?? Guid.Empty }
                 }
             };
             await _unitOfWork.Chat.CreateAsync(chat.Value);
-            chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value.Id, toUser.Value.Id);
+            chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value?.Id 
+                                                                ?? Guid.Empty, toUser.Value?.Id ?? Guid.Empty);
         }
 
         var message = new MessageEntity
         {
             Id = Guid.NewGuid(),
             Content = messageContent,
-            UserId = fromUser.Value.Id,
-            ChatId = chat.Value.Id,
+            UserId = fromUser.Value?.Id ?? Guid.Empty,
+            ChatId = chat.Value?.Id ?? Guid.Empty,
             CreatedAt = DateTime.UtcNow
         };
 
         await _unitOfWork.Message.CreateAsync(message);
 
-        await Clients.Group(chat.Value.Id.ToString()).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
+        await Clients.Group(chat.Value?.Id.ToString() ?? string.Empty).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
     }
 
     public override async Task OnConnectedAsync()
     {
-        var email = Context.GetHttpContext().Request.Query["email"];
-        var user = await _userRepository.GetByEmailAsync(email.ToString());
-
-        if (!user.IsError)
+        var httpContext = Context.GetHttpContext();
+        if (httpContext != null)
         {
-            var chatsResult = await _unitOfWork.Chat.GetChatsByUserIdAsync(user.Value.Id);
-            if (!chatsResult.IsError)
+            var email = httpContext.Request.Query["email"].ToString();
+            if (!string.IsNullOrEmpty(email))
             {
-                foreach (var chat in chatsResult.Value)
-                {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
+                var user = await _userRepository.GetByEmailAsync(email);
 
-                    var messages = await _unitOfWork.Message.GetMessagesByChatIdAsync(chat.Id);
-                    await Clients.Caller.SendAsync("LoadMessages", chat.Id.ToString(), messages);
+                if (!user.IsError)
+                {
+                    var chatsResult = await _unitOfWork.Chat.GetChatsByUserIdAsync(user.Value.Id);
+                    if (!chatsResult.IsError)
+                    {
+                        foreach (var chat in chatsResult.Value)
+                        {
+                            await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
+
+                            var messages = await _unitOfWork.Message.GetMessagesByChatIdAsync(chat.Id);
+                            await Clients.Caller.SendAsync("LoadMessages", chat.Id.ToString(), messages);
+                        }
+                    }
                 }
             }
         }
 
         await base.OnConnectedAsync();
     }
+
 }

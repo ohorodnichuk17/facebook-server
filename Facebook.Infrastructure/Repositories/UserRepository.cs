@@ -272,7 +272,7 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
 
             if (friendRequest == null)
             {
-                return Error.Failure("Friend request not found");
+                return Error.NotFound("Friend request not found");
             }
 
             if (friendRequest.IsAccepted)

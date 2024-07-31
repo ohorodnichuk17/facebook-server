@@ -31,15 +31,12 @@ public class FriendsController(
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
     {
-        var result = await mediatr.Send(mapper.Map<AcceptFriendRequestCommand>(request));
+        var command = mapper.Map<AcceptFriendRequestCommand>(request);
+        var result = await mediatr.Send(command);
 
         return result.Match(
            success => Ok(success),
-           error =>
-           {
-               Console.Error.WriteLine($"Error in AcceptFriendRequest: {error}");
-               return Problem(error.First().Description);
-           });
+           Problem);
     }
 
     [HttpPost("send-friend-request")]

@@ -4,6 +4,5 @@ using MediatR;
 namespace Facebook.Application.User.Friends.Command.AcceptFriendRequest;
 
 public record AcceptFriendRequestCommand(
-    Guid UserId,
     Guid FriendId
 ) : IRequest<ErrorOr<Unit>>;

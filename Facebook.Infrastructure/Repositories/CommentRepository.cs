@@ -8,20 +8,14 @@ namespace Facebook.Infrastructure.Repositories;
 
 public class CommentRepository(FacebookDbContext context) : Repository<CommentEntity>(context), ICommentRepository
 {
-
     public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId)
     {
-        var comment = await context.Comments
+        var comments = await context.Comments
             .Include(c => c.UserEntity)
             .Where(comment => comment.PostId == postId)
             .ToListAsync();
 
-        if (!comment.Any())
-        {
-            return Error.NotFound();
-        }
-
-        return comment;
+        return comments ?? new List<CommentEntity>();
     }
 
     public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByUserIdAsync(Guid userId)

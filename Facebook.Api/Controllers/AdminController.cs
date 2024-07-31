@@ -28,7 +28,7 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
     : ApiController
 {
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteRequest request)
+    public async Task<IActionResult> DeleteProfileAsync([FromBody] DeleteRequest request)
     {
         var command = mapper.Map<DeleteUserCommand>(request);
         var deleteResult = await mediatr.Send(command);

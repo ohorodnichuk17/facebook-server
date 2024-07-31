@@ -78,10 +78,6 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             if (postResult.IsSuccess())
             {
                 var post = postResult.Value;
-                if (post == null)
-                {
-                    return NotFound();
-                }
                 return Ok(post);
             }
             else
@@ -106,10 +102,6 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
             if (postResult.IsSuccess())
             {
                 var post = postResult.Value;
-                if (post == null)
-                {
-                    return NotFound();
-                }
                 return Ok(post);
             }
             else
@@ -202,10 +194,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
                 var post = postResult.Value;
                 return Ok(post);
             }
-            else
-            {
                 return StatusCode(500, postResult.IsError);
-            }
         }
         catch (Exception ex)
         {

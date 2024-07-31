@@ -18,7 +18,7 @@ namespace Facebook.Server.Controllers;
 public class StoryController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
 {
     [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync([FromForm] CreateStoryRequest request)
+    public async Task<IActionResult> CreateAsync([FromForm] CreateStoryRequest? request)
     {
         if (request == null)
         {
@@ -88,16 +88,9 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
             if (storyResult.IsSuccess())
             {
                 var story = storyResult.Value;
-                if (story == null)
-                {
-                    return NotFound();
-                }
                 return Ok(story);
             }
-            else
-            {
                 return StatusCode(500, storyResult.IsError);
-            }
         }
         catch (Exception ex)
         {

@@ -102,10 +102,6 @@ public class FriendsController(
             if (result.IsSuccess())
             {
                 var friend = result.Value;
-                if (friend == null)
-                {
-                    return NotFound();
-                }
 
                 var options = new JsonSerializerOptions
                 {

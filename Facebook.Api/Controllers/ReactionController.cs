@@ -48,10 +48,6 @@ public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var reaction = res.Value;
-                if (reaction == null)
-                {
-                    return NotFound();
-                }
                 return Ok(reaction);
             }
             else

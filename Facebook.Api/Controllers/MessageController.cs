@@ -25,10 +25,6 @@ public class MessageController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var messages = res.Value;
-                if (messages == null)
-                {
-                    return NotFound();
-                }
 
                 return Ok(messages);
             }

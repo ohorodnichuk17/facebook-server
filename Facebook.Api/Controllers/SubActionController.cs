@@ -19,11 +19,6 @@ public class SubActionController(ISender mediatr, IMapper mapper) : ApiControlle
     [HttpPost("add")]
     public async Task<IActionResult> AddAsync(AddSubActionRequest request)
     {
-        if (request == null)
-        {
-            return BadRequest("Request cannot be null.");
-        }
-
         try
         {
             var command = mapper.Map<AddSubActionCommand>(request);
@@ -67,10 +62,7 @@ public class SubActionController(ISender mediatr, IMapper mapper) : ApiControlle
                 }
                 return Ok(subAction);
             }
-            else
-            {
                 return StatusCode(500, res.IsError);
-            }
         }
         catch (Exception ex)
         {

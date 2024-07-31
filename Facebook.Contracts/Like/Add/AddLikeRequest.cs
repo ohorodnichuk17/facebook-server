@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.Like.Create;
+namespace Facebook.Contracts.Like.Add;
 
 public class AddLikeRequest
 {

@@ -3,7 +3,7 @@ using Facebook.Application.Like.Command.Delete;
 using Facebook.Application.Like.Query.GetAll;
 using Facebook.Application.Like.Query.GetById;
 using Facebook.Contracts.DeleteRequest;
-using Facebook.Contracts.Like.Create;
+using Facebook.Contracts.Like.Add;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;

@@ -6,6 +6,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Facebook.Server.Infrastructure.Logging;
 
 namespace Facebook.Server;
 

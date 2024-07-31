@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.Friends.SearchUsersByFirstAndLastNamesRequest;
+namespace Facebook.Contracts.Friends;
 
 public record SearchUsersByFirstAndLastNamesRequest
 {

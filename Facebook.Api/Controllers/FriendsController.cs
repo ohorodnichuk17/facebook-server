@@ -9,7 +9,6 @@ using Facebook.Application.User.Friends.Query.GetById;
 using Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends;
-using Facebook.Contracts.Friends.SearchUsersByFirstAndLastNamesRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;

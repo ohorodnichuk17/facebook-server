@@ -1,3 +1,4 @@
+using Facebook.Server.Infrastructure.Logging;
 using NLog;
 using ILogger =  NLog.ILogger;
 

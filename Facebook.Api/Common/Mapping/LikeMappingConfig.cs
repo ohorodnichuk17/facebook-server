@@ -1,7 +1,7 @@
 ﻿using Facebook.Application.Like.Command.Add;
 using Facebook.Application.Like.Command.Delete;
 using Facebook.Contracts.DeleteRequest;
-using Facebook.Contracts.Like.Create;
+using Facebook.Contracts.Like.Add;
 using Mapster;
 
 namespace Facebook.Server.Common.Mapping;

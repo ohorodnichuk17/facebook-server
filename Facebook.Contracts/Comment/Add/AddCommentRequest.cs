@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Facebook.Contracts.Comment.Create;
+namespace Facebook.Contracts.Comment.Add;
 
 public class AddCommentRequest
 {

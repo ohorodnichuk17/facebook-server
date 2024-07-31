@@ -1,3 +1,4 @@
+using Facebook.Server.Infrastructure.Logging;
 using Facebook.Server.Infrastructure.NLog;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;

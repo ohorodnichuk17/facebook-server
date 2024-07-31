@@ -5,7 +5,6 @@ using Facebook.Application.Comment.Command.Edit;
 using Facebook.Application.Comment.Query.GetAll;
 using Facebook.Application.Post.Query.GetCommentByPostId;
 using Facebook.Contracts.Comment.AddReplyComment;
-using Facebook.Contracts.Comment.Create;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.TypeExtensions;
@@ -14,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Facebook.Contracts.Comment.Add;
 
 namespace Facebook.Server.Controllers;
 

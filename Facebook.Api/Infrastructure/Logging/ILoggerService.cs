@@ -1,4 +1,4 @@
-namespace Facebook.Server.Infrastructure.NLog;
+namespace Facebook.Server.Infrastructure.Logging;
 
 public interface ILoggerService
 {

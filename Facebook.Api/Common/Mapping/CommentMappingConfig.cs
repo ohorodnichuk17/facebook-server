@@ -2,8 +2,8 @@
 using Facebook.Application.Comment.Command.AddReplyComment;
 using Facebook.Application.Comment.Command.Delete;
 using Facebook.Application.Comment.Command.Edit;
+using Facebook.Contracts.Comment.Add;
 using Facebook.Contracts.Comment.AddReplyComment;
-using Facebook.Contracts.Comment.Create;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Post;

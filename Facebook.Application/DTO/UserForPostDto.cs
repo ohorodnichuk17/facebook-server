@@ -8,4 +8,5 @@ public class UserForPostDto
     public DateTime Birthday { get; set; }
     public string? Avatar { get; set; }
     public string Gender { get; set; }
+    public bool IsOnline { get; set; }
 }

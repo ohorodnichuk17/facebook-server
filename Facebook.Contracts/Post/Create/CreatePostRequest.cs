@@ -22,14 +22,11 @@ public record CreatePostRequest
     public List<IFormFile>? Images { get; init; }
 
     [Required(ErrorMessage = "{PropertyName} must not be empty")]
-    public required Guid UserId { get; init; }
-    
-    [Required(ErrorMessage = "{PropertyName} must not be empty")]
     public required string Visibility { get; init; }
     public List<Guid>? ExcludedFriends { get; init; }
 
     public bool? IsArchive { get; init; } = false;
-    
+
     public Guid? FeelingId { get; init; }
     public Guid? ActionId { get; init; }
     public Guid? SubActionId { get; init; }

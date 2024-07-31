@@ -10,11 +10,13 @@ namespace Facebook.Application.Post.Command.Create;
 public class CreatePostCommandHandler(
         IUnitOfWork unitOfWork,
         IImageStorageService imageStorageService,
+        ICurrentUserService currentUserService,
         IMapper mapper) : IRequestHandler<CreatePostCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
+        var currentUserId = currentUserService.GetCurrentUserId();
+        var user = await unitOfWork.User.GetUserByIdAsync(currentUserId);
 
         if (user.IsError)
         {
@@ -24,6 +26,7 @@ public class CreatePostCommandHandler(
         var userResult = user.Value;
 
         var post = mapper.Map<PostEntity>(request);
+        post.UserId = new Guid(currentUserId);
 
         var postResult = await unitOfWork.Post.CreateAsync(post);
 

@@ -7,12 +7,9 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
 {
     public CreatePostCommandValidator()
     {
-        RuleFor(r => r.UserId)
-            .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
-
         RuleFor(r => r.Title)
             .MaximumLength(10).WithMessage("Title must not exceed 10 characters.");
-        
+
         RuleFor(r => r.Content)
             .MaximumLength(3000).WithMessage("Content must not exceed 3000 characters.");
 
@@ -31,8 +28,7 @@ public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
             .NotEmpty().WithMessage("Limited post display is required")
             .Must(v => v == ContentVisibility.Public
             || v == ContentVisibility.FriendsOnly
-            || v == ContentVisibility.Private 
+            || v == ContentVisibility.Private
             || v == ContentVisibility.FriendsExcept);
-
     }
 }

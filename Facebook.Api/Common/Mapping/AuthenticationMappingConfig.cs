@@ -6,6 +6,8 @@ using Facebook.Application.Authentication.Login;
 using Facebook.Application.Authentication.Register;
 using Facebook.Application.Authentication.ResendConfirmEmail;
 using Facebook.Application.Authentication.ResetPassword;
+using Facebook.Application.DTO;
+using Facebook.Application.DTO_s;
 using Facebook.Contracts.Authentication.ChangeEmail;
 using Facebook.Contracts.Authentication.Common.Response;
 using Facebook.Contracts.Authentication.ConfirmEmail;
@@ -52,5 +54,9 @@ public class AuthenticationMappingConfig : IRegister
         config.NewConfig<(ChangeEmailRequest changeEmailRequest, string BaseUrl), ChangeEmailCommand>()
             .Map(dest => dest.Email, src => src.changeEmailRequest.Email)
             .Map(dest => dest.BaseUrl, src => src.BaseUrl);
+
+        config.NewConfig<UserDto, UserDto>()
+            .Map(dest => dest.Posts, src => src.Posts.Adapt<List<PostDto>>())
+            .Map(dest => dest.Stories, src => src.Stories.Adapt<List<StoryDto>>());
     }
 }

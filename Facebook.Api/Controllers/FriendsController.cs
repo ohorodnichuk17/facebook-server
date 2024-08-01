@@ -10,6 +10,7 @@ using Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends;
 using Facebook.Domain.TypeExtensions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -130,29 +131,9 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
             return BadRequest(result.Errors);
         }
 
-        var users = result.Value;
+        var users = result.Value.Adapt<List<UserDto>>();
 
-        var response = users.Select(u => new UserDto
-        {
-            FirstName = u.FirstName,
-            LastName = u.LastName,
-            Avatar = u.Avatar,
-            Birthday = u.Birthday,
-            Gender = u.Gender,
-            Stories = u.Stories,
-            Posts = u.Posts,
-            IsProfilePublic = u.IsProfilePublic
-        }).ToList();
-
-        var options = new JsonSerializerOptions
-        {
-            ReferenceHandler = ReferenceHandler.Preserve,
-            WriteIndented = true
-        };
-
-        var json = JsonSerializer.Serialize(response, options);
-
-        return Ok(json);
+        return Ok(users);
     }
 
     [HttpGet("recommendations")]

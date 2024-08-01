@@ -28,13 +28,8 @@ public class AddReplyCommentCommandHandler(
             CreatedAt = DateTime.UtcNow
         };
 
-        var commentResult = await unitOfWork.Comment.CreateAsync(reply);
+        var result = await unitOfWork.Comment.SaveAsync(reply);
 
-        if (commentResult.IsError)
-        {
-            return commentResult.Errors;
-        }
-
-        return reply;
+        return result;
     }
 }

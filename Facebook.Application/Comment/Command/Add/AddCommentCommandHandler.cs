@@ -11,9 +11,9 @@ public class AddCommentCommandHandler(
     IUnitOfWork unitOfWork,
     IMapper mapper,
     ICurrentUserService currentUserService)
-    : IRequestHandler<AddCommentCommand, ErrorOr<Unit>>
+    : IRequestHandler<AddCommentCommand, ErrorOr<CommentEntity>>
 {
-    public async Task<ErrorOr<Unit>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<CommentEntity>> Handle(AddCommentCommand request, CancellationToken cancellationToken)
     {
         var currentUserId = currentUserService.GetCurrentUserId();
         var user = await unitOfWork.User.GetUserByIdAsync(currentUserId);

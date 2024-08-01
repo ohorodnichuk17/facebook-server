@@ -2,12 +2,27 @@
 using Facebook.Application.Common.Interfaces.IRepository.Comment;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories;
 
 public class CommentRepository(FacebookDbContext context) : Repository<CommentEntity>(context), ICommentRepository
 {
+    new public async Task<ErrorOr<CommentEntity>> SaveAsync(CommentEntity entity)
+    {
+        try
+        {
+            dbSet.Update(entity);
+            await context.SaveChangesAsync();
+
+            return dbSet.Include(c => c.UserEntity).Find(comment => comment.Id == entity.Id).FirstOrDefault() ?? entity;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
     public async Task<ErrorOr<IEnumerable<CommentEntity>>> GetCommentsByPostIdAsync(Guid postId)
     {
         var comments = await context.Comments

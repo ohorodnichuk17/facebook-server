@@ -1,4 +1,6 @@
 ﻿using ErrorOr;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using MediatR;
 
@@ -15,4 +17,6 @@ public interface IUserProfileRepository : IRepository<UserProfileEntity>
     Task<ErrorOr<Unit>> UnblockUserAsync(string userId);
     Task<ErrorOr<UserProfileEntity>> GetUserProfileByIdAsync(string userId);
     Task<ErrorOr<bool>> DeleteUserProfileAsync(string userId);
+    Task<ErrorOr<IEnumerable<PostEntity>>> GetPostsByUserIdAsync(Guid userId);
+    Task<ErrorOr<IEnumerable<StoryEntity>>> GetStoriesByUserIdAsync(Guid userId);
 }

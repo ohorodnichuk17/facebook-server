@@ -3,10 +3,15 @@ using Facebook.Application.UserProfile.Command.DeleteCoverPhoto;
 using Facebook.Application.UserProfile.Command.DeleteUser;
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
+using Facebook.Application.UserProfile.Query.GetPostsByUserId;
+using Facebook.Application.UserProfile.Query.GetStoriesByUserId;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.UserProfile.Delete;
 using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetById;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -89,5 +94,41 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
         return getRes.Match(
         getRes => Ok(getRes),
         errors => Problem(errors));
+    }
+
+    [HttpGet("getPostsBy/{userId}")]
+    public async Task<IActionResult> GetPostsByUserId(Guid userId)
+    {
+        try
+        {
+            var query = new GetPostsByUserIdQuery(userId);
+            var posts = await mediatr.Send(query);
+
+            var mappedPosts = posts.Value.Adapt<List<PostEntity>>();
+
+            return Ok(mappedPosts);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching posts.");
+        }
+    }
+
+    [HttpGet("getStoriesBy/{userId}")]
+    public async Task<IActionResult> GetStoriesByUserId(Guid userId)
+    {
+        try
+        {
+            var query = new GetStoriesByUserIdQuery(userId);
+            var stories = await mediatr.Send(query);
+
+            var mappedStories = stories.Value.Adapt<List<StoryEntity>>();
+
+            return Ok(mappedStories);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while fetching stories.");
+        }
     }
 }

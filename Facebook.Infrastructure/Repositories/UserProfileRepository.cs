@@ -1,5 +1,7 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IRepository.User;
+using Facebook.Domain.Post;
+using Facebook.Domain.Story;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using MediatR;
@@ -170,6 +172,58 @@ public class UserProfileRepository(
             await context.SaveChangesAsync();
 
             return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<IEnumerable<PostEntity>>> GetPostsByUserIdAsync(Guid userId)
+    {
+        try
+        {
+            var user = await context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return Error.NotFound();
+            }
+
+            var posts = await context.Posts
+                .Include(p => p.Action)
+                .Include(p => p.SubAction)
+                .Include(p => p.Feeling)
+                .Include(p => p.Images)
+                .Include(p => p.User)
+                .Where(p => p.UserId == user.Id)
+                .ToListAsync();
+
+            return posts;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<IEnumerable<StoryEntity>>> GetStoriesByUserIdAsync(Guid userId)
+    {
+        try
+        {
+            var user = await context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return Error.NotFound();
+            }
+
+            var stories = await context.Stories
+                .Include(p => p.User)
+                .Where(p => p.UserId == user.Id)
+                .ToListAsync();
+
+            return stories;
         }
         catch (Exception ex)
         {

@@ -10,11 +10,13 @@ namespace Facebook.Application.Story.Command.Create;
 public class CreateStoryCommandHandler(
     IUnitOfWork unitOfWork,
     IImageStorageService imageStorageService,
-    IMapper mapper) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
+    IMapper mapper,
+    ICurrentUserService currentUserService) : IRequestHandler<CreateStoryCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(CreateStoryCommand request, CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
+        var currentUserId = currentUserService.GetCurrentUserId();
+        var user = await unitOfWork.User.GetUserByIdAsync(currentUserId);
 
         if (user.IsError)
         {
@@ -24,6 +26,7 @@ public class CreateStoryCommandHandler(
         var userResult = user.Value;
 
         var story = mapper.Map<StoryEntity>(request);
+        story.UserId = new Guid(currentUserId);
 
         var storyResult = await unitOfWork.Story.CreateAsync(story);
 

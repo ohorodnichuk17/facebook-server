@@ -12,8 +12,7 @@ public class StoryMappingConfig : IRegister
     {
         config.NewConfig<(CreateStoryRequest request, byte[] Image), CreateStoryCommand>()
             .Map(dest => dest.Content, src => src.request.Content)
-            .Map(dest => dest.Image, src => src.Image)
-            .Map(dest => dest.UserId, src => src.request.UserId);
+            .Map(dest => dest.Image, src => src.Image);
 
         config.NewConfig<CreateStoryCommand, StoryEntity>()
             .Map(dest => dest.CreatedAt, src => DateTime.Now)

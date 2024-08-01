@@ -6,9 +6,6 @@ public class CreateStoryCommandValidator : AbstractValidator<CreateStoryCommand>
 {
     public CreateStoryCommandValidator()
     {
-        RuleFor(r => r.UserId)
-            .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
-        
         RuleFor(r => r.Content)
             .MaximumLength(1000).WithMessage("Content must not exceed 1000 characters.");
 
@@ -19,6 +16,6 @@ public class CreateStoryCommandValidator : AbstractValidator<CreateStoryCommand>
                 {
                     context.AddFailure("Image", "File size must not exceed 2MB");
                 }
-            }); 
+            });
     }
 }

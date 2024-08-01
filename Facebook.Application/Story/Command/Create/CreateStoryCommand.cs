@@ -5,6 +5,5 @@ namespace Facebook.Application.Story.Command.Create;
 
 public record CreateStoryCommand(
     string? Content,
-    byte[] Image,
-    Guid UserId
+    byte[] Image
     ) : IRequest<ErrorOr<Unit>>;

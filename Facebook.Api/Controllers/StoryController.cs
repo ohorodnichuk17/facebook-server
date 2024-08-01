@@ -25,7 +25,7 @@ public class StoryController(ISender mediatr, IMapper mapper) : ApiController
             return BadRequest("Request cannot be null.");
         }
 
-        byte[] image = null;
+        byte[] image = [];
         if (request.Image != null && request.Image.Length > 0)
         {
             using MemoryStream memoryStream = new();

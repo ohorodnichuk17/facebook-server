@@ -40,7 +40,7 @@ public class AuthenticationController(ISender mediatr,
     {
         var baseUrl = configuration.GetRequiredSection("HostSettings:ClientURL").Value;
 
-        byte[] image = null;
+        byte[] image = [];
         if (request.Avatar != null && request.Avatar.Length > 0)
         {
             using MemoryStream memoryStream = new();

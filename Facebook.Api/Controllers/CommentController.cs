@@ -14,8 +14,6 @@ using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
 
@@ -40,15 +38,9 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
         var command = mapper.Map<AddReplyCommentCommand>(request);
         var addResult = await mediatr.Send(command);
 
-        var options = new JsonSerializerOptions
-        {
-            ReferenceHandler = ReferenceHandler.Preserve,
-            WriteIndented = true
-        };
-
-        var json = JsonSerializer.Serialize(addResult, options);
-
-        return Ok();
+        return addResult.Match(
+            success => Ok(addResult.Value),
+            Problem);
     }
 
     [HttpPut("edit")]

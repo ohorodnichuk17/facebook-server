@@ -7,7 +7,6 @@ using Facebook.Contracts.Like.Add;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -60,7 +59,7 @@ public class LikeController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, res.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting like.");
         }
@@ -76,7 +75,7 @@ public class LikeController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(like.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching likes.");
         }

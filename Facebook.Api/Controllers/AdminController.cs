@@ -67,7 +67,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
             user => Ok(user),
             errors => Problem(errors));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting user.");
         }
@@ -83,7 +83,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
 
             return Ok(users.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching users.");
         }
@@ -178,7 +178,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
 
             return Ok(mappedPosts);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }
@@ -196,7 +196,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
 
             return Ok(mappedStories);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching stories.");
         }
@@ -213,7 +213,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
 
             return Ok(comment.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching comments.");
         }

@@ -5,8 +5,8 @@ using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
 
@@ -36,9 +36,9 @@ public class ChatController(ISender mediatr, IMapper mapper) : ApiController
 
                 return Ok(json);
             }
-                return StatusCode(500, res.IsError);
+            return StatusCode(500, res.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting messages.");
         }

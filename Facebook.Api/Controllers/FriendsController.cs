@@ -81,7 +81,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(friends.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching friends.");
         }
@@ -114,7 +114,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, result.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting friend.");
         }

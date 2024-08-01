@@ -4,6 +4,7 @@ using Facebook.Application.Comment.Command.Delete;
 using Facebook.Application.Comment.Command.Edit;
 using Facebook.Application.Comment.Query.GetAll;
 using Facebook.Application.Post.Query.GetCommentByPostId;
+using Facebook.Contracts.Comment.Add;
 using Facebook.Contracts.Comment.AddReplyComment;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
@@ -13,7 +14,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Facebook.Contracts.Comment.Add;
 
 namespace Facebook.Server.Controllers;
 
@@ -82,7 +82,7 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var comment = res.Value;
-                
+
                 return Ok(comment);
             }
             else
@@ -90,7 +90,7 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, res.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting comment.");
         }
@@ -106,7 +106,7 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(comment.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching comments.");
         }

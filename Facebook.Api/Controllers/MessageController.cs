@@ -33,7 +33,7 @@ public class MessageController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, res.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting messages.");
         }

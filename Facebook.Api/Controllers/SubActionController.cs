@@ -7,7 +7,6 @@ using Facebook.Contracts.SubAction;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -62,9 +61,9 @@ public class SubActionController(ISender mediatr, IMapper mapper) : ApiControlle
                 }
                 return Ok(subAction);
             }
-                return StatusCode(500, res.IsError);
+            return StatusCode(500, res.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting subAction.");
         }
@@ -80,7 +79,7 @@ public class SubActionController(ISender mediatr, IMapper mapper) : ApiControlle
 
             return Ok(subAction.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching subActions.");
         }

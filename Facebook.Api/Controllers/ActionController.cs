@@ -7,7 +7,6 @@ using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -56,12 +55,12 @@ public class ActionController(ISender mediatr, IMapper mapper) : ApiController
             if (res.IsSuccess())
             {
                 var action = res.Value;
-                
+
                 return Ok(action);
             }
-                return StatusCode(500, res.IsError);
+            return StatusCode(500, res.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting action.");
         }
@@ -77,7 +76,7 @@ public class ActionController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(action.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching actions.");
         }

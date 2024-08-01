@@ -71,7 +71,7 @@ public class StoryController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(mappedStories);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching stories.");
         }
@@ -92,7 +92,7 @@ public class StoryController(ISender mediatr, IMapper mapper) : ApiController
             }
             return StatusCode(500, storyResult.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting story.");
         }

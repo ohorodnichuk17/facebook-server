@@ -61,7 +61,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(mappedPosts);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }
@@ -85,7 +85,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, postResult.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting post.");
         }
@@ -109,7 +109,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
                 return StatusCode(500, postResult.IsError);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting post.");
         }
@@ -130,7 +130,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
             }
             return StatusCode(500, postResult.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting post.");
         }
@@ -151,7 +151,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
             }
             return StatusCode(500, postResult.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting post.");
         }
@@ -174,7 +174,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(mappedPosts);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }
@@ -196,7 +196,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
             }
             return StatusCode(500, postResult.IsError);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while getting post limited information.");
         }
@@ -214,7 +214,7 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
 
             return Ok(mappedPosts);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An error occurred while fetching posts.");
         }

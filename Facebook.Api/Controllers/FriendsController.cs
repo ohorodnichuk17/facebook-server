@@ -22,10 +22,7 @@ namespace Facebook.Server.Controllers;
 [Route("api/friends")]
 [ApiController]
 [AllowAnonymous]
-public class FriendsController(
-    ISender mediatr,
-    IMapper mapper,
-    IConfiguration configuration) : ApiController
+public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)

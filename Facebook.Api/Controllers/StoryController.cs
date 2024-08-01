@@ -15,7 +15,7 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/story")]
 [ApiController]
-public class StoryController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
+public class StoryController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync([FromForm] CreateStoryRequest? request)
@@ -90,7 +90,7 @@ public class StoryController(ISender mediatr, IMapper mapper, IConfiguration con
                 var story = storyResult.Value;
                 return Ok(story);
             }
-                return StatusCode(500, storyResult.IsError);
+            return StatusCode(500, storyResult.IsError);
         }
         catch (Exception ex)
         {

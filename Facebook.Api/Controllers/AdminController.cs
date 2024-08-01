@@ -30,7 +30,7 @@ namespace Facebook.Server.Controllers;
 [Route("api/admin")]
 [ApiController]
 [Authorize(Roles = Roles.Admin)]
-public class AdminController(ISender mediatr, IMapper mapper, IConfiguration configuration)
+public class AdminController(ISender mediatr, IMapper mapper)
     : ApiController
 {
     [HttpDelete("delete")]
@@ -165,7 +165,7 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
             success => Ok(),
             errors => Problem(errors));
     }
-    
+
     [HttpGet("get-all-posts")]
     public async Task<IActionResult> GetAllPosts()
     {
@@ -183,7 +183,7 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
             return StatusCode(500, "An error occurred while fetching posts.");
         }
     }
-    
+
     [HttpGet("get-all-stories")]
     public async Task<IActionResult> GetAllStories()
     {
@@ -201,8 +201,8 @@ public class AdminController(ISender mediatr, IMapper mapper, IConfiguration con
             return StatusCode(500, "An error occurred while fetching stories.");
         }
     }
-    
-    
+
+
     [HttpGet("get-all-comments")]
     public async Task<IActionResult> GetAllComments()
     {

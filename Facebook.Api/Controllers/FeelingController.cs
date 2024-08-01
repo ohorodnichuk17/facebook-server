@@ -13,7 +13,7 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/feeling")]
 [ApiController]
-public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration configuration) 
+public class FeelingController(ISender mediatr, IMapper mapper)
     : ApiController
 {
     [HttpPost("add")]
@@ -33,7 +33,7 @@ public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration c
             return Problem(ex.Message);
         }
     }
-    
+
     [HttpDelete("delete")]
     public async Task<IActionResult> DeleteAsync(DeleteRequest request)
     {
@@ -44,7 +44,7 @@ public class FeelingController(ISender mediatr, IMapper mapper, IConfiguration c
             success => Ok(success),
             error => Problem(error));
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {

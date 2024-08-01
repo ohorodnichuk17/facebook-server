@@ -24,7 +24,7 @@ namespace Facebook.Server.Controllers;
 [Route("api/post")]
 [ApiController]
 [AllowAnonymous]
-public class PostController(ISender mediatr, IMapper mapper, IConfiguration configuration) : ApiController
+public class PostController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync([FromForm] CreatePostRequest request)
@@ -128,7 +128,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
                 var post = postResult.Value;
                 return Ok(post);
             }
-                return StatusCode(500, postResult.IsError);
+            return StatusCode(500, postResult.IsError);
         }
         catch (Exception ex)
         {
@@ -149,7 +149,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
                 var post = postResult.Value;
                 return Ok(post);
             }
-                return StatusCode(500, postResult.IsError);
+            return StatusCode(500, postResult.IsError);
         }
         catch (Exception ex)
         {
@@ -194,7 +194,7 @@ public class PostController(ISender mediatr, IMapper mapper, IConfiguration conf
                 var post = postResult.Value;
                 return Ok(post);
             }
-                return StatusCode(500, postResult.IsError);
+            return StatusCode(500, postResult.IsError);
         }
         catch (Exception ex)
         {

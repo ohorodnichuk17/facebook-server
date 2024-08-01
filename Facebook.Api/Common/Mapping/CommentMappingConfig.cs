@@ -2,6 +2,7 @@
 using Facebook.Application.Comment.Command.AddReplyComment;
 using Facebook.Application.Comment.Command.Delete;
 using Facebook.Application.Comment.Command.Edit;
+using Facebook.Application.DTO;
 using Facebook.Contracts.Comment.Add;
 using Facebook.Contracts.Comment.AddReplyComment;
 using Facebook.Contracts.Comment.Edit;
@@ -26,5 +27,8 @@ public class CommentMappingConfig : IRegister
         config.NewConfig<EditCommentRequest, EditCommentCommand>();
 
         config.NewConfig<AddReplyCommentRequest, AddReplyCommentCommand>();
+
+        config.NewConfig<CommentEntity, CommentEntity>()
+            .Map(dest => dest.ChildComments, src => src.ChildComments.Adapt<List<CommentDto>>());
     }
 }

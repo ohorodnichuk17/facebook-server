@@ -8,7 +8,9 @@ using Facebook.Contracts.Comment.Add;
 using Facebook.Contracts.Comment.AddReplyComment;
 using Facebook.Contracts.Comment.Edit;
 using Facebook.Contracts.DeleteRequest;
+using Facebook.Domain.Post;
 using Facebook.Domain.TypeExtensions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -81,9 +83,9 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
 
             if (res.IsSuccess())
             {
-                var comment = res.Value;
+                var comments = res.Value.Adapt<List<CommentEntity>>();
 
-                return Ok(comment);
+                return Ok(comments);
             }
             else
             {

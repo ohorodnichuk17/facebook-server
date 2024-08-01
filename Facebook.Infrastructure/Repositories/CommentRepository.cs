@@ -12,6 +12,8 @@ public class CommentRepository(FacebookDbContext context) : Repository<CommentEn
     {
         var comments = await context.Comments
             .Include(c => c.UserEntity)
+            .Include(c => c.ChildComments)
+                .ThenInclude(cc => cc.UserEntity)
             .Where(comment => comment.PostId == postId)
             .ToListAsync();
 

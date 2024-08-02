@@ -10,6 +10,7 @@ using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.TypeExtensions;
 using Facebook.Domain.User;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Facebook.Application.Authentication.Register;
@@ -22,7 +23,8 @@ public class RegisterCommandHandler(
     ILogger<RegisterCommandHandler> logger,
     IJwtGenerator jwtGenerator,
     IImageStorageService imageStorageService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    UserManager<UserEntity> userManager)
     :
         IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
@@ -62,12 +64,19 @@ public class RegisterCommandHandler(
             var userResult = await adminRepository.CreateAsync(user, command.Password, role);
             var userProfileResult = await userProfileRepository.UserCreateProfileAsync(user.Id);
 
+
+            int indexOfAt = command.Email.IndexOf("@");
+
+            string userName = command.Email.Substring(0, indexOfAt);
+
+            await userManager.SetUserNameAsync(user, userName);
+
             if (userResult.IsError || userProfileResult.IsError)
             {
                 return userResult.Errors;
             }
 
-            if (command.Avatar != null)
+            if (command.Avatar != null && command.Avatar.Length > 0)
             {
                 var imageName = await imageStorageService.AddAvatarAsync(user, command.Avatar);
                 if (imageName == null)

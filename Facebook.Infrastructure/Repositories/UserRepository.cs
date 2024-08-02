@@ -426,4 +426,19 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
             return Error.Failure(ex.ToString());
         }
     }
+
+    public async Task<ErrorOr<FriendRequestEntity>> GetFriendRequestByFriendIdsAsync(string userId, string friendId)
+    {
+        var friendRequest = await context.FriendRequests
+        .Where(fr => (fr.SenderId.ToString() == userId && fr.ReceiverId.ToString() == friendId) ||
+                     (fr.ReceiverId.ToString() == userId && fr.SenderId.ToString() == friendId))
+        .FirstOrDefaultAsync();
+
+        if (friendRequest is null)
+        {
+            return Error.NotFound();
+        }
+
+        return friendRequest;
+    }
 }

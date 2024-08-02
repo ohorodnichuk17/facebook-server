@@ -7,6 +7,7 @@ using Facebook.Application.User.Friends.Query.GetAll;
 using Facebook.Application.User.Friends.Query.GetAllFriendRequests;
 using Facebook.Application.User.Friends.Query.GetById;
 using Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
+using Facebook.Application.User.Friends.Query.GetRelationshipsStatus;
 using Facebook.Application.User.Friends.Query.SearchByFirstAndLastNames;
 using Facebook.Contracts.Friends;
 using Facebook.Domain.TypeExtensions;
@@ -157,5 +158,17 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
         return result.Match(
            success => Ok(success),
            error => Problem(error));
+    }
+
+    [HttpGet("relationships-status")]
+    public async Task<IActionResult> GetAllFriendRequests([FromQuery] Guid friendId)
+    {
+
+        var query = new GetRelationshipsStatusQuery(friendId.ToString());
+        var result = await mediatr.Send(query);
+
+        return result.Match(
+           success => Ok(result.Value),
+           Problem);
     }
 }

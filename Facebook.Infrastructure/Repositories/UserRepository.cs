@@ -212,7 +212,7 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         var users = await context.FriendRequests
            .Include(u => u.Sender)
            .Include(u => u.Receiver)
-           .Where(u => u.ReceiverId.ToString() == userId || u.SenderId.ToString() == userId)
+           .Where(u => (u.ReceiverId.ToString() == userId || u.SenderId.ToString() == userId) && u.IsAccepted)
            .Select(u => u.ReceiverId.ToString() == userId ? u.Sender : u.Receiver)
            .ToListAsync();
 

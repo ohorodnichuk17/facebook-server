@@ -55,7 +55,8 @@ public class RegisterCommandHandler(
             };
 
             var currentUserRole = currentUserService.GetCurrentUserRole();
-            var role = Roles.User;
+            
+            var role = command.Role ?? Roles.User; 
 
             if (currentUserRole == Roles.Admin && command.Role != null)
             {

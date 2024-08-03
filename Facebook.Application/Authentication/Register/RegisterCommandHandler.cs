@@ -51,7 +51,7 @@ public class RegisterCommandHandler(
                 PasswordHash = command.Password,
                 Birthday = command.Birthday,
                 Gender = command.Gender,
-                EmailConfirmed = command.Role == Roles.Admin ? true : false 
+                EmailConfirmed = command.Role.ToLower() == Roles.Admin
             };
 
             var currentUserRole = currentUserService.GetCurrentUserRole();

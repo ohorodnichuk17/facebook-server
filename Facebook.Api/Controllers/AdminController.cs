@@ -19,18 +19,21 @@ using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.Post;
 using Facebook.Domain.Story;
+using Facebook.Domain.User;
 using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Server.Controllers;
 
 [Route("api/admin")]
 [ApiController]
 [Authorize(Roles = Roles.Admin)]
-public class AdminController(ISender mediatr, IMapper mapper)
+public class AdminController(ISender mediatr, IMapper mapper, UserManager<UserEntity> userManager)
     : ApiController
 {
     [HttpDelete("delete")]
@@ -72,23 +75,22 @@ public class AdminController(ISender mediatr, IMapper mapper)
             return StatusCode(500, "An error occurred while getting user.");
         }
     }
-
+    
     [HttpGet("get-all-users")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllUsersAsync()
     {
-        try
+        var users = await userManager.Users.ToListAsync();
+        var userRoles = await userManager.GetUsersInRoleAsync("Admin");
+        var usersWithRoles = users.Select(user => new
         {
-            var query = new GetAllUsersQuery();
-            var users = await mediatr.Send(query);
+            user.Id,
+            user.Email,
+            Role = userRoles.Any(ur => ur.Id == user.Id) ? "Admin" : "User"
+        }).ToList();
 
-            return Ok(users.Value);
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, "An error occurred while fetching users.");
-        }
+        return Ok(usersWithRoles);
     }
-
+    
     [HttpPost("block-user")]
     public async Task<IActionResult> BlockUserAsync([FromBody] BlockAndUnblockUserRequest request)
     {
@@ -201,8 +203,7 @@ public class AdminController(ISender mediatr, IMapper mapper)
             return StatusCode(500, "An error occurred while fetching stories.");
         }
     }
-
-
+    
     [HttpGet("get-all-comments")]
     public async Task<IActionResult> GetAllComments()
     {

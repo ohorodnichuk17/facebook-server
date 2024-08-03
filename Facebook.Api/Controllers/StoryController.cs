@@ -2,6 +2,7 @@ using Facebook.Application.Story.Command.Create;
 using Facebook.Application.Story.Command.Delete;
 using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.Story.Query.GetById;
+using Facebook.Application.UserProfile.Query.GetStoriesByUserId;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Story.Create;
 using Facebook.Domain.Story;

@@ -52,7 +52,7 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
     }
 
     [HttpDelete("delete-profile")]
-    public async Task<IActionResult> DeleteProfileAsync([FromForm] DeleteRequest request)
+    public async Task<IActionResult> DeleteProfileAsync([FromBody] DeleteRequest request)
     {
         var command = mapper.Map<DeleteUserCommand>(request);
         var deleteResult = await mediatr.Send(command);

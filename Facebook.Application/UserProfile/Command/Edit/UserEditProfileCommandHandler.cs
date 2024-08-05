@@ -44,6 +44,8 @@ public class UserEditProfileCommandHandler(
             userProfile.IsProfilePublic = request.IsProfilePublic ?? userProfile.IsProfilePublic;
             userProfile.Region = request.Region ?? userProfile.Region;
 
+            user.IsOnline = request.isOnline ?? user.IsOnline;
+
             if (!string.IsNullOrEmpty(request.FirstName))
             {
                 user.FirstName = request.FirstName;
@@ -68,7 +70,7 @@ public class UserEditProfileCommandHandler(
 
             var editprofileResult =
                 await unitOfWork.UserProfile.UserEditProfileAsync(userProfile, user.FirstName, user.LastName,
-                    user.Avatar);
+                    user.Avatar, user.IsOnline);
 
             if (editprofileResult.IsError)
             {

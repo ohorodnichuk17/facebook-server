@@ -15,6 +15,7 @@ public record UserEditProfileRequest
     public string? Pronouns { get; set; }
     public string? Region { get; set; }
     public string? Biography { get; set; }
+    public bool? isOnline { get; set; }
     public bool? IsProfilePublic { get; set; } = true; 
     public bool? IsBlocked { get; set; } = false;
 }

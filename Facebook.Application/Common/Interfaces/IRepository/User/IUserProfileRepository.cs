@@ -9,8 +9,7 @@ namespace Facebook.Application.Common.Interfaces.IRepository.User;
 public interface IUserProfileRepository : IRepository<UserProfileEntity>
 {
     Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
-        string firstName, string lastName, string avatar);
-
+        string firstName, string lastName, string avatar, bool isOnline);
     Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile);
     Task<ErrorOr<UserProfileEntity>> UserCreateProfileAsync(Guid userId);
     Task<ErrorOr<Unit>> BlockUserAsync(string userId);

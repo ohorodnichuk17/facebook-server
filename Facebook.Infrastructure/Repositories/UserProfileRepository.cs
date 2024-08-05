@@ -54,7 +54,7 @@ public class UserProfileRepository(
     }
 
     public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
-       string? firstName, string? lastName, string? avatar)
+       string? firstName, string? lastName, string? avatar, bool isOnline)
     {
         var existProfile = await context.UsersProfiles.SingleOrDefaultAsync(x => x.UserId == userProfile.UserId);
         var user = await userManager.FindByIdAsync(userProfile.UserId.ToString());
@@ -70,6 +70,8 @@ public class UserProfileRepository(
         existProfile.Region = userProfile.Region;
         existProfile.Pronouns = userProfile.Pronouns;
         existProfile.Country = userProfile.Country;
+
+        user.IsOnline = isOnline;
 
         if (!string.IsNullOrEmpty(firstName))
         {

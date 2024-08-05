@@ -7,6 +7,7 @@ public record UserEditProfileCommand(
     string UserId,
     string? FirstName,
     string? LastName,
+    bool? isOnline,
     byte[]? CoverPhoto,
     byte[]? Avatar,
     string? Pronouns,

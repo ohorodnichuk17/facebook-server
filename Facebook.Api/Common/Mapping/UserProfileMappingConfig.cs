@@ -17,6 +17,7 @@ public class UserProfileMappingConfig : IRegister
         config.NewConfig<(UserEditProfileRequest request, byte[] CoverPhoto, byte[] Avatar), UserEditProfileCommand>()
             .Map(dest => dest.CoverPhoto, src => src.CoverPhoto)
             .Map(dest => dest.Avatar, src => src.Avatar)
+            .Map(dest => dest.isOnline, src => src.request.isOnline)
             .Map(dest => dest, src => src.request);
 
         config.NewConfig<DeleteRequest, DeleteUserCommand>()

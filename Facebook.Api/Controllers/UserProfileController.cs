@@ -14,14 +14,12 @@ using Facebook.Domain.Story;
 using Mapster;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
 [Route("api/user-profile")]
 [ApiController]
-[AllowAnonymous]
 public class UserProfileController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPut("edit-profile")]

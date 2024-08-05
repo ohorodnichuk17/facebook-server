@@ -15,32 +15,26 @@ public class GetFriendsRecommendationsQueryHandler(
     {
         try
         {
-            string currentUserId = currentUserService.GetCurrentUserId();
+            var allUsers = await unitOfWork.User.GetAllUsersAsync();
 
-            var userFriends = await unitOfWork.User.GetAllFriendsAsync(currentUserId);
-
-            var friends = await unitOfWork.User.GetAllUsersAsync();
-
-            if (friends.IsError || friends.Value.Count == 0)
+            if (allUsers.IsError || allUsers.Value.Count == 0)
             {
-                return Error.NotFound("Friends recommendation not found");
+                return Error.NotFound("No users found for recommendations");
             }
 
-            var users = friends.Value;
-
-            var friendIds = userFriends.Select(f => f.Id.ToString()).ToHashSet();
-            friendIds.Add(currentUserId);
-
-            users = users.Where(u => !friendIds.Contains(u.Id.ToString())).ToList();
+            string currentUserId = currentUserService.GetCurrentUserId();
 
             var random = new Random();
-            var recommendations = users.OrderBy(_ => random.Next()).Take(20).ToList();
+            var recommendations = allUsers.Value.Where(u => u.Id.ToString() != currentUserId)
+                .OrderBy(u => random.Next()) 
+                .Take(20)
+                .ToList();
 
             return recommendations;
         }
         catch (Exception ex)
         {
-            return Error.Failure($"Error while retrieving friends: {ex.Message}");
+            return Error.Failure($"Error while retrieving users: {ex.Message}");
         }
     }
 }

@@ -16,7 +16,7 @@ public class GetAllFriendRequestsQueryHandler(IUnitOfWork unitOfWork)
 
             if (friends.Value.Count == 0)
             {
-                return Error.NotFound("Friends not found");
+                return new List<UserEntity>();
             }
 
             return friends.Value;

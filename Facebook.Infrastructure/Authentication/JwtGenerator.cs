@@ -1,12 +1,11 @@
+using Facebook.Application.Common.Interfaces.Authentication;
+using Facebook.Application.Common.Interfaces.Common;
+using Facebook.Domain.User;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Facebook.Application.Common.Interfaces.Authentication;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using ErrorOr;
-using Facebook.Application.Common.Interfaces.Common;
-using Facebook.Domain.User;
 
 namespace Facebook.Infrastructure.Authentication;
 
@@ -31,12 +30,13 @@ public class JwtGenerator(
             new Claim(JwtRegisteredClaimNames.GivenName, userEntity.FirstName ?? ""),
             new Claim(JwtRegisteredClaimNames.FamilyName, userEntity.LastName ?? ""),
             new Claim(JwtRegisteredClaimNames.Email, userEntity.Email!),
+            new Claim(JwtRegisteredClaimNames.Birthdate, userEntity.Birthday.ToString("yyyy-MM-dd")),
             new Claim("EmailConfirm", userEntity.EmailConfirmed.ToString()),
             new Claim(ClaimTypes.MobilePhone, userEntity.PhoneNumber ?? ""),
             new Claim(ClaimTypes.Role, role),
             new Claim("Avatar", userEntity.Avatar ?? ""),
         };
-        
+
         var securityToken = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,

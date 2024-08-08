@@ -18,7 +18,7 @@ public class StoryMappingConfig : IRegister
             .Map(dest => dest.CreatedAt, src => DateTime.Now)
             .Ignore(nameof(CreateStoryRequest.Image));
 
-        TypeAdapterConfig<StoryEntity, StoryEntity>.NewConfig()
+        config.NewConfig<StoryEntity, StoryEntity>()
                 .Map(dest => dest.User, src => src.User.Adapt<UserForPostDto>())
                 .PreserveReference(true);
     }

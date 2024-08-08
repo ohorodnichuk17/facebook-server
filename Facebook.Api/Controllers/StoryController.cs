@@ -2,7 +2,7 @@ using Facebook.Application.Story.Command.Create;
 using Facebook.Application.Story.Command.Delete;
 using Facebook.Application.Story.Query.GetAll;
 using Facebook.Application.Story.Query.GetById;
-using Facebook.Application.UserProfile.Query.GetStoriesByUserId;
+using Facebook.Application.Story.Query.GetFriendsStories;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.Story.Create;
 using Facebook.Domain.Story;
@@ -97,5 +97,15 @@ public class StoryController(ISender mediatr, IMapper mapper) : ApiController
         {
             return StatusCode(500, "An error occurred while getting story.");
         }
+    }
+
+    [HttpGet("friends")]
+    public async Task<IActionResult> GetFriendsStories()
+    {
+        var query = new GetFriendsStoriesQuery();
+        var result = await mediatr.Send(query);
+        var mappedStories = result.Value.Adapt<List<StoryEntity>>();
+
+        return result.Match(result => Ok(mappedStories), Problem);
     }
 }

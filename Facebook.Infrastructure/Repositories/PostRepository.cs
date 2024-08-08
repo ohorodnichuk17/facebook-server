@@ -4,8 +4,6 @@ using Facebook.Domain.Constants.ContentVisibility;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
 using LanguageExt;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Facebook.Infrastructure.Repositories;
@@ -22,6 +20,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 .Include(p => p.Feeling)
                 .Include(p => p.Images)
                 .Include(p => p.User)
+                .Include(p => p.Likes)
                 .ToListAsync();
 
             return posts;

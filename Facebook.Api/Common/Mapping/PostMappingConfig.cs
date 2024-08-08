@@ -28,6 +28,7 @@ public class PostMappingConfig : IRegister
         TypeAdapterConfig<PostEntity, PostEntity>.NewConfig()
             .Map(dest => dest.User, src => src.User.Adapt<UserForPostDto>())
             .Map(dest => dest.Images, src => src.Images.Adapt<List<ImageDto>>())
+            .Map(dest => dest.Likes, src => src.Likes.Adapt<List<LikeDto>>())
             .PreserveReference(true);
     }
 }

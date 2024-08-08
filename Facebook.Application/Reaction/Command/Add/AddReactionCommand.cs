@@ -4,7 +4,6 @@ using MediatR;
 namespace Facebook.Application.Reaction.Command.Add;
 
 public record AddReactionCommand(
-    string TypeCode,
-    Guid PostId,
-    Guid UserId
+    string Emoji,
+    Guid PostId
 ) : IRequest<ErrorOr<Unit>>;

@@ -15,15 +15,15 @@ namespace Facebook.Server.Controllers;
 [ApiController]
 public class ReactionController(ISender mediatr, IMapper mapper) : ApiController
 {
-    [HttpPost("add")]
-    public async Task<IActionResult> AddReactionAsync([FromForm] AddReactionRequest request)
+    [HttpPost]
+    public async Task<IActionResult> AddReactionAsync([FromBody] AddReactionRequest request)
     {
         var command = mapper.Map<AddReactionCommand>(request);
         var addResult = await mediatr.Send(command);
 
         return addResult.Match(
         success => Ok(success),
-        errors => Problem(errors));
+        Problem);
     }
 
     [HttpDelete("delete")]

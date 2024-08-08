@@ -7,4 +7,5 @@ public interface ILikeRepository : IRepository<LikeEntity>
 {
     Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByPostIdAsync(Guid postId);
     Task<ErrorOr<IEnumerable<LikeEntity>>> GetLikesByUserIdAsync(Guid userId);
+    Task<ErrorOr<LikeEntity>> SaveIfNotExist(LikeEntity entity);
 }

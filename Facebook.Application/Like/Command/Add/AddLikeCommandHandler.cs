@@ -1,22 +1,25 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Post;
 using MediatR;
 
 namespace Facebook.Application.Like.Command.Add;
 
-public class AddLikeCommandHandler(IUnitOfWork unitOfWork)
-    : IRequestHandler<AddLikeCommand, ErrorOr<Unit>>
+public class AddLikeCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+    : IRequestHandler<AddLikeCommand, ErrorOr<LikeEntity>>
 {
-    public async Task<ErrorOr<Unit>> Handle(AddLikeCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<LikeEntity>> Handle(AddLikeCommand request, CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.User.GetUserByIdAsync(request.UserId.ToString());
+        var currentUserId = currentUserService.GetCurrentUserId();
+        var user = await unitOfWork.User.GetUserByIdAsync(currentUserId);
         var post = await unitOfWork.Post.GetPostByIdAsync(request.PostId);
 
         if (user.IsError)
         {
             return user.Errors;
         }
+
         if (post.IsError)
         {
             return post.Errors;
@@ -24,25 +27,13 @@ public class AddLikeCommandHandler(IUnitOfWork unitOfWork)
 
         var likeEntity = new LikeEntity
         {
-            UserId = request.UserId,
+            UserId = new Guid(currentUserId),
             PostId = request.PostId,
             isLiked = true
         };
 
-        var likeResult = await unitOfWork.Like.CreateAsync(likeEntity);
+        var result = await unitOfWork.Like.SaveIfNotExist(likeEntity);
 
-        if (likeResult.IsError)
-        {
-            return likeResult.Errors;
-        }
-
-        var res = await unitOfWork.Like.SaveAsync(likeEntity);
-
-        if (res.IsError)
-        {
-            return res.Errors;
-        }
-
-        return res;
+        return result;
     }
 }

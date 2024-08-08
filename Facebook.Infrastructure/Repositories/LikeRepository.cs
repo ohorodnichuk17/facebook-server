@@ -27,4 +27,20 @@ public class LikeRepository(FacebookDbContext context) : Repository<LikeEntity>(
         }
         return like;
     }
+
+    public async Task<ErrorOr<LikeEntity>> SaveIfNotExist(LikeEntity entity)
+    {
+        var existLike = await context.Likes
+        .FirstOrDefaultAsync(like => like.UserId == entity.UserId && like.PostId == entity.PostId);
+
+        if (existLike != null)
+        {
+            return Error.Failure("Like already exists.");
+        }
+
+        context.Likes.Add(entity);
+        await context.SaveChangesAsync();
+
+        return entity;
+    }
 }

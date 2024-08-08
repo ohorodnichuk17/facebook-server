@@ -15,15 +15,13 @@ namespace Facebook.Server.Controllers;
 [ApiController]
 public class LikeController(ISender mediatr, IMapper mapper) : ApiController
 {
-    [HttpPost("add")]
-    public async Task<IActionResult> AddLikeAsync([FromForm] AddLikeRequest request)
+    [HttpPost]
+    public async Task<IActionResult> AddLikeAsync([FromBody] AddLikeRequest request)
     {
         var command = mapper.Map<AddLikeCommand>(request);
         var addResult = await mediatr.Send(command);
 
-        return addResult.Match(
-        success => Ok(success),
-        errors => Problem(errors));
+        return addResult.Match(Ok, Problem);
     }
 
     [HttpDelete("delete")]

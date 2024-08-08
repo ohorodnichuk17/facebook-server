@@ -90,6 +90,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 .Include(p => p.Feeling)
                 .Include(p => p.Images)
                 .Include(p => p.User)
+                .Include(p => p.Likes)
                 .Where(p => p.Tags.Contains(tag))
                 .ToListAsync();
 

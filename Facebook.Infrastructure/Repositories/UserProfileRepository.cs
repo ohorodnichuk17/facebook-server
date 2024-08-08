@@ -198,6 +198,7 @@ public class UserProfileRepository(
                 .Include(p => p.Feeling)
                 .Include(p => p.Images)
                 .Include(p => p.User)
+                .Include(p => p.Likes)
                 .Where(p => p.UserId == user.Id)
                 .ToListAsync();
 

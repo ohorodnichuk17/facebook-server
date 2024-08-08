@@ -10,7 +10,9 @@ public class LikeMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AddLikeRequest, AddLikeCommand>();
+        config.NewConfig<LikeRequest, AddLikeCommand>();
+
+        config.NewConfig<LikeRequest, DeleteLikeByPostIdCommand>();
 
         config.NewConfig<DeleteRequest, DeleteLikeCommand>()
             .Map(dest => dest.Id, src => src.Id);

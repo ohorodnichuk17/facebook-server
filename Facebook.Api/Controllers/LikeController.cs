@@ -16,12 +16,22 @@ namespace Facebook.Server.Controllers;
 public class LikeController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost]
-    public async Task<IActionResult> AddLikeAsync([FromBody] AddLikeRequest request)
+    public async Task<IActionResult> AddLikeAsync([FromBody] LikeRequest request)
     {
         var command = mapper.Map<AddLikeCommand>(request);
         var addResult = await mediatr.Send(command);
 
         return addResult.Match(Ok, Problem);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteLikeByPostIdAsync([FromBody] LikeRequest request)
+    {
+        var command = mapper.Map<DeleteLikeByPostIdCommand>(request);
+        var result = await mediatr.Send(command);
+        return result.Match(
+            result => Ok(),
+            Problem);
     }
 
     [HttpDelete("delete")]

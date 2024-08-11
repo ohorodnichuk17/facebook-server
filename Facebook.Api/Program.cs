@@ -18,15 +18,15 @@ builder.Services
 //builder.Logging.SetMinimumLevel(LogLevel.Trace);
 //builder.Host.UseNLog();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("StaticFilesCorsPolicy", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("StaticFilesCorsPolicy", builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//               .AllowAnyHeader()
+//               .AllowAnyMethod();
+//    });
+//});
 
 var app = builder.Build();
 
@@ -44,9 +44,13 @@ else
     app.UseHsts();
 }
 
-app.UseCors("StaticFilesCorsPolicy");
+app.UseCors(options => options.SetIsOriginAllowed(origin => true)
+    .AllowCredentials()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+);
 
-app.UseCustomStaticFiles();
+app.UseStaticFiles();
 
 app.UseRouting();
 

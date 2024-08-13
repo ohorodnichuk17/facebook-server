@@ -1,15 +1,9 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.IRepository.Chat;
 using Facebook.Domain.Chat;
 using Facebook.Infrastructure.Common.Persistence;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Facebook.Application.Common.Interfaces.IRepository.Chat;
-using static Facebook.Domain.Common.Errors.Errors;
 
 namespace Facebook.Infrastructure.Repositories.Chat;
 
@@ -19,6 +13,7 @@ public class ChatRepository(FacebookDbContext context) : Repository<ChatEntity>(
     {
         var chat = await context.Chats
         .Include(c => c.ChatUsers)
+        .Include(c => c.Users)
         .SingleOrDefaultAsync(c =>
             c.ChatUsers.Any(u => u.UserId == senderId) &&
             c.ChatUsers.Any(u => u.UserId == receiverId));
@@ -35,9 +30,13 @@ public class ChatRepository(FacebookDbContext context) : Repository<ChatEntity>(
         }
 
         var chats = await context.Chats
+            .Include(c => c.Messages)
             .Include(c => c.ChatUsers)
+                .ThenInclude(cu => cu.User)
             .Where(c => c.ChatUsers.Any(cu => cu.UserId == userId))
             .ToListAsync();
+
+        chats.ForEach(c => c.Messages = c.Messages.OrderBy(m => m.CreatedAt).ToList());
 
         return chats;
     }

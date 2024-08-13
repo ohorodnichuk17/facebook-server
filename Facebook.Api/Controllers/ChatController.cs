@@ -1,12 +1,12 @@
 ﻿using Facebook.Application.Chat.Command.Delete;
 using Facebook.Application.Chat.Query.GetChatsByUserId;
 using Facebook.Contracts.DeleteRequest;
+using Facebook.Domain.Chat;
 using Facebook.Domain.TypeExtensions;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Facebook.Server.Controllers;
 
@@ -24,17 +24,9 @@ public class ChatController(ISender mediatr, IMapper mapper) : ApiController
 
             if (res.IsSuccess())
             {
-                var chats = res.Value;
+                var chats = res.Value.Adapt<List<ChatEntity>>();
 
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-
-                var json = JsonSerializer.Serialize(chats, options);
-
-                return Ok(json);
+                return Ok(chats);
             }
             return StatusCode(500, res.IsError);
         }
@@ -53,5 +45,4 @@ public class ChatController(ISender mediatr, IMapper mapper) : ApiController
             success => Ok(success),
             error => Problem(error));
     }
-
 }

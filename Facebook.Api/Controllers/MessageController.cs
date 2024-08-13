@@ -6,12 +6,14 @@ using Facebook.Contracts.Message.Edit;
 using Facebook.Domain.TypeExtensions;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
 
 [Route("api/message")]
 [ApiController]
+[AllowAnonymous]
 public class MessageController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpGet("{chatId}")]

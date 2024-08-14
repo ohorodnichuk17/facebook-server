@@ -12,8 +12,6 @@ public interface IUserRepository
 
     Task<ErrorOr<UserEntity>> GetUserByIdAsync(Guid userId);
     Task<ErrorOr<UserEntity>> GetUserByIdAsync(string userId);
-    Task<ErrorOr<UserEntity>> CreateUserAsync(UserEntity user, string password);
-    Task<ErrorOr<Unit>> DeleteUserAsync(string userId);
     Task<ErrorOr<UserEntity>> SaveUserAsync(UserEntity user);
     Task<ErrorOr<List<UserDto>>> SearchUsersByFirstNameAndLastNameAsync(string firstName, string lastName);
     Task<ErrorOr<UserEntity>> GetByEmailAsync(string email);

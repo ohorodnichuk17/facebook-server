@@ -82,47 +82,6 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         return user;
     }
 
-    public async Task<ErrorOr<UserEntity>> CreateUserAsync(UserEntity userEntity, string password)
-    {
-        userEntity.UserName = $"{userEntity.Email}".ToLower();
-
-        var createUserResult = await userManager.CreateAsync(userEntity, password);
-
-        if (!createUserResult.Succeeded)
-        {
-            foreach (var error in createUserResult.Errors)
-            {
-                Console.WriteLine($"Error creating user: {error.Description}");
-            }
-            return Error.Failure("Error creating user");
-        }
-
-        return userEntity;
-    }
-
-
-    public async Task<ErrorOr<Unit>> DeleteUserAsync(string userId)
-    {
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Error.Failure("Invalid userId");
-        }
-
-        var userToDelete = await userManager.FindByIdAsync(userId.ToString());
-        if (userToDelete == null)
-        {
-            return Error.Failure("User not found");
-        }
-
-        var result = await userManager.DeleteAsync(userToDelete);
-        if (!result.Succeeded)
-        {
-            return Error.Failure("Failed to delete user");
-        }
-
-        return Unit.Value;
-    }
-
     public async Task<ErrorOr<List<string>>> FindRolesByUserIdAsync(UserEntity userEntity)
     {
         var roles = await userManager.GetRolesAsync(userEntity);

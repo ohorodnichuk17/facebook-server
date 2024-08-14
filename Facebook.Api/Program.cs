@@ -50,6 +50,11 @@ app.UseCors(options => options.SetIsOriginAllowed(origin => true)
     .AllowAnyHeader()
 );
 
+if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "images")))
+{
+    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "images"));
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")),

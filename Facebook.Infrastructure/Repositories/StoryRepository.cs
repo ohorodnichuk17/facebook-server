@@ -30,20 +30,12 @@ public class StoryRepository(FacebookDbContext context) : Repository<StoryEntity
         {
             var user = await context.Users.FindAsync(userId);
 
-            if (user == null)
-            {
-                return Error.NotFound();
-            }
+            if (user == null) return Error.NotFound();
 
             var friendIds = await context.FriendRequests
                 .Where(uf => (uf.ReceiverId == user.Id || uf.SenderId == user.Id) && uf.IsAccepted)
                 .Select(uf => uf.ReceiverId == user.Id ? uf.SenderId : uf.ReceiverId)
                 .ToListAsync();
-
-            if (friendIds == null || friendIds.Count == 0)
-            {
-                return Error.NotFound();
-            }
 
             var stories = await context.Stories
             .Include(p => p.User)
@@ -51,11 +43,6 @@ public class StoryRepository(FacebookDbContext context) : Repository<StoryEntity
                 .Where(p => friendIds.Contains(p.UserId) || p.UserId == user.Id)
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
-
-            if (!stories.Any())
-            {
-                return Error.NotFound();
-            }
 
             return stories;
         }

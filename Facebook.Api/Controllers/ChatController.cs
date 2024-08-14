@@ -1,5 +1,7 @@
-﻿using Facebook.Application.Chat.Command.Delete;
+﻿using Facebook.Application.Chat.Command.Create;
+using Facebook.Application.Chat.Command.Delete;
 using Facebook.Application.Chat.Query.GetChatsByUserId;
+using Facebook.Contracts.Chat;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Chat;
 using Facebook.Domain.TypeExtensions;
@@ -14,6 +16,15 @@ namespace Facebook.Server.Controllers;
 [ApiController]
 public class ChatController(ISender mediatr, IMapper mapper) : ApiController
 {
+    [HttpPost]
+    public async Task<IActionResult> CreateChat([FromBody] CreateChatRequest request)
+    {
+        var command = mapper.Map<CreateChatCommand>(request);
+        var result = await mediatr.Send(command);
+
+        return result.IsError ? BadRequest() : Created();
+    }
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetById(Guid userId)
     {

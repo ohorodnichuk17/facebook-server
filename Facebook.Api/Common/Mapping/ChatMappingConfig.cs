@@ -1,5 +1,7 @@
-﻿using Facebook.Application.Chat.Command.Delete;
+﻿using Facebook.Application.Chat.Command.Create;
+using Facebook.Application.Chat.Command.Delete;
 using Facebook.Application.DTO;
+using Facebook.Contracts.Chat;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Domain.Chat;
 using Mapster;
@@ -10,6 +12,8 @@ public class ChatMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
+        config.NewConfig<CreateChatRequest, CreateChatCommand>();
+
         config.NewConfig<DeleteRequest, DeleteChatByIdCommand>()
             .Map(dest => dest.Id, src => src.Id);
 

@@ -15,18 +15,24 @@ public class GetFriendsRecommendationsQueryHandler(
     {
         try
         {
+            string currentUserId = currentUserService.GetCurrentUserId();
+
             var allUsers = await unitOfWork.User.GetAllUsersAsync();
+            var friends = await unitOfWork.User.GetAllFriendsAsync(currentUserId);
 
             if (allUsers.IsError || allUsers.Value.Count == 0)
             {
                 return Error.NotFound("No users found for recommendations");
             }
 
-            string currentUserId = currentUserService.GetCurrentUserId();
+            var friendIds = friends.Select(f => f.Id.ToString()).ToHashSet();
 
             var random = new Random();
-            var recommendations = allUsers.Value.Where(u => u.Id.ToString() != currentUserId)
-                .OrderBy(u => random.Next()) 
+
+            var recommendations = allUsers.Value
+                .Where(u => u.Id.ToString() != currentUserId)
+                .Where(u => !friendIds.Contains(u.Id.ToString()))
+                .OrderBy(u => random.Next())
                 .Take(20)
                 .ToList();
 

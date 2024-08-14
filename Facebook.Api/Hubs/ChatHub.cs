@@ -50,7 +50,7 @@ public class ChatHub : Hub
         await _unitOfWork.Message.CreateAsync(message);
 
         //await Clients.Group(chat.Value?.Id.ToString() ?? string.Empty).SendAsync("ReceiveMessage", fromUserEmail, messageContent);
-        await Clients.All.SendAsync("ReceiveMessage", fromUserEmail, messageContent);
+        await Clients.All.SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
     }
 
     public override async Task OnConnectedAsync()

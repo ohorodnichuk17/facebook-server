@@ -139,7 +139,7 @@ public class UserProfileRepository(
     {
         try
         {
-            var userToBlock = await context.UsersProfiles.FindAsync(userId);
+            var userToBlock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId.ToString() == userId);
 
             if (userToBlock == null)
             {
@@ -148,6 +148,7 @@ public class UserProfileRepository(
 
             userToBlock.IsBlocked = true;
 
+            context.UsersProfiles.Update(userToBlock);
             await context.SaveChangesAsync();
 
             return Unit.Value;
@@ -162,15 +163,64 @@ public class UserProfileRepository(
     {
         try
         {
-            var userToUnBlock = await context.UsersProfiles.FindAsync(userId);
+            var userToUnblock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId.ToString() == userId);
 
-            if (userToUnBlock == null)
+            if (userToUnblock == null)
             {
                 return Error.Failure("User not found");
             }
 
-            userToUnBlock.IsBlocked = false;
+            userToUnblock.IsBlocked = false;
 
+            context.UsersProfiles.Update(userToUnblock);
+            await context.SaveChangesAsync();
+
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<Unit>> BlockUserAsync(Guid userId)
+    {
+        try
+        {
+            var userToBlock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId == userId);
+
+            if (userToBlock == null)
+            {
+                return Error.Failure("User not found");
+            }
+
+            userToBlock.IsBlocked = true;
+
+            context.UsersProfiles.Update(userToBlock);
+            await context.SaveChangesAsync();
+
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<Unit>> UnblockUserAsync(Guid userId)
+    {
+        try
+        {
+            var userToUnblock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId == userId);
+
+            if (userToUnblock == null)
+            {
+                return Error.Failure("User not found");
+            }
+
+            userToUnblock.IsBlocked = false;
+
+            context.UsersProfiles.Update(userToUnblock);
             await context.SaveChangesAsync();
 
             return Unit.Value;

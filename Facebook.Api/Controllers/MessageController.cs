@@ -13,7 +13,6 @@ namespace Facebook.Server.Controllers;
 
 [Route("api/message")]
 [ApiController]
-[AllowAnonymous]
 public class MessageController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpGet("{chatId}")]

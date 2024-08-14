@@ -2,6 +2,7 @@
 using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Common;
 using Facebook.Application.UserProfile.Query.GetById;
+using Facebook.Application.UserProfile.Status.Block;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.UserProfile.Edit;
 using Facebook.Contracts.UserProfile.GetById;
@@ -24,6 +25,8 @@ public class UserProfileMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.Id);
 
         config.NewConfig<GetUserProfileByIdRequest, GetUserProfileByIdQuery>();
+        config.NewConfig<GetUserProfileByIdRequest, BlockUnblockUserCommand>()
+            .Map(dest => dest.UserId, src => src.UserId);
 
         config.NewConfig<(UserProfileEntity profile, string token), EditProfileResult>()
             .Map(dest => dest.Token, src => src.token)

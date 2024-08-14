@@ -35,14 +35,23 @@ public class UserProfileRepository(
         try
         {
             var deleteUser = await userManager.FindByIdAsync(userId);
-            var deleteUserProfile = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
             if (deleteUser == null)
             {
                 return Error.Failure("User not found");
             }
 
-            context.Users.Remove(deleteUser);
+            var messages = await context.Messages.Where(m => m.UserId.ToString() == userId).ToListAsync();
+            context.Messages.RemoveRange(messages);
+
+            var friendRequests = await context.FriendRequests
+                .Where(fr => fr.SenderId.ToString() == userId || fr.ReceiverId.ToString() == userId)
+                .ToListAsync();
+            context.FriendRequests.RemoveRange(friendRequests);
+
+            var deleteUserProfile = await context.UsersProfiles.SingleOrDefaultAsync(r => r.UserId.ToString() == userId);
             context.UsersProfiles.Remove(deleteUserProfile);
+            context.Users.Remove(deleteUser);
+
             await context.SaveChangesAsync();
             return true;
         }
@@ -51,7 +60,6 @@ public class UserProfileRepository(
             return Error.Failure(ex.Message);
         }
     }
-
     public async Task<ErrorOr<UserProfileEntity>> UserEditProfileAsync(UserProfileEntity userProfile,
        string? firstName, string? lastName, string? avatar, bool isOnline)
     {

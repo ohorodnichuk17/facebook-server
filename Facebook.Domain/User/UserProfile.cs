@@ -11,13 +11,6 @@ public class UserProfileEntity
         get => _isProfilePublic;
         set => _isProfilePublic = value;
     }
-    
-    private bool _isBlocked = false;
-    public bool IsBlocked 
-    { 
-        get => _isBlocked;
-        set => _isBlocked = value;
-    }
     public string? Pronouns { get; set; }
     public string? Country { get; set; }
     public string? Region { get; set; }

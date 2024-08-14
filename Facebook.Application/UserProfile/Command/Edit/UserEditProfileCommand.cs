@@ -13,7 +13,6 @@ public record UserEditProfileCommand(
     string? Pronouns,
     string? Biography,
     bool? IsProfilePublic,
-    bool? isBlocked,
     string? Country,
     string? Region
 ) : IRequest<ErrorOr<EditProfileResult>>;

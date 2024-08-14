@@ -5,7 +5,6 @@ using Facebook.Application.UserProfile.Command.Edit;
 using Facebook.Application.UserProfile.Query.GetById;
 using Facebook.Application.UserProfile.Query.GetPostsByUserId;
 using Facebook.Application.UserProfile.Query.GetStoriesByUserId;
-using Facebook.Application.UserProfile.Status.Block;
 using Facebook.Contracts.DeleteRequest;
 using Facebook.Contracts.UserProfile.Delete;
 using Facebook.Contracts.UserProfile.Edit;
@@ -15,7 +14,6 @@ using Facebook.Domain.Story;
 using Mapster;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.Server.Controllers;
@@ -127,24 +125,6 @@ public class UserProfileController(ISender mediatr, IMapper mapper) : ApiControl
             var mappedStories = stories.Value.Adapt<List<StoryEntity>>();
 
             return Ok(mappedStories);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An error occurred while fetching stories.");
-        }
-    }
-
-    [HttpPost("block-unblockUserByUserId")]
-    public async Task<IActionResult> BlockUnblockUserByUserId(GetUserProfileByIdRequest userId)
-    {
-        try
-        {
-            var command = mapper.Map<BlockUnblockUserCommand>(userId);
-            var getRes = await mediatr.Send(command);
-
-            return getRes.Match(
-            getRes => Ok(getRes),
-            errors => Problem(errors));
         }
         catch (Exception ex)
         {

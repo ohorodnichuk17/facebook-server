@@ -21,7 +21,6 @@ public class UserProfileRepository(
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            IsBlocked = false,
             IsProfilePublic = true
         };
 
@@ -66,7 +65,6 @@ public class UserProfileRepository(
         existProfile.Biography = userProfile.Biography;
         existProfile.CoverPhoto = userProfile.CoverPhoto;
         existProfile.IsProfilePublic = userProfile.IsProfilePublic;
-        existProfile.IsBlocked = userProfile.IsBlocked;
         existProfile.Region = userProfile.Region;
         existProfile.Pronouns = userProfile.Pronouns;
         existProfile.Country = userProfile.Country;
@@ -107,7 +105,6 @@ public class UserProfileRepository(
         existProfile.Biography = userProfile.Biography;
         existProfile.CoverPhoto = userProfile.CoverPhoto;
         existProfile.IsProfilePublic = userProfile.IsProfilePublic;
-        existProfile.IsBlocked = userProfile.IsBlocked;
         existProfile.Region = userProfile.Region;
         existProfile.Country = userProfile.Country;
 
@@ -133,102 +130,6 @@ public class UserProfileRepository(
             return Error.Failure("User not found");
         }
         return user;
-    }
-
-    public async Task<ErrorOr<Unit>> BlockUserAsync(string userId)
-    {
-        try
-        {
-            var userToBlock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId.ToString() == userId);
-
-            if (userToBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToBlock.IsBlocked = true;
-
-            context.UsersProfiles.Update(userToBlock);
-            await context.SaveChangesAsync();
-
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Unit>> UnblockUserAsync(string userId)
-    {
-        try
-        {
-            var userToUnblock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId.ToString() == userId);
-
-            if (userToUnblock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToUnblock.IsBlocked = false;
-
-            context.UsersProfiles.Update(userToUnblock);
-            await context.SaveChangesAsync();
-
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Unit>> BlockUserAsync(Guid userId)
-    {
-        try
-        {
-            var userToBlock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId == userId);
-
-            if (userToBlock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToBlock.IsBlocked = true;
-
-            context.UsersProfiles.Update(userToBlock);
-            await context.SaveChangesAsync();
-
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Unit>> UnblockUserAsync(Guid userId)
-    {
-        try
-        {
-            var userToUnblock = await context.UsersProfiles.SingleOrDefaultAsync(i => i.UserId == userId);
-
-            if (userToUnblock == null)
-            {
-                return Error.Failure("User not found");
-            }
-
-            userToUnblock.IsBlocked = false;
-
-            context.UsersProfiles.Update(userToUnblock);
-            await context.SaveChangesAsync();
-
-            return Unit.Value;
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure(ex.Message);
-        }
     }
 
     public async Task<ErrorOr<IEnumerable<PostEntity>>> GetPostsByUserIdAsync(Guid userId)

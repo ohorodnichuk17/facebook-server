@@ -68,4 +68,26 @@ public class CommentRepository(FacebookDbContext context) : Repository<CommentEn
             return Error.Failure(ex.Message);
         }
     }
+
+    new public async Task<ErrorOr<bool>> DeleteAsync(Guid id)
+    {
+        try
+        {
+            var comment = await context.Comments
+                .Include(c => c.ChildComments)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (comment is null) return Error.NotFound();
+
+            context.Comments.RemoveRange(comment.ChildComments);
+
+            context.Comments.Remove(comment);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure(ex.Message);
+        }
+    }
 }

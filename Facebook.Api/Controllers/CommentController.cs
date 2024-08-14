@@ -54,15 +54,15 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
             errors => Problem(errors));
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteCommentAsync([FromForm] DeleteRequest request)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteCommentAsync([FromBody] DeleteRequest request)
     {
-        var command = mapper.Map<DeleteCommentCommand>(request);
-        var deleteResult = await mediatr.Send(command);
+        var command = new DeleteCommentCommand(request.Id);
+        var result = await mediatr.Send(command);
 
-        return deleteResult.Match(
-        deleteRes => Ok(),
-        errors => Problem(errors));
+        return result.Match(
+            result => Ok(),
+            Problem);
     }
 
     [HttpGet("{postId}")]

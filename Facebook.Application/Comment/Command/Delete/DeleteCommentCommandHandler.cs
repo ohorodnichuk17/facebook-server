@@ -1,11 +1,6 @@
 ﻿using ErrorOr;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Application.Comment.Command.Delete;
 
@@ -17,12 +12,7 @@ public class DeleteCommentCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         {
             var result = await unitOfWork.Comment.DeleteAsync(request.Id);
 
-            if (result.IsError)
-            {
-                return result.Errors;
-            }
-
-            return true;
+            return result;
         }
         catch (Exception ex)
         {

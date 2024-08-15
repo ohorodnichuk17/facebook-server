@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Facebook.Server.Infrastructure.Logging;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Facebook.Server;
 

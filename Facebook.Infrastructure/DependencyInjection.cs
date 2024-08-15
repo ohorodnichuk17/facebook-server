@@ -27,6 +27,7 @@ using Facebook.Application.Common.Interfaces.IRepository.Reaction;
 using Facebook.Application.Common.Interfaces.IRepository.Story;
 using Facebook.Application.Common.Interfaces.IRepository.User;
 using Facebook.Infrastructure.Repositories;
+using Microsoft.AspNetCore.SignalR;
 
 
 namespace Facebook.Infrastructure;
@@ -105,6 +106,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IJwtGenerator, JwtGenerator>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
         services.AddScoped<ISmtpService, SmtpService>();
         services.AddTransient<SmtpService>();

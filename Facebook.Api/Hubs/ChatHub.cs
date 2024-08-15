@@ -1,16 +1,19 @@
 ﻿using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Chat;
+using LanguageExt.Pipes;
 using Microsoft.AspNetCore.SignalR;
-
-namespace Facebook.Server.Hubs;
+using System.Text.RegularExpressions;
 
 public class ChatHub : Hub
 {
     private readonly IUnitOfWork _unitOfWork;
+    private static readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
+
     public ChatHub(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
+
     public async Task SendMessage(string fromUserEmail, string toUserEmail, string messageContent)
     {
         var fromUser = await _unitOfWork.User.GetByEmailAsync(fromUserEmail);
@@ -29,14 +32,13 @@ public class ChatHub : Hub
                 Id = Guid.NewGuid(),
                 Name = toUser.Value?.Email ?? "Unknown",
                 ChatUsers = new List<ChatUserEntity>
-                {
-                    new ChatUserEntity { UserId = fromUser.Value.Id },
-                    new ChatUserEntity { UserId = toUser.Value?.Id ?? Guid.Empty }
-                }
+            {
+                new ChatUserEntity { UserId = fromUser.Value.Id },
+                new ChatUserEntity { UserId = toUser.Value?.Id ?? Guid.Empty }
+            }
             };
             await _unitOfWork.Chat.CreateAsync(chat.Value);
-            chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value?.Id
-                                                                ?? Guid.Empty, toUser.Value?.Id ?? Guid.Empty);
+            chat = await _unitOfWork.Chat.GetChatByUsersIdAsync(fromUser.Value?.Id ?? Guid.Empty, toUser.Value?.Id ?? Guid.Empty);
         }
 
         var message = new MessageEntity
@@ -51,7 +53,10 @@ public class ChatHub : Hub
 
         await Task.Delay(100);
 
-        await Clients.User(toUser.Value.Id.ToString()).SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
+        if (_connections.TryGetValue(toUserEmail, out var receiverConnectionId))
+        {
+            await Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
+        }
         await Clients.Caller.SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
     }
 
@@ -67,6 +72,7 @@ public class ChatHub : Hub
 
                 if (!user.IsError)
                 {
+                    _connections[email] = Context.ConnectionId;
                     var chatsResult = await _unitOfWork.Chat.GetChatsByUserIdAsync(user.Value.Id);
                     if (!chatsResult.IsError)
                     {
@@ -85,4 +91,13 @@ public class ChatHub : Hub
         await base.OnConnectedAsync();
     }
 
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var user = _connections.FirstOrDefault(x => x.Value == Context.ConnectionId);
+        if (user.Key != null)
+        {
+            _connections.Remove(user.Key);
+        }
+        await base.OnDisconnectedAsync(exception);
+    }
 }

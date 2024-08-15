@@ -2,7 +2,6 @@ using Facebook.Application;
 using Facebook.Infrastructure;
 using Facebook.Infrastructure.Common.Initializers;
 using Facebook.Server;
-using Facebook.Server.Hubs;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);

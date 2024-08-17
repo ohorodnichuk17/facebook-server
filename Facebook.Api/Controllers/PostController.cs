@@ -38,8 +38,8 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
            error => Problem(error));
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteAsync(DeleteRequest request)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAsync([FromBody] DeleteRequest request)
     {
         var command = mapper.Map<DeletePostCommand>(request);
         var deletePostResult = await mediatr.Send(command);

@@ -1,8 +1,6 @@
 ﻿using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.Chat;
-using LanguageExt.Pipes;
 using Microsoft.AspNetCore.SignalR;
-using System.Text.RegularExpressions;
 
 public class ChatHub : Hub
 {
@@ -56,6 +54,7 @@ public class ChatHub : Hub
         if (_connections.TryGetValue(toUserEmail, out var receiverConnectionId))
         {
             await Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
+            return;
         }
         await Clients.Caller.SendAsync("ReceiveMessage", fromUserEmail, messageContent, chat.Value?.Id);
     }

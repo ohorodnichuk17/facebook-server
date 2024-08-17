@@ -3,10 +3,14 @@ using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Domain.User;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+
 namespace Facebook.Application.User.Friends.Query.GetFriendsRecommendations;
+
 public class GetFriendsRecommendationsQueryHandler(
     IUnitOfWork unitOfWork,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    UserManager<UserEntity> userManager) 
     : IRequestHandler<GetFriendsRecommendationsQuery, ErrorOr<IEnumerable<UserEntity>>>
 {
     public async Task<ErrorOr<IEnumerable<UserEntity>>> Handle(GetFriendsRecommendationsQuery request, CancellationToken cancellationToken)
@@ -21,10 +25,25 @@ public class GetFriendsRecommendationsQueryHandler(
             }
 
             string currentUserId = currentUserService.GetCurrentUserId();
-
             var random = new Random();
-            var recommendations = allUsers.Value.Where(u => u.Id.ToString() != currentUserId)
-                .OrderBy(u => random.Next()) 
+
+            var filteredUsers = allUsers.Value
+                .Where(u => u.Id.ToString() != currentUserId)
+                .ToList();
+
+            var nonAdminUsers = new List<UserEntity>();
+
+            foreach (var user in filteredUsers)
+            {
+                var roles = await userManager.GetRolesAsync(user);
+                if (!roles.Contains("admin"))
+                {
+                    nonAdminUsers.Add(user);
+                }
+            }
+
+            var recommendations = nonAdminUsers
+                .OrderBy(u => random.Next())
                 .Take(20)
                 .ToList();
 

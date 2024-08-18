@@ -49,16 +49,17 @@ public class StoryController(ISender mediatr, IMapper mapper) : ApiController
         }
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteAsync(DeleteRequest request)
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var command = mapper.Map<DeleteStoryCommand>(request);
+        var command = new DeleteStoryCommand { Id = id };
         var deleteStoryResult = await mediatr.Send(command);
 
         return deleteStoryResult.Match(
             success => Ok(success),
             error => Problem(error));
     }
+
 
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()

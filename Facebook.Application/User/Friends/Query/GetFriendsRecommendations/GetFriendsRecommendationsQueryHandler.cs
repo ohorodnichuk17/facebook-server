@@ -18,17 +18,20 @@ public class GetFriendsRecommendationsQueryHandler(
         try
         {
             var allUsers = await unitOfWork.User.GetAllUsersAsync();
-
             if (allUsers.IsError || allUsers.Value.Count == 0)
             {
                 return Error.NotFound("No users found for recommendations");
             }
 
             string currentUserId = currentUserService.GetCurrentUserId();
+
+            var friends = await unitOfWork.User.GetAllFriendsAsync(currentUserId);
+            var friendsIds = friends.Select(f => f.Id.ToString()).ToHashSet();
+
             var random = new Random();
 
             var filteredUsers = allUsers.Value
-                .Where(u => u.Id.ToString() != currentUserId)
+                .Where(u => u.Id.ToString() != currentUserId && !friendsIds.Contains(u.Id.ToString()))
                 .ToList();
 
             var nonAdminUsers = new List<UserEntity>();
@@ -54,4 +57,5 @@ public class GetFriendsRecommendationsQueryHandler(
             return Error.Failure($"Error while retrieving users: {ex.Message}");
         }
     }
+
 }

@@ -129,6 +129,7 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
 
             var result = users.Select(u => new UserDto
             {
+                Id = u.Id.ToString(),
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Avatar = u.Avatar,

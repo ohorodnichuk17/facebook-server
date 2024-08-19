@@ -1,4 +1,5 @@
-﻿using Facebook.Domain.Constants.Roles;
+﻿using Bogus;
+using Facebook.Domain.Constants.Roles;
 using Facebook.Domain.User;
 using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +31,7 @@ public static class UserAndRolesInitializer
 
             if (!context.Users.Any())
             {
-                var user = new UserEntity
+                var admin = new UserEntity
                 {
                     FirstName = "Admin",
                     LastName = "Admin",
@@ -38,14 +39,47 @@ public static class UserAndRolesInitializer
                     UserName = "isgrassisgreen@gmail.com",
                     EmailConfirmed = true,
                     Birthday = DateTime.Today,
-                    Gender = "Male",
+                    Gender = "Female",
                 };
 
-                var result = await userManager.CreateAsync(user, "bAazxcQ94@?");
+                var result = await userManager.CreateAsync(admin, "bAazxcQ94@?");
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(admin, Roles.Admin);
+                }
+
+                var faker = new Faker<UserEntity>()
+                    .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+                    .RuleFor(u => u.LastName, f => f.Name.LastName())
+                    .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
+                    .RuleFor(u => u.UserName, (f, u) => u.Email)
+                    .RuleFor(u => u.EmailConfirmed, f => true)
+                    .RuleFor(u => u.Birthday, f => f.Date.Past(30, DateTime.Today.AddYears(-18)))
+                    .RuleFor(u => u.Gender, f => f.PickRandom("Male", "Female"));
+
+                for (int i = 0; i < 50; i++)
+                {
+                    var user = faker.Generate();
+                    var userResult = await userManager.CreateAsync(user, "User@1234");
+
+                    if (userResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, Roles.User);
+
+                        var userProfile = new Faker<UserProfileEntity>()
+                            .RuleFor(p => p.Biography, f => f.Lorem.Sentence())
+                            .RuleFor(p => p.Country, f => f.Address.Country())
+                            .RuleFor(p => p.Region, f => f.Address.State())
+                            .RuleFor(p => p.Pronouns, f => f.PickRandom(new[] { "he/him", "she/her", "they/them", "do not specify" }))
+                            .RuleFor(p => p.IsProfilePublic, f => f.Random.Bool())
+                            .Generate();
+
+                        userProfile.UserEntity = user;
+                        userProfile.UserId = user.Id;
+
+                        await context.UsersProfiles.AddAsync(userProfile);
+                    }
                 }
             }
         }

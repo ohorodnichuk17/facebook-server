@@ -252,12 +252,12 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
         }
     }
 
-    public async Task<ErrorOr<Unit>> RejectFriendRequestAsync(string userId, string friendRequestId)
+    public async Task<ErrorOr<Unit>> RejectFriendRequestAsync(string userId, string friendId)
     {
         try
         {
             var friendRequest = await context.FriendRequests
-               .FirstOrDefaultAsync(fr => fr.Id.ToString() == friendRequestId && fr.ReceiverId.ToString() == userId);
+               .FirstOrDefaultAsync(fr => fr.SenderId.ToString() == friendId && fr.ReceiverId.ToString() == userId);
 
             if (friendRequest == null)
             {

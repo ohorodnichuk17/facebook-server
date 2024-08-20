@@ -49,18 +49,15 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
          Problem);
     }
 
-    [HttpPost("reject-friend-request")]
-    public async Task<IActionResult> RejectFriendRequest(FriendRequest request)
+    [HttpPost("reject-request")]
+    public async Task<IActionResult> RejectFriendRequest(AcceptFriendRequest request)
     {
-        var result = await mediatr.Send(mapper.Map<RejectFriendRequestCommand>(request));
+        var command = new RejectFriendRequestCommand(request.FriendId);
+        var result = await mediatr.Send(command);
 
         return result.Match(
            success => Ok(success),
-           error =>
-           {
-               Console.Error.WriteLine($"Error in RejectFriendRequest: {error}");
-               return Problem(error.First().Description);
-           });
+           Problem);
     }
 
     [HttpDelete]

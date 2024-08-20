@@ -29,7 +29,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     [HttpPost("accept-friend-request")]
     public async Task<IActionResult> AcceptFriendRequest([FromBody] FriendRequest request)
     {
-        var command = mapper.Map<AcceptFriendRequestCommand>(request);
+        var command = new AcceptFriendRequestCommand(request.FriendId);
         var result = await mediatr.Send(command);
 
         return result.Match(
@@ -40,13 +40,14 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     [HttpPost("send-request")]
     public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequest request)
     {
-        var baseUrl = Request.Headers["Referer"].ToString();
-        var command = mapper.Map<SendFriendRequestCommand>((request, baseUrl));
+        var baseUrl = Request.Headers.Referer.ToString();
+
+        var command = new SendFriendRequestCommand(request.FriendId, baseUrl);
         var result = await mediatr.Send(command);
 
         return result.Match(
-         success => Ok(success),
-         Problem);
+            success => Ok(success),
+            Problem);
     }
 
     [HttpPost("reject-request")]
@@ -149,8 +150,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     [HttpGet("requests")]
     public async Task<IActionResult> GetAllFriendRequests([FromQuery] GetAllFriendRequestsRequest request)
     {
-
-        var query = mapper.Map<GetAllFriendRequestsQuery>(request);
+        var query = new GetAllFriendRequestsQuery(request.UserId);
         var result = await mediatr.Send(query);
 
         return result.Match(
@@ -161,7 +161,6 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     [HttpGet("relationships-status")]
     public async Task<IActionResult> GetAllFriendRequests([FromQuery] Guid friendId)
     {
-
         var query = new GetRelationshipsStatusQuery(friendId.ToString());
         var result = await mediatr.Send(query);
 

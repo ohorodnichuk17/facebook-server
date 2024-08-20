@@ -14,8 +14,7 @@ public class FriendsMappingConfig : IRegister
     {
         config.NewConfig<FriendRequest, AcceptFriendRequestCommand>();
 
-        config.NewConfig<(FriendRequest request, string BaseUrl), SendFriendRequestCommand>()
-            .Map(dest => dest.UserId, src => src.request.UserId)
+        config.NewConfig<(AcceptFriendRequest request, string BaseUrl), SendFriendRequestCommand>()
             .Map(dest => dest.FriendId, src => src.request.FriendId)
             .Map(dest => dest.baseUrl, src => src.BaseUrl);
 

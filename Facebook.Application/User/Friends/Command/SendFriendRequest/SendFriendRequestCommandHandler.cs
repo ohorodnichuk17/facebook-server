@@ -1,4 +1,5 @@
 using ErrorOr;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
 using Facebook.Application.Services;
 using Facebook.Domain.User;
@@ -8,14 +9,16 @@ namespace Facebook.Application.User.Friends.Command.SendFriendRequest;
 
 public class SendFriendRequestCommandHandler(
     IUnitOfWork unitOfWork,
+    ICurrentUserService currentUserService,
     EmailService emailService) : IRequestHandler<SendFriendRequestCommand, ErrorOr<Unit>>
 {
     public async Task<ErrorOr<Unit>> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            var currentUserId = currentUserService.GetCurrentUserId();
             var result = await unitOfWork.User
-                .SendFriendRequestAsync(request.UserId.ToString(), request.FriendId.ToString());
+                .SendFriendRequestAsync(currentUserId, request.FriendId.ToString());
 
             if (result.IsError)
             {
@@ -32,7 +35,7 @@ public class SendFriendRequestCommandHandler(
 
             var friendUserName = GetUserNameForEmail(friend);
 
-            await emailService.SendFriendRequestNotificationEmailAsync(friend.Email, request.baseUrl, friendUserName, request.UserId);
+            await emailService.SendFriendRequestNotificationEmailAsync(friend.Email, request.baseUrl, friendUserName);
 
             return result;
         }

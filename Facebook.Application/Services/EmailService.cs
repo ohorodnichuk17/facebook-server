@@ -1,8 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.Authentication;
 using System.Net;
-using System.Net.Mail;
-using Microsoft.Extensions.Configuration;
 
 namespace Facebook.Application.Services;
 
@@ -112,10 +110,9 @@ public class EmailService(ISmtpService smtpService)
     }
 
     public async Task<ErrorOr<Success>> SendFriendRequestNotificationEmailAsync(
-        string email, string baseUrl,
-        string userName, Guid friendId)
+        string email, string baseUrl, string userName)
     {
-        string url = $"{baseUrl}friends/request?friendId={friendId}";
+        string url = $"{baseUrl}friends/request";
 
         string emailBody = string.Empty;
 

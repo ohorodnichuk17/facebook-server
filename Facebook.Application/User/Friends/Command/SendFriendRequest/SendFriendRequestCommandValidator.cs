@@ -6,11 +6,7 @@ public class SendFriendRequestCommandValidator : AbstractValidator<SendFriendReq
 {
     public SendFriendRequestCommandValidator()
     {
-        RuleFor(r => r.UserId)
-            .NotEmpty().WithMessage("UserId must not be empty").When(r => r.UserId != Guid.Empty);
-
         RuleFor(r => r.FriendId)
-            .NotEmpty().WithMessage("FriendId must not be empty").When(r => r.UserId != Guid.Empty);
-
+            .NotEmpty().WithMessage("FriendId must not be empty").When(r => r.FriendId != Guid.Empty);
     }
 }

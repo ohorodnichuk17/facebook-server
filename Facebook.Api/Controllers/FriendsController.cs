@@ -37,8 +37,8 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
            Problem);
     }
 
-    [HttpPost("send-friend-request")]
-    public async Task<IActionResult> SendFriendRequest(FriendRequest request)
+    [HttpPost("send-request")]
+    public async Task<IActionResult> SendFriendRequest([FromBody] AcceptFriendRequest request)
     {
         var baseUrl = Request.Headers["Referer"].ToString();
         var command = mapper.Map<SendFriendRequestCommand>((request, baseUrl));
@@ -46,7 +46,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
 
         return result.Match(
          success => Ok(success),
-         error => Problem(error));
+         Problem);
     }
 
     [HttpPost("reject-friend-request")]

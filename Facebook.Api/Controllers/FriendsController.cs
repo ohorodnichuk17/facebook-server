@@ -63,14 +63,15 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
            });
     }
 
-    [HttpPost("remove-friend")]
-    public async Task<IActionResult> RemoveFriend(FriendRequest request)
+    [HttpDelete]
+    public async Task<IActionResult> RemoveFriend([FromBody] AcceptFriendRequest request)
     {
-        var result = await mediatr.Send(mapper.Map<RemoveFriendCommand>(request));
+        var command = new RemoveFriendCommand(request.FriendId);
+        var result = await mediatr.Send(command);
 
         return result.Match(
            success => Ok(success),
-           error => Problem(error));
+           Problem);
     }
 
     [HttpGet("get-all-friends")]

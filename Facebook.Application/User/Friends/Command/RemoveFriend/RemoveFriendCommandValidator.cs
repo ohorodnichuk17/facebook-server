@@ -6,10 +6,6 @@ public class RemoveFriendCommandValidator : AbstractValidator<RemoveFriendComman
 {
     public RemoveFriendCommandValidator()
     {
-        RuleFor(x => x.UserId)
-            .NotEmpty()
-            .WithMessage("UserId is required.");
-        
         RuleFor(x => x.FriendId)
             .NotEmpty()
             .WithMessage("FriendId is required.");

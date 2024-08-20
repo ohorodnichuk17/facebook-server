@@ -21,6 +21,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 .Include(p => p.Images)
                 .Include(p => p.User)
                 .Include(p => p.Likes)
+                .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
             return posts;

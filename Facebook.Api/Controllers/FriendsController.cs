@@ -27,7 +27,7 @@ namespace Facebook.Server.Controllers;
 public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
 {
     [HttpPost("accept-friend-request")]
-    public async Task<IActionResult> AcceptFriendRequest(AcceptFriendRequest request)
+    public async Task<IActionResult> AcceptFriendRequest([FromBody] FriendRequest request)
     {
         var command = mapper.Map<AcceptFriendRequestCommand>(request);
         var result = await mediatr.Send(command);
@@ -38,7 +38,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     }
 
     [HttpPost("send-request")]
-    public async Task<IActionResult> SendFriendRequest([FromBody] AcceptFriendRequest request)
+    public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequest request)
     {
         var baseUrl = Request.Headers["Referer"].ToString();
         var command = mapper.Map<SendFriendRequestCommand>((request, baseUrl));
@@ -50,7 +50,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     }
 
     [HttpPost("reject-request")]
-    public async Task<IActionResult> RejectFriendRequest(AcceptFriendRequest request)
+    public async Task<IActionResult> RejectFriendRequest([FromBody] FriendRequest request)
     {
         var command = new RejectFriendRequestCommand(request.FriendId);
         var result = await mediatr.Send(command);
@@ -61,7 +61,7 @@ public class FriendsController(ISender mediatr, IMapper mapper) : ApiController
     }
 
     [HttpDelete]
-    public async Task<IActionResult> RemoveFriend([FromBody] AcceptFriendRequest request)
+    public async Task<IActionResult> RemoveFriend([FromBody] FriendRequest request)
     {
         var command = new RemoveFriendCommand(request.FriendId);
         var result = await mediatr.Send(command);

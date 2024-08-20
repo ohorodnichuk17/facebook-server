@@ -43,15 +43,15 @@ public class CommentController(ISender mediatr, IMapper mapper) : ApiController
             Problem);
     }
 
-    [HttpPut("edit")]
-    public async Task<IActionResult> EditAsync([FromForm] EditCommentRequest request)
+    [HttpPut]
+    public async Task<IActionResult> EditAsync([FromBody] EditCommentRequest request)
     {
-        var editResult = await mediatr.Send(
-            mapper.Map<EditCommentCommand>(request));
+        var command = mapper.Map<EditCommentCommand>(request);
+        var editResult = await mediatr.Send(command);
 
         return editResult.Match(
             authResult => Ok(editResult.Value),
-            errors => Problem(errors));
+            Problem);
     }
 
     [HttpDelete]

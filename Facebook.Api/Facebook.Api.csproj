@@ -28,9 +28,4 @@
       <ProjectReference Include="..\Facebook.Infrastructure\Facebook.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="images\" />
-      <Folder Include="images\stories\" />
-    </ItemGroup>
-
 </Project>

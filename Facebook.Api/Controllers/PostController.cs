@@ -202,17 +202,17 @@ public class PostController(ISender mediatr, IMapper mapper) : ApiController
         }
     }
 
-    [HttpGet("getFriendsPosts/{userId}")]
-    public async Task<IActionResult> GetFriendsPosts(Guid userId)
+    [HttpGet("friends")]
+    public async Task<IActionResult> GetFriendsPosts(int pageNumber = 1, int pageSize = 10)
     {
         try
         {
-            var query = new GetFriendsPostsQuery(userId);
-            var posts = await mediatr.Send(query);
+            var query = new GetFriendsPostsQuery(pageNumber, pageSize);
+            var paginationResponse = await mediatr.Send(query);
 
-            var mappedPosts = posts.Value.Adapt<List<PostEntity>>();
+            paginationResponse.Value.Posts = paginationResponse.Value.Posts.Adapt<List<PostEntity>>();
 
-            return Ok(mappedPosts);
+            return Ok(paginationResponse.Value);
         }
         catch (Exception)
         {

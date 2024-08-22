@@ -1,27 +1,21 @@
 ﻿using ErrorOr;
+using Facebook.Application.Common.Interfaces.Common;
 using Facebook.Application.Common.Interfaces.IUnitOfWork;
-using Facebook.Domain.Post;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Application.Post.Query.GetFriendsPosts;
 
-public class GetFriendsPostsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetFriendsPostsQuery, ErrorOr<IEnumerable<PostEntity>>>
+public class GetFriendsPostsQueryHandler(
+    IUnitOfWork unitOfWork,
+    ICurrentUserService currentUserService) : IRequestHandler<GetFriendsPostsQuery, ErrorOr<PaginationResponse>>
 {
-    public async Task<ErrorOr<IEnumerable<PostEntity>>> Handle(GetFriendsPostsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<PaginationResponse>> Handle(GetFriendsPostsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await unitOfWork.Post.GetFriendsPostsAsync(request.UserId);
+            var currentUserId = currentUserService.GetCurrentUserId();
 
-            if (result.IsError)
-            {
-                return Error.Failure(result.Errors.ToString() ?? string.Empty);
-            }
+            var result = await unitOfWork.Post.GetFriendsPostsAsync(new Guid(currentUserId), request.pageNumber, request.pageSize);
 
             return result;
         }

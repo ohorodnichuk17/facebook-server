@@ -1,5 +1,6 @@
 using ErrorOr;
 using Facebook.Application.Common.Interfaces.IRepository.Post;
+using Facebook.Application.Post.Query.GetFriendsPosts;
 using Facebook.Domain.Constants.ContentVisibility;
 using Facebook.Domain.Post;
 using Facebook.Infrastructure.Common.Persistence;
@@ -103,7 +104,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
         }
     }
 
-    public async Task<ErrorOr<IEnumerable<PostEntity>>> GetFriendsPostsAsync(Guid userId)
+    public async Task<ErrorOr<PaginationResponse>> GetFriendsPostsAsync(Guid userId, int pageNumber, int pageSize)
     {
         try
         {
@@ -124,13 +125,21 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 return Error.NotFound();
             }
 
+            var totalCount = context.Posts
+                .Where(p => (friendIds.Contains(p.UserId) && p.Visibility != ContentVisibility.Private) || p.UserId == userId)
+                .Count();
+
             var posts = await context.Posts
                 .Include(p => p.Action)
                 .Include(p => p.SubAction)
                 .Include(p => p.Feeling)
                 .Include(p => p.Images)
                 .Include(p => p.User)
-                .Where(p => friendIds.Contains(p.UserId) && p.Visibility != ContentVisibility.Private)
+                .Include(p => p.Likes)
+                .Where(p => (friendIds.Contains(p.UserId) && p.Visibility != ContentVisibility.Private) || p.UserId == userId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
             if (!posts.Any())
@@ -140,7 +149,7 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
 
             posts = posts.Where(post => post.ExcludedFriends == null || !post.ExcludedFriends.Contains(user.Id)).ToList();
 
-            return posts;
+            return new PaginationResponse { TotalCount = totalCount, Posts = posts };
         }
         catch (Exception ex)
         {

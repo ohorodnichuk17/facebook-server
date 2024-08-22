@@ -176,11 +176,6 @@ public class UserRepository(UserManager<UserEntity> userManager, FacebookDbConte
            .Select(u => u.ReceiverId.ToString() == userId ? u.Sender : u.Receiver)
            .ToListAsync();
 
-        if (users.Count == 0)
-        {
-            throw new Exception("Friends not found");
-        }
-
         return users;
     }
 

@@ -120,11 +120,6 @@ public class PostRepository(FacebookDbContext context) : Repository<PostEntity>(
                 .Select(uf => uf.ReceiverId == user.Id ? uf.SenderId : uf.ReceiverId)
                 .ToListAsync();
 
-            if (friendIds == null || friendIds.Count == 0)
-            {
-                return Error.NotFound();
-            }
-
             var totalCount = context.Posts
                 .Where(p => (friendIds.Contains(p.UserId) && p.Visibility != ContentVisibility.Private) || p.UserId == userId)
                 .Count();

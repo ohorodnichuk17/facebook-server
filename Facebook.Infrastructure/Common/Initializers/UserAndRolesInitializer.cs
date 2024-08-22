@@ -7,6 +7,7 @@ using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -19,6 +20,17 @@ namespace Facebook.Infrastructure.Common.Initializers
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var service = scope.ServiceProvider;
+
+                Random random = new Random();
+
+                string basePath = Directory.GetCurrentDirectory();
+                string avatarsPath = Path.Combine(basePath, "images", "avatars");
+                string coverPhotosPath = Path.Combine(basePath, "images", "coverPhotos");
+                string storiesPath = Path.Combine(basePath, "images", "stories");
+                string[] avatars = Directory.GetFiles(avatarsPath);
+                string[] stories = Directory.GetFiles(storiesPath);
+                string[] coverPhotos = Directory.GetFiles(coverPhotosPath);
+
 
                 var context = service.GetRequiredService<FacebookDbContext>();
                 await context.Database.MigrateAsync();
@@ -66,6 +78,7 @@ namespace Facebook.Infrastructure.Common.Initializers
                     for (int i = 0; i < 50; i++)
                     {
                         var newUser = faker.Generate();
+                        newUser.Avatar = Path.GetFileName(avatars[random.Next(avatars.Length)]);
                         var userResult = await userManager.CreateAsync(newUser, "User@1234");
 
                         if (userResult.Succeeded)
@@ -82,9 +95,11 @@ namespace Facebook.Infrastructure.Common.Initializers
 
                             newUserProfile.UserEntity = newUser;
                             newUserProfile.UserId = newUser.Id;
+                            newUserProfile.CoverPhoto = Path.GetFileName(coverPhotos[random.Next(coverPhotos.Length)]);
 
                             context.UsersProfiles.Add(newUserProfile);
                             users.Add(newUser);
+
                         }
                     }
 
@@ -115,6 +130,7 @@ namespace Facebook.Infrastructure.Common.Initializers
                     for (int i = 0; i < 50; i++)
                     {
                         var story = storyFaker.Generate();
+                        story.Image = Path.GetFileName(stories[random.Next(stories.Length)]);
                         context.Stories.Add(story);
                     }
 

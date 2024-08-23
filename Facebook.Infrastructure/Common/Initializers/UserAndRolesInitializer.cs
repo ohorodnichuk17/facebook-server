@@ -7,9 +7,7 @@ using Facebook.Infrastructure.Common.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Facebook.Infrastructure.Common.Initializers
 {
@@ -20,7 +18,6 @@ namespace Facebook.Infrastructure.Common.Initializers
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var service = scope.ServiceProvider;
-
                 Random random = new Random();
 
                 string basePath = Directory.GetCurrentDirectory();
@@ -30,7 +27,6 @@ namespace Facebook.Infrastructure.Common.Initializers
                 string[] avatars = Directory.GetFiles(avatarsPath);
                 string[] stories = Directory.GetFiles(storiesPath);
                 string[] coverPhotos = Directory.GetFiles(coverPhotosPath);
-
 
                 var context = service.GetRequiredService<FacebookDbContext>();
                 await context.Database.MigrateAsync();
@@ -74,6 +70,8 @@ namespace Facebook.Infrastructure.Common.Initializers
                         .RuleFor(u => u.Gender, f => f.PickRandom("Male", "Female"));
 
                     var users = new List<UserEntity>();
+                    int privateProfileCount = 0; 
+
                     for (int i = 0; i < 50; i++)
                     {
                         var newUser = faker.Generate();
@@ -84,12 +82,18 @@ namespace Facebook.Infrastructure.Common.Initializers
                         {
                             await userManager.AddToRoleAsync(newUser, Roles.User);
 
+                            var isProfilePublic = privateProfileCount >= 3 || new Faker().Random.Bool();
+                            if (!isProfilePublic)
+                            {
+                                privateProfileCount++; 
+                            }
+
                             var newUserProfile = new Faker<UserProfileEntity>()
                                 .RuleFor(p => p.Biography, f => f.Lorem.Sentence())
                                 .RuleFor(p => p.Country, f => f.Address.Country())
                                 .RuleFor(p => p.Region, f => f.Address.State())
                                 .RuleFor(p => p.Pronouns, f => f.PickRandom(new[] { "he/him", "she/her", "they/them" }))
-                                .RuleFor(p => p.IsProfilePublic, f => f.Random.Bool())
+                                .RuleFor(p => p.IsProfilePublic, f => isProfilePublic)
                                 .Generate();
 
                             newUserProfile.UserEntity = newUser;
@@ -98,7 +102,6 @@ namespace Facebook.Infrastructure.Common.Initializers
 
                             context.UsersProfiles.Add(newUserProfile);
                             users.Add(newUser);
-
                         }
                     }
 

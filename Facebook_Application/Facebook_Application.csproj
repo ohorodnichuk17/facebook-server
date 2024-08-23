@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <ProjectReference Include="..\Facebook.Domain\Facebook.Domain.csproj" />
+      <ProjectReference Include="..\Facebook_Domain\Facebook_Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

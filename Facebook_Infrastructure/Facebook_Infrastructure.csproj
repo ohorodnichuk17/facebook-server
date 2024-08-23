@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <ProjectReference Include="..\Facebook.Application\Facebook.Application.csproj" />
+      <ProjectReference Include="..\Facebook_Application\Facebook_Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

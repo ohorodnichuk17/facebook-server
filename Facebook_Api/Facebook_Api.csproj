@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>Facebook.Server</RootNamespace>
+        <RootNamespace>Facebook_Server</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,9 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Facebook.Contracts\Facebook.Contracts.csproj" />
-      <ProjectReference Include="..\Facebook.Application\Facebook.Application.csproj" />
-      <ProjectReference Include="..\Facebook.Infrastructure\Facebook.Infrastructure.csproj" />
+      <ProjectReference Include="..\Facebook_Contracts\Facebook_Contracts.csproj" />
+      <ProjectReference Include="..\Facebook_Application\Facebook_Application.csproj" />
+      <ProjectReference Include="..\Facebook_Infrastructure\Facebook_Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

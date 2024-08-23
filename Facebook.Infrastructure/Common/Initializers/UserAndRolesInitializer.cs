@@ -46,7 +46,6 @@ namespace Facebook.Infrastructure.Common.Initializers
 
                 if (!context.Users.Any())
                 {
-                    // Create the admin user
                     var adminUser = new UserEntity
                     {
                         FirstName = "Admin",

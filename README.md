@@ -5,7 +5,8 @@ Create docker hub repository - publish
 docker build -t facebook-api . 
 docker run -it --rm -p 5085:8080 --name facebook_container facebook-api
 docker run -d --restart=always --name facebook_container -p 5085:8080 facebook-api
-docker run -d --restart=always -v d:/volumes/api/images:/app/images --name facebook_container -p 5085:8080 facebook-api
+docker run -d --restart=always -v d:/volumes/api/images:/app/images -v d:/volumes/api/EmailTemplates:/app/EmailTemplates --name facebook_container -p 5085:8080 facebook-api
+docker run -d --restart=always -v /volumes/api/images:/app/images -v /volumes/api/EmailTemplates:/app/EmailTemplates --name facebook_container -p 5085:8080 facebook-api
 docker ps -a
 docker stop facebook_container
 docker rm facebook_container
@@ -32,7 +33,7 @@ docker run -d --restart=always --name facebook_container -p 5085:8080 novakvova/
 
 ```nginx options /etc/nginx/sites-available/default
 server {
-    server_name   facebook.itstep.click *.facebook.itstep.click;
+    server_name   api-qubix.itstep.click *.api-qubix.itstep.click;
     location / {
        proxy_pass         http://localhost:5085;
        proxy_http_version 1.1;

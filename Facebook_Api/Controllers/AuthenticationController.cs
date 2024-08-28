@@ -63,7 +63,7 @@ public class AuthenticationController(ISender mediatr,
         var confirmEmailResult = await mediatr.Send(mapper.Map<ConfirmEmailCommand>(request));
 
         return confirmEmailResult.Match(
-            confirmResult => Redirect("http://localhost:5173/email-confirmed"),
+            confirmResult => Redirect("https://qubix.itstep.click/email-confirmed"),
             errors => Problem(errors));
     }
 
@@ -109,7 +109,7 @@ public class AuthenticationController(ISender mediatr,
         var forgotPasswordResult = await mediatr.Send(query);
 
         return forgotPasswordResult.Match(
-            forgotPasswordRes => Redirect("http://localhost:5173/set-new-password"),
+            forgotPasswordRes => Redirect("https://qubix.itstep.click/set-new-password"),
             errors => Problem(errors));
     }
 

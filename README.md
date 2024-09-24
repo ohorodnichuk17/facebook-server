@@ -9,7 +9,7 @@ This is the backend API for **Qubix**, a social network developed as part of a d
 ## Technologies Used
 
 - **Backend Framework:** ASP.NET Core 8.0
-- **Architecture:** Clean Architecture, Domain-Driven Design (DDD)
+- **Architecture:** Clean Architecture, Domain-Driven Design (DDD), Command Query Responsibility Segregation (CQRS)
 - **Database:** PostgreSQL
 - **Authentication:** JWT (JSON Web Tokens)
 - **API Documentation:** Swagger

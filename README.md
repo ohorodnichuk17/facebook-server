@@ -2,6 +2,10 @@
 
 This is the backend API for **Qubix**, a social network developed as part of a diploma project at IT Step Academy.
 
+## Project Links
+
+- **Swagger API Documentation:** [Qubix API](https://api-qubix.itstep.click/swagger/index.html)
+
 ## Technologies Used
 
 - **Backend Framework:** ASP.NET Core 8.0

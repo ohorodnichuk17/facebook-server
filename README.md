@@ -46,9 +46,35 @@ server {
     }
 }
 
+server {
+		server_name   qubix.itstep.click *.qubix.itstep.click;
+		root /var/dist;
+		index index.html;
+
+		location / {
+			try_files $uri /index.html;
+			#try_files $uri $uri/ =404;
+		}
+}
+
+server {
+		server_name   admin-qubix.itstep.click *.admin-qubix.itstep.click;
+		root /var/admin-qubix.itstep.click;
+		index index.html;
+
+		location / {
+			try_files $uri /index.html;
+			#try_files $uri $uri/ =404;
+		}
+}
+
 sudo systemctl restart nginx
 certbot
 ```
+
+/var/api-qubix.itstep.click/
+
+
 
 
 
